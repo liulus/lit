@@ -1,7 +1,6 @@
 package com.github.lit.commons.util;
 
-import com.sun.xml.internal.messaging.saaj.packaging.mime.util.BASE64EncoderStream;
-
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -27,7 +26,7 @@ public class EncryptUtils {
 
         md5.update(data.getBytes());
 
-        return new String(BASE64EncoderStream.encode(md5.digest()));
+        return new BigInteger(1, md5.digest()).toString(16);
     }
 
 }
