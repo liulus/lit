@@ -1,0 +1,8 @@
+dependencies {
+    compileOnly libs.slf4j_api
+    compileOnly libs.guava
+//    compileOnly libs.jackson_databind
+    compileOnly libs.spring_jdbc
+    compileOnly libs.spring_context
+    compileOnly libs.spring_aspects
+}
