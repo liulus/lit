@@ -3,16 +3,10 @@ ext {
     logbackVersion = '1.1.7'
     jacksonVersion = '2.8.3'
     druidVersion = '1.0.29'
-    thymeleafVersion = '3.0.2.RELEASE'
-    velocityVersion = '1.7'
-    freemarkerVersion = '2.3.23'
     velocityToolsVersion = '2.0'
     springVersion = '4.3.9.RELEASE'
     springBootVersion = '1.5.2.RELEASE'
 
-    bootstrapVersion = '3.3.7'
-    fontAwesomeVersion = '4.7.0'
-    jqueryVersion = '3.2.0'
 
     libs = [
             guava                 : "com.google.guava:guava:20.0",
@@ -37,7 +31,7 @@ ext {
 }
 
 allprojects {
-    group = 'com.github.lit'
+    group = 'com.github.liulus'
     version = '1.0.0'
 
     apply plugin: 'java'
