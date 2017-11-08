@@ -64,7 +64,73 @@ allprojects {
 }
 
 
+archivesBaseName = "lit-box"
 
+apply plugin: 'signing'
+
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: 'liulu', password: 'Lycd1993981!')
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: 'liulu', password: 'Lycd1993981!')
+            }
+
+            pom.project {
+                name 'lit-box'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'a simple orm tools'
+                url 'https://github.com/liulus/lit-box'
+
+                scm {
+                    connection 'scm:git@github.com:liulus/lit-box.git'
+                    developerConnection 'scm:git@github.com:liulus/lit-box.git'
+                    url 'https://github.com/liulus/lit-box'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        name 'liulu'
+                        email 'skary0812@yeah.net'
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 

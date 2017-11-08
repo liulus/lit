@@ -12,8 +12,8 @@ interface Condition<T extends Condition<T>> extends Statement {
     T idCondition(Object value);
 
     /**
-     * @param logic 操作符
-     * @param values   值
+     * @param logic  操作符
+     * @param values 值
      * @return Statement本身
      */
     T idCondition(Logic logic, Object... values);
@@ -31,7 +31,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * 添加 where 条件
      *
      * @param fieldName 属性名
-     * @param logic  操作符
+     * @param logic     操作符
      * @param values    值
      * @return Statement本身
      */
@@ -50,6 +50,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * 添加 and 条件，
      *
      * @param fieldName 属性名
+     * @param logic     操作逻辑
      * @param values    值
      * @return Statement本身
      */
@@ -68,6 +69,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * 添加 括号 的 and 条件，
      *
      * @param fieldName 属性名
+     * @param logic     操作逻辑
      * @param values    值
      * @return Statement本身
      */
@@ -86,6 +88,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * 添加 or 条件，
      *
      * @param fieldName 属性名
+     * @param logic     操作逻辑
      * @param values    值
      * @return Statement本身
      */
@@ -104,6 +107,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * 添加 括号 的 or 条件，
      *
      * @param fieldName 属性名
+     * @param logic     操作逻辑
      * @param values    值
      * @return Statement本身
      */

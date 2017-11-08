@@ -21,6 +21,7 @@ public class BeanUtils {
      *
      * @param map       the map
      * @param beanClass the other class
+     * @param <T>       bean 的类型
      * @return t
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
@@ -32,6 +33,7 @@ public class BeanUtils {
      *
      * @param map       the map
      * @param beanClass the other class
+     * @param <T>       bean 的类型
      * @return t
      */
     public static <T> T underLineKeyMapToBean(Map<String, Object> map, Class<T> beanClass) {
@@ -45,6 +47,7 @@ public class BeanUtils {
      * @param map       the map
      * @param beanClass the other class
      * @param delimiter the delimiter
+     * @param <T>       bean 的类型
      * @return t
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
@@ -75,6 +78,7 @@ public class BeanUtils {
      * @param <T>       the type parameter
      * @param mapList   the map list
      * @param beanClass the other class
+     * @param <T>       bean 的类型
      * @return t list
      */
     public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
@@ -87,6 +91,7 @@ public class BeanUtils {
      * @param <T>       the type parameter
      * @param mapList   the map list
      * @param beanClass the other class
+     * @param <T>       bean 的类型
      * @return t list
      */
     public static <T> List<T> underlineKeyMapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
@@ -97,9 +102,10 @@ public class BeanUtils {
      * map转为bean，最后一个参数指定map中的key转换成骆驼命名法(JavaBean中惯用的属性命名)的分隔符,例如login_name转换成loginName,分隔符为下划线_
      * 指定了分隔符进行转换时如果属性不带分隔符会统一转成小写,为空则不进行任何转换
      *
-     * @param <T>       the type parameter
      * @param mapList   the map list
      * @param beanClass the other class
+     * @param delimiter the delimiter
+     * @param <T>       the type parameter
      * @return t list
      */
     public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass, Character delimiter) {
@@ -120,6 +126,8 @@ public class BeanUtils {
      *
      * @param target 目标对象
      * @param source 源对象
+     * @param <T>    目标对象类型
+     * @param <S>    源对象类型
      * @return 转换后的目标对象
      */
     public static <T, S> T convert(T target, S source) {
@@ -131,6 +139,8 @@ public class BeanUtils {
      *
      * @param target           目标对象
      * @param source           源对象
+     * @param <T>              目标对象类型
+     * @param <S>              源对象类型
      * @param ignoreProperties 需要过滤的属性
      * @return 转换后的目标对象
      */
@@ -145,8 +155,8 @@ public class BeanUtils {
      * @param source           源对象
      * @param ignoreProperties 需要过滤的属性
      * @param callBack         简单属性拷贝完成后的回调
-     * @param <T>
-     * @param <S>
+     * @param <T>              目标对象类型
+     * @param <S>              源对象类型
      * @return
      */
     private static <T, S> T convert(T target, S source, String[] ignoreProperties, ConvertCallBack<T, S> callBack) {
@@ -174,6 +184,8 @@ public class BeanUtils {
      * @param target     the target
      * @param source     the source
      * @param ignoreList the ignore list
+     * @param <T>        目标对象类型
+     * @param <S>        源对象类型
      */
     private static <T, S> void copySameProperties(T target, S source, List<String> ignoreList) {
 
@@ -196,6 +208,8 @@ public class BeanUtils {
      *
      * @param clazz the clazz
      * @param list  the list
+     * @param <T>   目标对象类型
+     * @param <S>   源对象类型
      * @return the page list
      */
     public static <T, S> List<T> convert(Class<T> clazz, List<S> list) {
@@ -212,6 +226,8 @@ public class BeanUtils {
      * @param targetClz        the clazz
      * @param sourceList       the list
      * @param ignoreProperties the ignore properties
+     * @param <T>              目标对象类型
+     * @param <S>              源对象类型
      * @return the page list
      */
     public static <T, S> List<T> convert(Class<T> targetClz, List<S> sourceList, String[] ignoreProperties) {
@@ -267,7 +283,7 @@ public class BeanUtils {
      *
      * @param bean         执行方法的对象
      * @param propertyName 执行reader 方法的属性
-     * @return
+     * @return 方法返回值
      */
     public static Object invokeReaderMethod(Object bean, String propertyName) {
         if (bean == null) {
@@ -282,7 +298,7 @@ public class BeanUtils {
      *
      * @param bean         执行方法的对象
      * @param propertyName 执行Write 方法的属性
-     * @return
+     * @param values       要设置的值
      */
     public static void invokeWriteMethod(Object bean, String propertyName, Object... values) {
         if (bean == null) {

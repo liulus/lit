@@ -36,9 +36,9 @@ public class ClassUtils {
     /**
      * 获取指定对象的属性值
      *
-     * @param field
-     * @param obj
-     * @return
+     * @param field 属性字段
+     * @param obj   指定对象
+     * @return 属性在指定对象的值
      */
     public static Object getFieldValue(Field field, Object obj) {
         if (!field.isAccessible()) {
@@ -54,9 +54,9 @@ public class ClassUtils {
     /**
      * 设置指定对象的属性值
      *
-     * @param field
-     * @param obj
-     * @param value
+     * @param field 属性字段
+     * @param obj   指定对象
+     * @param value 要设置的值
      */
     public static void setFieldValue(Field field, Object obj, Object value) {
         if (!field.isAccessible()) {
@@ -75,7 +75,7 @@ public class ClassUtils {
      * @param method 要执行的方法
      * @param obj    执行方法的对象
      * @param value  执行方法的参数
-     * @return
+     * @return 方法的返回值
      */
     public static Object invokeMethod(Method method, Object obj, Object... value) {
         methodAccessible(method);
@@ -89,7 +89,7 @@ public class ClassUtils {
     /**
      * 设置method访问权限
      *
-     * @param method
+     * @param method 方法
      */
     public static void methodAccessible(Method method) {
         if (!Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
@@ -100,8 +100,9 @@ public class ClassUtils {
     /**
      * 初始化实例
      *
-     * @param clazz
-     * @return
+     * @param clazz class
+     * @param <T>   对象类型
+     * @return class实例对象
      */
     public static <T> T newInstance(Class<T> clazz) {
         try {
@@ -114,8 +115,8 @@ public class ClassUtils {
     /**
      * 初始化实例
      *
-     * @param clazz
-     * @return
+     * @param clazz class
+     * @return class实例对象
      */
     public static Object newInstance(String clazz) {
 
@@ -130,8 +131,8 @@ public class ClassUtils {
     /**
      * 加载类
      *
-     * @param clazz
-     * @return
+     * @param clazz class
+     * @return Class对象
      */
     public static Class<?> loadClass(String clazz) {
         try {
@@ -144,7 +145,7 @@ public class ClassUtils {
     /**
      * 当前线程的classLoader
      *
-     * @return
+     * @return ClassLoader
      */
     public static ClassLoader getDefaultClassLoader() {
         return Thread.currentThread().getContextClassLoader();

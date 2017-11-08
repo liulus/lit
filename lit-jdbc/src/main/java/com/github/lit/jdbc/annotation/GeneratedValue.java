@@ -20,20 +20,22 @@ public @interface GeneratedValue {
      * (Optional) The primary key generation strategy
      * that the persistence provider must use to
      * generate the annotated entity primary key.
+     *
+     * @return GenerationType
      */
     GenerationType strategy() default GenerationType.AUTO;
 
     /**
      * 自定主键生成器（可以自定义）
      *
-     * @return
+     * @return KeyGenerator
      */
     Class<? extends KeyGenerator> generator() default EmptyKeyGenerator.class;
 
     /**
      * 当主键生成策略为 序列时 有效
      *
-     * @return
+     * @return sequenceName
      */
     String sequenceName() default "";
 }

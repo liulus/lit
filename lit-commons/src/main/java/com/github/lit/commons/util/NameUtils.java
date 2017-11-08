@@ -9,8 +9,9 @@ public class NameUtils {
 
     /**
      * 下划线分割命名转换为驼峰命名
-     * @param name
-     * @return
+     *
+     * @param name 下划线命名
+     * @return 驼峰命名
      */
     public static String getCamelName(String name) {
         return getCamelName(name, '_');
@@ -18,9 +19,10 @@ public class NameUtils {
 
     /**
      * 获取指定字符分隔的驼峰命名
-     * @param name
-     * @param delimiter
-     * @return
+     *
+     * @param name      指定分隔符命名
+     * @param delimiter 分隔符
+     * @return 驼峰命名
      */
     public static String getCamelName(String name, Character delimiter) {
 
@@ -32,7 +34,7 @@ public class NameUtils {
 
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
-            if ( c == delimiter ) {
+            if (c == delimiter) {
                 i++;
                 sb.append(Character.toUpperCase(name.charAt(i)));
             } else {
@@ -45,28 +47,31 @@ public class NameUtils {
 
     /**
      * 驼峰命名转换为小写下划线分割命名
-     * @param name
-     * @return
+     *
+     * @param name 驼峰命名
+     * @return 下划线命名
      */
-    public static String getUnderLineName (String name) {
+    public static String getUnderLineName(String name) {
         return getLowerDelimiterName(name, "_");
     }
 
     /**
      * 驼峰命名转换为小写指定分隔符命名
-     * @param name
-     * @param delimiter
-     * @return
+     *
+     * @param name      驼峰命名
+     * @param delimiter 指定分隔符
+     * @return 小写指定分隔符命名
      */
-    public static String getLowerDelimiterName(String name, String delimiter){
+    public static String getLowerDelimiterName(String name, String delimiter) {
         return getUpperDelimiterName(name, delimiter).toLowerCase();
     }
 
     /**
      * 驼峰命名转换为大写指定分隔符命名
-     * @param name
-     * @param delimiter
-     * @return
+     *
+     * @param name      驼峰命名
+     * @param delimiter 指定分隔符
+     * @return 大写指定分隔符命名
      */
     public static String getUpperDelimiterName(String name, String delimiter) {
 

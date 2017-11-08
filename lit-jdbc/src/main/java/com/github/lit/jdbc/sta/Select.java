@@ -72,7 +72,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * 添加join
      *
      * @param tableClass join 表对应的实体
-     * @param <E>
+     * @param <E>        返回类型
      * @return Select
      */
     <E> Select<T> join(Class<E> tableClass);
@@ -81,7 +81,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * 添加简单join 只是将表名列在 from 后 没有 on 条件
      *
      * @param tableClass join 表对应的实体
-     * @param <E>
+     * @param <E>        返回类型
      * @return Select
      */
     <E> Select<T> simpleJoin(Class<E> tableClass);
@@ -90,7 +90,8 @@ public interface Select<T> extends Condition<Select<T>> {
      * 添加join, 并指定 join 类型
      *
      * @param tableClass join 表对应的实体
-     * @param <E>
+     * @param joinType   join类型
+     * @param <E>        返回类型
      * @return Select
      */
     <E> Select<T> join(JoinType joinType, Class<E> tableClass);
@@ -126,7 +127,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param field  字段
      * @param logic  操作符
      * @param values 值
-     * @return
+     * @return Select
      */
     Select<T> and(Class<?> table, String field, Logic logic, Object... values);
 
@@ -137,7 +138,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param field  字段
      * @param logic  操作符
      * @param values 值
-     * @return
+     * @return Select
      */
     Select<T> or(Class<?> table, String field, Logic logic, Object... values);
 
@@ -201,6 +202,8 @@ public interface Select<T> extends Condition<Select<T>> {
     /**
      * 查询单条记录
      *
+     * @param clazz class
+     * @param <E>   return type
      * @return 指定类型
      */
     <E> E single(Class<E> clazz);
@@ -215,6 +218,8 @@ public interface Select<T> extends Condition<Select<T>> {
     /**
      * 查询列表
      *
+     * @param clazz class
+     * @param <E>   return type
      * @return 指定类型列表
      */
     <E> List<E> list(Class<E> clazz);

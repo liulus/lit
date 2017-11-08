@@ -70,6 +70,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
 
     /**
      * Set the class that each row should be mapped to.
+     *
+     * @param mappedClass the class that each row should be mapped to
      */
     public void setMappedClass(Class<T> mappedClass) {
         if (this.mappedClass == null) {
@@ -84,6 +86,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
 
     /**
      * Get the class that we are mapping to.
+     *
+     * @return the mapped class
      */
     public final Class<T> getMappedClass() {
         return this.mappedClass;
@@ -93,6 +97,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
      * Set whether we're defaulting Java primitives in the case of mapping a null value
      * from corresponding database fields.
      * <p>Default is {@code false}, throwing an exception when nulls are mapped to Java primitives.
+     *
+     * @param primitivesDefaultedForNullValue 基础类型为null
      */
     public void setPrimitivesDefaultedForNullValue(boolean primitivesDefaultedForNullValue) {
         this.primitivesDefaultedForNullValue = primitivesDefaultedForNullValue;
@@ -101,6 +107,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
     /**
      * Return whether we're defaulting Java primitives in the case of mapping a null value
      * from corresponding database fields.
+     *
+     * @return primitivesDefaultedForNullValue
      */
     public boolean isPrimitivesDefaultedForNullValue() {
         return this.primitivesDefaultedForNullValue;
@@ -200,6 +208,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
      * (with the mapped class specified only once).
      *
      * @param mappedClass the class that each row should be mapped to
+     * @param <T> the class
+     * @return AnnotationRowMapper
      */
     public static <T> AnnotationRowMapper<T> newInstance(Class<T> mappedClass) {
         return new AnnotationRowMapper<>(mappedClass);
@@ -207,7 +217,8 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
 
     /**
      * 当 返回类型不是实体类时, 增加实体类上的映射关系
-     * @param clazz
+     *
+     * @param clazz the class
      */
     public void addMappedField(Class<?> clazz) {
 

@@ -65,8 +65,8 @@ public class PropertyUtils {
     /**
      * 加载资源文件
      *
-     * @param resourceName
-     * @return
+     * @param resourceName 资源名
+     * @return 资源输入流
      */
     public static InputStream loadResource(String resourceName) {
 
@@ -112,8 +112,8 @@ public class PropertyUtils {
      * 根据key获取properties文件的value值
      *
      * @param resourceName properties文件名
-     * @param key
-     * @return
+     * @param key          properties文件key
+     * @return properties文件value
      */
     public static String getProperty(String resourceName, String key) {
         return getProperty(resourceName, key, null);
@@ -142,7 +142,7 @@ public class PropertyUtils {
     /**
      * 获取web容器的配置目录
      *
-     * @return
+     * @return 文件
      */
     private static File getConfigFile(String resourceName) {
 

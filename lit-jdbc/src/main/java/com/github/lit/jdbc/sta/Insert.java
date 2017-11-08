@@ -11,7 +11,7 @@ public interface Insert extends Statement {
      * insert 语句操作的字段和值
      * @param fieldName 字段名
      * @param value 字段值
-     * @return
+     * @return Insert
      */
     Insert into(String fieldName, Object value);
 
@@ -21,7 +21,7 @@ public interface Insert extends Statement {
      * @param fieldName 字段名
      * @param value     字段值
      * @param isNative  为 true 将不采用 ? 占位符方式, 将值直接拼到 sql 中
-     * @return
+     * @return Insert
      */
     Insert into(String fieldName, Object value, boolean isNative);
 

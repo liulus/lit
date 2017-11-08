@@ -10,28 +10,28 @@ public interface EventPublisher {
     /**
      * 注册事件监听
      *
-     * @param event
+     * @param event 事件
      */
     void register(Object event);
 
     /**
      * 注销事件监听
      *
-     * @param event
+     * @param event 事件
      */
     void unregister(Object event);
 
     /**
      * 发布事件
      *
-     * @param event
+     * @param event 事件
      */
     void publish(Object event);
 
     /**
      * 异步发布事件
      *
-     * @param event
+     * @param event 事件
      */
     void asyncPublish(Object event);
 
