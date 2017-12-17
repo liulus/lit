@@ -21,6 +21,6 @@ public class DB2Dialect extends Dialect {
 
     @Override
     public String getPageSql(String sql, int pageSize, int pageNum) {
-        return String.format(sql, pageSize * (pageNum - 1), pageSize * pageNum);
+        return String.format(DB2_PAGE_SQL, sql, pageSize * (pageNum - 1), pageSize * pageNum);
     }
 }
