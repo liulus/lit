@@ -235,11 +235,15 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
             PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(clazz, field.getName());
             if (pd != null && pd.getReadMethod() != null && pd.getWriteMethod() != null) {
                 String columnName = column != null ? column.name().toLowerCase() : NameUtils.getUnderLineName(field.getName());
-                mappedFields.putIfAbsent(columnName, pd);
+                if (mappedFields.get(columnName) == null) {
+                    mappedFields.put(columnName, pd);
+                }
 
                 String lowerPdName = pd.getName().toLowerCase();
                 if (!lowerPdName.equals(columnName)) {
-                    mappedFields.putIfAbsent(lowerPdName, pd);
+                    if (mappedFields.get(lowerPdName) == null) {
+                        mappedFields.put(lowerPdName, pd);
+                    }
 
                 }
             }
