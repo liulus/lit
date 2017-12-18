@@ -38,6 +38,13 @@ interface Condition<T extends Condition<T>> extends Statement {
     T where(String fieldName, Logic logic, Object... values);
 
     /**
+     * 添加 and 关键字
+     *
+     * @return Statement本身
+     */
+    T and();
+
+    /**
      * 添加 and 条件，默认操作符 =
      *
      * @param fieldName 属性名
@@ -57,23 +64,11 @@ interface Condition<T extends Condition<T>> extends Statement {
     T and(String fieldName, Logic logic, Object... values);
 
     /**
-     * 添加带 括号 的 and 条件， 默认操作符 =
+     * 添加 or 关键字
      *
-     * @param fieldName 属性名
-     * @param value     值
      * @return Statement本身
      */
-    T andWithBracket(String fieldName, Object value);
-
-    /**
-     * 添加 括号 的 and 条件，
-     *
-     * @param fieldName 属性名
-     * @param logic     操作逻辑
-     * @param values    值
-     * @return Statement本身
-     */
-    T andWithBracket(String fieldName, Logic logic, Object... values);
+    T or();
 
     /**
      * 添加 or 条件，默认操作符 =
@@ -95,26 +90,14 @@ interface Condition<T extends Condition<T>> extends Statement {
     T or(String fieldName, Logic logic, Object... values);
 
     /**
-     * 添加带 括号 的 or 条件， 默认操作符 =
+     * 添加 (
      *
-     * @param fieldName 属性名
-     * @param value     值
      * @return Statement本身
      */
-    T orWithBracket(String fieldName, Object value);
+    T parenthesis();
 
     /**
-     * 添加 括号 的 or 条件，
-     *
-     * @param fieldName 属性名
-     * @param logic     操作逻辑
-     * @param values    值
-     * @return Statement本身
-     */
-    T orWithBracket(String fieldName, Logic logic, Object... values);
-
-    /**
-     * 添加 where 条件中的结束 括号
+     * 添加 )
      *
      * @return Statement本身
      */

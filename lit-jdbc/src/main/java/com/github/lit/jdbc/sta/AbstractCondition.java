@@ -13,7 +13,6 @@ import net.sf.jsqlparser.schema.Column;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * User : liulu
@@ -54,13 +53,21 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
 
     @Override
     public T where(String fieldName, Object value) {
-        addExpr(fieldName, Logic.EQ, true, false, value);
+        where(fieldName, Logic.EQ, value);
         return (T) this;
     }
 
     @Override
     public T where(String fieldName, Logic logic, Object... values) {
-        addExpr(fieldName, logic, true, false, values);
+        addExpr(fieldName, logic, true, values);
+        return (T) this;
+    }
+
+    @Override
+    public T and() {
+        if (where != null) {
+            where = new AndExpression(where, EMPTY_EXPR);
+        }
         return (T) this;
     }
 
@@ -72,19 +79,15 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
 
     @Override
     public T and(String fieldName, Logic logic, Object... values) {
-        addExpr(fieldName, logic, true, false, values);
+        addExpr(fieldName, logic, true, values);
         return (T) this;
     }
 
     @Override
-    public T andWithBracket(String fieldName, Object value) {
-        this.andWithBracket(fieldName, Logic.EQ, value);
-        return (T) this;
-    }
-
-    @Override
-    public T andWithBracket(String fieldName, Logic logic, Object... values) {
-        addExpr(fieldName, logic, true, true, values);
+    public T or() {
+        if (where != null) {
+            where = new OrExpression(where, EMPTY_EXPR);
+        }
         return (T) this;
     }
 
@@ -96,19 +99,15 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
 
     @Override
     public T or(String fieldName, Logic logic, Object... values) {
-        addExpr(fieldName, logic, false, false, values);
+        addExpr(fieldName, logic, false, values);
         return (T) this;
     }
 
     @Override
-    public T orWithBracket(String fieldName, Object value) {
-        this.orWithBracket(fieldName, Logic.EQ, value);
-        return (T) this;
-    }
-
-    @Override
-    public T orWithBracket(String fieldName, Logic logic, Object... values) {
-        addExpr(fieldName, logic, false, true, values);
+    public T parenthesis() {
+        if (where != null) {
+            where = new LeftParenthesis(where);
+        }
         return (T) this;
     }
 
@@ -133,13 +132,9 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
     }
 
 
-    private void addExpr(String fieldName, Logic logic, boolean isAnd, boolean useBracket, Object... values) {
+    private void addExpr(String fieldName, Logic logic, boolean isAnd, Object... values) {
         Expression expression = getExpression(buildColumn(fieldName), logic, values);
         if (expression != null) {
-            if (useBracket) {
-                expression = new LeftParenthesis(expression);
-            }
-
             if (groupBy == null) {
                 where = where == null ? expression :
                         isAnd ? new AndExpression(where, expression) :
@@ -158,7 +153,7 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
         if (values == null || values.length == 0 || values[0] == null) {
             IsNullExpression isNullExpression = new IsNullExpression();
             isNullExpression.setLeftExpression(column);
-            if (Objects.equals(logic, Logic.NOT_NULL)) {
+            if (logic == Logic.NOT_NULL) {
                 isNullExpression.setNot(true);
             }
             return isNullExpression;
@@ -180,7 +175,7 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
         }
 
         InExpression inExpression = new InExpression(column, new ExpressionList(expressions));
-        if (Objects.equals(logic, Logic.NOT_IN)) {
+        if (logic == Logic.NOT_IN) {
             inExpression.setNot(true);
         }
         return inExpression;

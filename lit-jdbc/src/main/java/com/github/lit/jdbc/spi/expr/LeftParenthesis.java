@@ -43,6 +43,6 @@ public class LeftParenthesis implements Expression {
 
     @Override
     public String toString() {
-        return (not ? "NOT " : "") + "( " + expression;
+        return (not ? "NOT " : "") + expression + " (" ;
     }
 }
