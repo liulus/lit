@@ -1,7 +1,8 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
+import net.sf.jsqlparser.expression.HexValue;
 
 /**
  * User : liulu
@@ -35,7 +36,7 @@ class DeleteImpl extends AbstractCondition<Delete> implements Delete {
 
     @Override
     public int execute() {
-        delete.setWhere(where);
+        delete.setWhere(new HexValue(where.toString()));
         return (int) executor.execute(new StatementContext(delete.toString(), params, StatementContext.Type.DELETE));
     }
 }

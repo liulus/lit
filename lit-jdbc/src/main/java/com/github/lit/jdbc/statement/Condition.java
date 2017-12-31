@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.jdbc.enums.Logic;
 
@@ -8,6 +8,10 @@ import com.github.lit.jdbc.enums.Logic;
  * version $Id: Condition.java, v 0.1 Exp $
  */
 interface Condition<T extends Condition<T>> extends Statement {
+
+    T condition(String fieldName, Object value);
+
+    T condition(String fileName, Logic logic, Object...values);
 
     T idCondition(Object value);
 

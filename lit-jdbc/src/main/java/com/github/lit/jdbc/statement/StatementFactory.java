@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.page.StatementPageHandler;

@@ -1,14 +1,11 @@
 package com.github.lit.jdbc;
 
-import com.github.lit.commons.page.Page;
-import com.github.lit.commons.page.PageList;
-import com.github.lit.jdbc.sta.Delete;
-import com.github.lit.jdbc.sta.Insert;
-import com.github.lit.jdbc.sta.Select;
-import com.github.lit.jdbc.sta.Update;
+import com.github.lit.jdbc.statement.Delete;
+import com.github.lit.jdbc.statement.Insert;
+import com.github.lit.jdbc.statement.Select;
+import com.github.lit.jdbc.statement.Update;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * User : liulu
@@ -84,39 +81,6 @@ public interface JdbcTools {
      * @return 实体对象
      */
     <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue);
-
-    /**
-     * 根据查询对象查询一条记录
-     *
-     * @param clazz 实体对象class
-     * @param qo    查询对象
-     * @param <T>   实体对象类型
-     * @param <Qo>  查询对象类型
-     * @return 实体对象
-     */
-    <T, Qo> T queryForSingle(Class<T> clazz, Qo qo);
-
-    /**
-     * 根据查询对象查询列表
-     *
-     * @param clazz 实体对象class
-     * @param qo    查询对象
-     * @param <T>   实体对象类型
-     * @param <Qo>  查询对象类型
-     * @return 实体对象列表
-     */
-    <T, Qo> List<T> query(Class<T> clazz, Qo qo);
-
-    /**
-     * 根据查询对象分页查询
-     *
-     * @param clazz 实体对象class
-     * @param qo    查询对象
-     * @param <T>   实体对象类型
-     * @param <Qo>  查询对象类型
-     * @return 实体对象分页列表
-     */
-    <T, Qo extends Page> PageList<T> queryPageList(Class<T> clazz, Qo qo);
 
     /**
      * 根据查询对象查询总数

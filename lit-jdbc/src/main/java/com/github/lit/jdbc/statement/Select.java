@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.commons.page.Page;
 import com.github.lit.jdbc.enums.JoinType;

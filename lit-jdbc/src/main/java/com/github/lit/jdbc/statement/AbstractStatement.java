@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.model.TableInfo;
@@ -6,7 +6,6 @@ import com.github.lit.jdbc.page.StatementPageHandler;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.HexValue;
 import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -24,7 +23,7 @@ public abstract class AbstractStatement implements Statement {
 
     protected static final Expression PARAM_EXPR = new JdbcParameter();
 
-    protected static final Expression EMPTY_EXPR = new HexValue("");
+    protected static final String JDBC_PARAM = "?";
 
     protected TableInfo tableInfo;
 

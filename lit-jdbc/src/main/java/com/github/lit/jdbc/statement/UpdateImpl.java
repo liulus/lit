@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
@@ -46,19 +46,6 @@ class UpdateImpl extends AbstractCondition<Update> implements Update {
         return this;
     }
 
-    //    @Override
-    public Update values(Object... values) {
-        for (Object value : values) {
-            if (value == null) {
-                this.values.add(NULL_EXPR);
-            } else {
-                this.values.add(PARAM_EXPR);
-                params.add(value);
-            }
-        }
-        return this;
-    }
-
 
     @Override
     public Update initEntity(Object entity, boolean isIgnoreNull) {
@@ -96,7 +83,7 @@ class UpdateImpl extends AbstractCondition<Update> implements Update {
 
     @Override
     public int execute() {
-        update.setWhere(where);
+        update.setWhere(new HexValue(where.toString()));
         return (int) executor.execute(new StatementContext(update.toString(), params, StatementContext.Type.UPDATE));
     }
 }

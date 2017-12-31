@@ -1,16 +1,13 @@
 package com.github.lit.jdbc;
 
-import com.github.lit.commons.page.Page;
-import com.github.lit.commons.page.PageList;
 import com.github.lit.jdbc.enums.Logic;
 import com.github.lit.jdbc.page.DefaultPageHandler;
 import com.github.lit.jdbc.page.StatementPageHandler;
-import com.github.lit.jdbc.sta.*;
+import com.github.lit.jdbc.statement.*;
 import lombok.Setter;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * User : liulu
@@ -65,22 +62,6 @@ public abstract class AbstractJdbcTools implements JdbcTools {
     @Override
     public <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue) {
         return createSelect(clazz).where(propertyName, propertyValue).single();
-    }
-
-    @Override
-    public <T, Qo> T queryForSingle(Class<T> clazz, Qo qo) {
-        return createSelect(clazz).beanCondition(qo).single();
-    }
-
-    @Override
-    public <T, Qo> List<T> query(Class<T> clazz, Qo qo) {
-        return createSelect(clazz).beanCondition(qo).list();
-    }
-
-    @Override
-    public <T, Qo extends Page> PageList<T> queryPageList(Class<T> clazz, Qo qo) {
-        return (PageList<T>) createSelect(clazz).beanCondition(qo)
-                .page(qo.getPageNum(),qo.getPageSize(),qo.isCount()).list();
     }
 
     @Override

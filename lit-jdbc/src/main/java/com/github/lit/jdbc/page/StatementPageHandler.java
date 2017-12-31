@@ -13,7 +13,7 @@ public interface StatementPageHandler {
      * 获取分页后的sql
      *
      * @param dbName   数据库名
-     * @param sql      查询 sta
+     * @param sql      查询 statement
      * @param pageSize 每页记录数
      * @param pageNum  当前页
      * @return 分页后的sql
@@ -24,7 +24,7 @@ public interface StatementPageHandler {
      * 获取查询总数的sql
      *
      * @param dbName 数据库名
-     * @param select    查询 sta
+     * @param select    查询 statement
      * @return count sql
      */
     String getCountSql(String dbName, PlainSelect select);

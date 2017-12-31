@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.commons.util.ClassUtils;

@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.sta;
+package com.github.lit.jdbc.statement;
 
 import com.github.lit.commons.page.Page;
 import com.github.lit.commons.page.PageList;
@@ -7,11 +7,9 @@ import com.github.lit.jdbc.enums.Logic;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.model.TableInfo;
 import net.sf.jsqlparser.expression.Alias;
-import net.sf.jsqlparser.expression.BinaryExpression;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
-import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
+import net.sf.jsqlparser.expression.HexValue;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
@@ -267,12 +265,8 @@ class SelectImpl<T> extends AbstractCondition<Select<T>> implements Select<T> {
     @Override
     public Select<T> on(Class<?> table1, String field1, Logic logic, Class<?> table2, String field2) {
         Join join = getLastJoin();
-
-        BinaryExpression expression = getBinaryExpression(logic);
-        expression.setLeftExpression(buildColumn(table1, field1));
-        expression.setRightExpression(buildColumn(table2, field2));
-
-        join.setOnExpression(expression);
+        String condition = buildColumn(table1, field1) + logic.getValue() + buildColumn(table2, field2);
+        join.setOnExpression(new HexValue(condition));
         return this;
     }
 
@@ -290,25 +284,24 @@ class SelectImpl<T> extends AbstractCondition<Select<T>> implements Select<T> {
 
     @Override
     public Select<T> joinCondition(Class<?> table1, String field1, Logic logic, Class<?> table2, String field2) {
-
-        BinaryExpression expression = getBinaryExpression(logic);
-        expression.setLeftExpression(buildColumn(table1, field1));
-        expression.setRightExpression(buildColumn(table2, field2));
-        where = where == null ? expression : new AndExpression(where, expression);
+        String condition = buildColumn(table1, field1) + logic.getValue() + buildColumn(table2, field2);
+        where.append(condition);
         return this;
     }
 
     @Override
     public Select<T> and(Class<?> table, String field, Logic logic, Object... values) {
-        Expression expression = getExpression(buildColumn(table, field), logic, values);
-        where = where == null ? expression : new AndExpression(where, expression);
+        String expression = getExpression(buildColumn(table, field), logic, values);
+        and();
+        where.append(expression);
         return this;
     }
 
     @Override
     public Select<T> or(Class<?> table, String field, Logic logic, Object... values) {
-        Expression expression = getExpression(buildColumn(table, field), logic, values);
-        where = where == null ? expression : new OrExpression(where, expression);
+        String expression = getExpression(buildColumn(table, field), logic, values);
+        or();
+        where.append(expression);
         return this;
     }
 
@@ -316,33 +309,24 @@ class SelectImpl<T> extends AbstractCondition<Select<T>> implements Select<T> {
     public Select<T> groupBy(String... fields) {
         if (groupBy == null) {
             groupBy = new ArrayList<>(fields.length);
+            having = new StringBuilder();
         }
         for (String field : fields) {
             groupBy.add(buildColumn(field));
         }
-
         return this;
     }
 
     @Override
     public Select<T> having(String fieldName, Object value) {
-        addHaving(fieldName, Logic.EQ, true, value);
-        return this;
+        return this.having(fieldName, Logic.EQ, value);
     }
 
     @Override
     public Select<T> having(String fieldName, Logic logic, Object... values) {
-        addHaving(fieldName, logic, true, values);
+        String expression = getExpression(buildColumn(fieldName), logic, values);
+        having.append(expression);
         return this;
-    }
-
-    private void addHaving(String fieldName, Logic logic, boolean isAnd, Object... values) {
-        Expression expression = getExpression(buildColumn(fieldName), logic, values);
-        if (expression != null) {
-            having = having == null ? expression :
-                    isAnd ? new AndExpression(having, expression) :
-                            new OrExpression(having, expression);
-        }
     }
 
     @Override
@@ -473,13 +457,13 @@ class SelectImpl<T> extends AbstractCondition<Select<T>> implements Select<T> {
             plainSelect.setJoins(joins);
         }
         if (where != null) {
-            plainSelect.setWhere(where);
+            plainSelect.setWhere(new HexValue(where.toString()));
         }
         if (groupBy != null && groupBy.size() > 0) {
             plainSelect.setGroupByColumnReferences(groupBy);
         }
         if (having != null) {
-            plainSelect.setHaving(having);
+            plainSelect.setHaving(new HexValue(having.toString()));
         }
         if (orderBy != null && orderBy.size() > 0) {
             plainSelect.setOrderByElements(orderBy);
