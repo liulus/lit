@@ -2,6 +2,7 @@ package com.github.lit.commons.event;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
@@ -14,4 +15,8 @@ import org.springframework.context.event.ContextRefreshedEvent;
 public class AppStartedEvent {
 
     private ContextRefreshedEvent event;
+
+    public ApplicationContext getApplicationContext() {
+        return event == null ? null : event.getApplicationContext();
+    }
 }

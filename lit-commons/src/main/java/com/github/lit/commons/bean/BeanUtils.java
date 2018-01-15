@@ -162,7 +162,7 @@ public class BeanUtils {
     private static <T, S> T convert(T target, S source, String[] ignoreProperties, ConvertCallBack<T, S> callBack) {
 
         if (target == null || source == null) {
-            return null;
+            return target;
         }
 
         //过滤的属性
