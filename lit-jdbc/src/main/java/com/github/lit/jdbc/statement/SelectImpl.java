@@ -456,13 +456,13 @@ class SelectImpl<T> extends AbstractCondition<Select<T>> implements Select<T> {
         if (joins != null && joins.size() > 0) {
             plainSelect.setJoins(joins);
         }
-        if (where != null) {
+        if (where != null && where.length() > 0) {
             plainSelect.setWhere(new HexValue(where.toString()));
         }
         if (groupBy != null && groupBy.size() > 0) {
             plainSelect.setGroupByColumnReferences(groupBy);
         }
-        if (having != null) {
+        if (having != null && having.length() > 0) {
             plainSelect.setHaving(new HexValue(having.toString()));
         }
         if (orderBy != null && orderBy.size() > 0) {
