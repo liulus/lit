@@ -1,44 +1,44 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.update;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
+import com.github.lit.jdbc.statement.where.AbstractCondition;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.HexValue;
-import net.sf.jsqlparser.schema.Column;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * User : liulu
  * Date : 2017/6/4 9:35
  * version $Id: UpdateImpl.java, v 0.1 Exp $
  */
-class UpdateImpl extends AbstractCondition<Update> implements Update {
+public class UpdateImpl extends AbstractCondition<Update> implements Update {
 
     protected static final Expression NULL_EXPR = new HexValue("null");
 
-    private net.sf.jsqlparser.statement.update.Update update;
+//    private StringBuilder update;
 
-    private List<Column> columns;
+    private List<String> columns;
 
-    private List<Expression> values;
+    private List<String> expressions;
 
-    UpdateImpl(Class<?> clazz) {
+    public UpdateImpl(Class<?> clazz) {
         super(clazz);
-        update = new net.sf.jsqlparser.statement.update.Update();
+//        update = new StringBuilder();
         columns = new ArrayList<>();
-        values = new ArrayList<>();
-        update.setTables(Collections.singletonList(table));
-        update.setColumns(columns);
-        update.setExpressions(values);
+        expressions = new ArrayList<>();
     }
 
     @Override
     public Update set(String fieldName, Object value) {
 
-        columns.add(buildColumn(fieldName));
+        columns.add(getColumnName(fieldName));
 
-        values.add(value == null ? NULL_EXPR : PARAM_EXPR);
+        expressions.add(value == null ? "null" : JDBC_PARAM);
         if (value != null) {
             params.add(value);
         }
@@ -49,9 +49,6 @@ class UpdateImpl extends AbstractCondition<Update> implements Update {
 
     @Override
     public Update initEntity(Object entity, boolean isIgnoreNull) {
-        if (entity == null) {
-            return this;
-        }
         Object key = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
         if (key == null) {
             throw new NullPointerException("entity [" + entity + "] id is null, can not update!");
@@ -66,24 +63,33 @@ class UpdateImpl extends AbstractCondition<Update> implements Update {
 
             Object obj = BeanUtils.invokeReaderMethod(entity, entry.getKey());
             if (!isIgnoreNull || obj != null && !(obj instanceof String && ((String) obj).isEmpty())) {
-                columns.add(new Column(entry.getValue()));
+                columns.add(entry.getValue());
                 if (obj == null) {
-                    values.add(NULL_EXPR);
+                    expressions.add("null");
                 } else {
-                    values.add(PARAM_EXPR);
+                    expressions.add(JDBC_PARAM);
                     params.add(obj);
                 }
 
             }
         }
-        idCondition(key);
+        where(tableInfo.getPkField()).equalsTo(key);
 
         return this;
     }
 
     @Override
     public int execute() {
-        update.setWhere(new HexValue(where.toString()));
-        return (int) executor.execute(new StatementContext(update.toString(), params, StatementContext.Type.UPDATE));
+//        update.setWhere(new HexValue(where.toString()));
+        return (int) executor.execute(new StatementContext(buildSql(), params, StatementContext.Type.UPDATE));
+    }
+
+    private String buildSql() {
+        StringBuilder update = new StringBuilder("update ").append(table.getName()).append(" set");
+        for (int i = 0; i < columns.size(); i++) {
+            update.append(columns.get(i)).append("=").append(expressions.get(i)).append(", ");
+        }
+        update.deleteCharAt(update.lastIndexOf(",")).append(where);
+        return update.toString();
     }
 }

@@ -13,34 +13,33 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum Logic implements IEnum {
 
-    EQ("equal", " = "),
+    EQ(" = ", "equal"),
 
-    NOT_EQ("not equal", " != "),
+    NOT_EQ(" != ", "not equal"),
 
-    LT("less than", " < "),
+    LT(" < ", "less than"),
 
-    GT("grater than", " > "),
+    GT(" > ", "grater than"),
 
-    LTEQ("less than or equal", " <= "),
+    LTEQ(" <= ", "less than or equal"),
 
-    GTEQ("grater than or equal", " >= "),
+    GTEQ(" >= ", "grater than or equal"),
 
-    LIKE("like", " like "),
+    LIKE(" like ", "like"),
 
-    NOT_LIKE("not like", " not like "),
+    NOT_LIKE(" not like ", "not like"),
 
-    IN("in", " in "),
+    IN(" in ", "in"),
 
-    NOT_IN("not in", " not in "),
+    NOT_IN(" not in ", "not in"),
 
-    NULL("is null", " is null "),
+    NULL(" is null ", "is null"),
 
-    NOT_NULL("is not null", " is not null "),
-    ;
+    NOT_NULL(" is not null ", "is not null"),;
 
 
-    private String text;
+    private String code;
 
-    private String value;
+    private String desc;
 
 }

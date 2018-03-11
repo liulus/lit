@@ -1,8 +1,9 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.select;
 
 import com.github.lit.commons.page.Page;
 import com.github.lit.jdbc.enums.JoinType;
 import com.github.lit.jdbc.enums.Logic;
+import com.github.lit.jdbc.statement.where.Condition;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param alias 别名
      * @return Select
      */
-    Select<T> alias(String... alias);
+    Select<T> columnAlias(String... alias);
 
     /**
      * 设置表别名
@@ -148,7 +149,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param fields 字段
      * @return Select
      */
-    Select<T> groupBy(String... fields);
+//    Select<T> groupBy(String... fields);
 
     /**
      * 添加 having 条件 默认操作符 =
@@ -157,7 +158,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param value     值
      * @return Select
      */
-    Select<T> having(String fieldName, Object value);
+//    Select<T> having(String fieldName, Object value);
 
     /**
      * 添加 having 条件
@@ -167,7 +168,7 @@ public interface Select<T> extends Condition<Select<T>> {
      * @param values    值
      * @return Select
      */
-    Select<T> having(String fieldName, Logic logic, Object... values);
+//    Select<T> having(String fieldName, Logic logic, Object... values);
 
     /**
      * 添加升序排列属性

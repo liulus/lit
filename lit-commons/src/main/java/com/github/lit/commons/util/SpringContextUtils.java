@@ -1,4 +1,4 @@
-package com.github.lit.commons.context;
+package com.github.lit.commons.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

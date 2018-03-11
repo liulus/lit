@@ -2,6 +2,14 @@ package com.github.lit.jdbc.statement;
 
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.page.StatementPageHandler;
+import com.github.lit.jdbc.statement.delete.Delete;
+import com.github.lit.jdbc.statement.delete.DeleteImpl;
+import com.github.lit.jdbc.statement.insert.Insert;
+import com.github.lit.jdbc.statement.insert.InsertImpl;
+import com.github.lit.jdbc.statement.select.Select;
+import com.github.lit.jdbc.statement.select.SelectImpl;
+import com.github.lit.jdbc.statement.update.Update;
+import com.github.lit.jdbc.statement.update.UpdateImpl;
 
 /**
  * User : liulu

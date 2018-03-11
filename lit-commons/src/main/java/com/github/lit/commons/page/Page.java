@@ -32,8 +32,6 @@ public class Page implements Serializable {
     @Getter
     protected boolean count = true;
 
-    @Getter
-    protected String keyWord;
 
     public Page(int pageSize, int pageNum) {
         this.pageSize = pageSize;
@@ -44,10 +42,6 @@ public class Page implements Serializable {
         this.pageSize = pageSize;
         this.pageNum = pageNum;
         this.count = count;
-    }
-
-    public String getBlurKeyWord() {
-        return "%" + keyWord + "%";
     }
 
     public int getOffset() {

@@ -1,9 +1,13 @@
 package com.github.lit.jdbc;
 
-import com.github.lit.jdbc.enums.Logic;
+import com.github.lit.commons.util.Assert;
 import com.github.lit.jdbc.page.DefaultPageHandler;
 import com.github.lit.jdbc.page.StatementPageHandler;
-import com.github.lit.jdbc.statement.*;
+import com.github.lit.jdbc.statement.StatementFactory;
+import com.github.lit.jdbc.statement.delete.Delete;
+import com.github.lit.jdbc.statement.insert.Insert;
+import com.github.lit.jdbc.statement.select.Select;
+import com.github.lit.jdbc.statement.update.Update;
 import lombok.Setter;
 
 import javax.sql.DataSource;
@@ -30,18 +34,25 @@ public abstract class AbstractJdbcTools implements JdbcTools {
 
 
     @Override
-    public <T> Object insert(T t) {
-        return createInsert(t.getClass()).initEntity(t).execute();
+    public <T, ID> ID insert(T t) {
+        Assert.notNull(t, "entity must not be null");
+
+        Insert insert = createInsert(t.getClass());
+
+
+        return (ID) insert.initEntity(t).execute();
     }
 
     @Override
     public <T> int delete(T t) {
+        Assert.notNull(t, "entity must not be null");
         return createDelete(t.getClass()).initEntity(t).execute();
     }
 
     @Override
     public <T> int deleteByIds(Class<T> clazz, Serializable... ids) {
-        return createDelete(clazz).idCondition(Logic.IN, (Object[]) ids).execute();
+//        return createDelete(clazz).idCondition(Logic.IN, (Object[]) ids).execute();
+        return 2;
     }
 
     @Override
@@ -56,21 +67,18 @@ public abstract class AbstractJdbcTools implements JdbcTools {
 
     @Override
     public <T> T get(Class<T> clazz, Serializable id) {
-        return createSelect(clazz).idCondition(id).single();
+//        return createSelect(clazz).idCondition(id).single();
+        return null;
     }
 
     @Override
     public <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue) {
-        return createSelect(clazz).where(propertyName, propertyValue).single();
+//        return select(clazz).where(propertyName, propertyValue).single();
+        return null;
     }
 
     @Override
-    public <T, Qo> int count(Class<T> clazz, Qo qo) {
-        return createSelect(clazz).beanCondition(qo).count();
-    }
-
-    @Override
-    public <T> Select<T> createSelect(Class<T> clazz) {
+    public <T> Select<T> select(Class<T> clazz) {
 
         return StatementFactory.createSelect(clazz, getStatementExecutor(), getStatementPageHandler(), getDbName());
     }

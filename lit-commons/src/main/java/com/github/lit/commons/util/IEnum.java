@@ -7,7 +7,7 @@ package com.github.lit.commons.util;
  */
 public interface IEnum {
 
-    String getText();
+    String getCode();
 
-    String getValue();
+    String getDesc();
 }

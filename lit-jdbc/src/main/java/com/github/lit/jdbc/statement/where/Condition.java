@@ -1,26 +1,43 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.where;
 
-import com.github.lit.jdbc.enums.Logic;
+import com.github.lit.jdbc.statement.Statement;
 
 /**
  * User : liulu
  * Date : 2017/6/4 16:34
  * version $Id: Condition.java, v 0.1 Exp $
  */
-interface Condition<T extends Condition<T>> extends Statement {
+public interface Condition<T extends Condition<T>> extends Statement {
 
-    T condition(String fieldName, Object value);
 
-    T condition(String fileName, Logic logic, Object...values);
+    Expression<T> where(String fieldName);
 
-    T idCondition(Object value);
+    Expression<T> and(String fieldName);
+
+    Expression<T> or(String fieldName);
+
+    Expression<T> and();
+
+    Expression<T> or();
+
+    Expression<T> bracket();
+
+    Expression<T> end();
+
+
+
+//    T condition(String fieldName, Object value);
+//
+//    T condition(String fileName, Logic logic, Object...values);
+//
+//    T idCondition(Object value);
 
     /**
      * @param logic  操作符
      * @param values 值
      * @return Statement本身
      */
-    T idCondition(Logic logic, Object... values);
+//    T idCondition(Logic logic, Object... values);
 
     /**
      * 添加 where 条件，默认操作符 =
@@ -29,7 +46,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param value     值
      * @return Statement本身
      */
-    T where(String fieldName, Object value);
+//    T where(String fieldName, Object value);
 
     /**
      * 添加 where 条件
@@ -39,14 +56,14 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param values    值
      * @return Statement本身
      */
-    T where(String fieldName, Logic logic, Object... values);
+//    T where(String fieldName, Logic logic, Object... values);
 
     /**
      * 添加 and 关键字
      *
      * @return Statement本身
      */
-    T and();
+//    T and();
 
     /**
      * 添加 and 条件，默认操作符 =
@@ -55,7 +72,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param value     值
      * @return Statement本身
      */
-    T and(String fieldName, Object value);
+//    T and(String fieldName, Object value);
 
     /**
      * 添加 and 条件，
@@ -65,14 +82,14 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param values    值
      * @return Statement本身
      */
-    T and(String fieldName, Logic logic, Object... values);
+//    T and(String fieldName, Logic logic, Object... values);
 
     /**
      * 添加 or 关键字
      *
      * @return Statement本身
      */
-    T or();
+//    T or();
 
     /**
      * 添加 or 条件，默认操作符 =
@@ -81,7 +98,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param value     值
      * @return Statement本身
      */
-    T or(String fieldName, Object value);
+//    T or(String fieldName, Object value);
 
     /**
      * 添加 or 条件，
@@ -91,21 +108,21 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param values    值
      * @return Statement本身
      */
-    T or(String fieldName, Logic logic, Object... values);
+//    T or(String fieldName, Logic logic, Object... values);
 
     /**
      * 添加 (
      *
      * @return Statement本身
      */
-    T parenthesis();
+//    T parenthesis();
 
     /**
      * 添加 )
      *
      * @return Statement本身
      */
-    T end();
+//    T end();
 
     /**
      * 将bean 中不为空的属性作为查询条件
@@ -113,7 +130,7 @@ interface Condition<T extends Condition<T>> extends Statement {
      * @param bean 查询对象
      * @return Statement本身
      */
-    T beanCondition(Object bean);
+//    T beanCondition(Object bean);
 
 
 }

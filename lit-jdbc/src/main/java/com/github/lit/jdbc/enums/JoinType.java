@@ -29,7 +29,7 @@ public enum JoinType implements IEnum {
 
     SEMI("SEMI", "SEMI"),;
 
-    private String text;
+    private String code;
 
-    private String value;
+    private String desc;
 }

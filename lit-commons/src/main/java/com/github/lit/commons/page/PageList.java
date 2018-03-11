@@ -1,7 +1,6 @@
 package com.github.lit.commons.page;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -14,12 +13,15 @@ import java.util.Collection;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 public class PageList<E> extends ArrayList<E> {
 
     private static final long serialVersionUID = -3248132653480964900L;
 
     private PageInfo pageInfo;
+
+    public PageList() {
+        super();
+    }
 
     public PageList(Collection<? extends E> c) {
         super(c);
@@ -30,6 +32,7 @@ public class PageList<E> extends ArrayList<E> {
     }
 
     public PageList(PageInfo pageInfo) {
+        super();
         this.pageInfo = pageInfo;
     }
 

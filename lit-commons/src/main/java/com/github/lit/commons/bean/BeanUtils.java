@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * 本类来源于 dexcoder-commons
  * Java Bean 对象转换器
  * User : liulu
  * Date : 2016-10-6 9:29
@@ -25,6 +24,8 @@ public class BeanUtils {
      * @return t
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass) {
+
+
         return mapToBean(map, beanClass, null);
     }
 
@@ -52,10 +53,11 @@ public class BeanUtils {
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
 
-        T bean = ClassUtils.newInstance(beanClass);
         if (map == null || map.isEmpty()) {
-            return bean;
+            return null;
         }
+
+        T result = ClassUtils.newInstance(beanClass);
         for (Map.Entry<String, Object> entry : map.entrySet()) {
 
             Object value = entry.getValue();
@@ -66,10 +68,10 @@ public class BeanUtils {
                             NameUtils.getCamelName(propertyName, delimiter)
                             : propertyName.toLowerCase();
                 }
-                invokeWriteMethod(bean, propertyName, value);
+                invokeWriteMethod(result, propertyName, value);
             }
         }
-        return bean;
+        return result;
     }
 
     /**
@@ -122,72 +124,49 @@ public class BeanUtils {
     }
 
     /**
-     * 单个对象转换
+     * single convert
      *
-     * @param target 目标对象
-     * @param source 源对象
-     * @param <T>    目标对象类型
-     * @param <S>    源对象类型
-     * @return 转换后的目标对象
+     * @param source the source
+     * @param target the target
+     * @param <S>    source type
+     * @param <T>    target type
+     * @return target
      */
-    public static <T, S> T convert(T target, S source) {
-        return convert(target, source, null, null);
+    public static <S, T> T convert(S source, T target) {
+        return convert(source, target, (String[]) null);
     }
 
     /**
-     * 单个对象转换
+     * single convert
      *
-     * @param target           目标对象
-     * @param source           源对象
-     * @param <T>              目标对象类型
-     * @param <S>              源对象类型
-     * @param ignoreProperties 需要过滤的属性
-     * @return 转换后的目标对象
+     * @param source           the source
+     * @param target           the target
+     * @param ignoreProperties the ignore list
+     * @param <S>              source type
+     * @param <T>              target type
+     * @return target
      */
-    public static <T, S> T convert(T target, S source, String[] ignoreProperties) {
-        return convert(target, source, ignoreProperties, null);
-    }
-
-    /**
-     * 单个对象转换
-     *
-     * @param target           目标对象
-     * @param source           源对象
-     * @param ignoreProperties 需要过滤的属性
-     * @param callBack         简单属性拷贝完成后的回调
-     * @param <T>              目标对象类型
-     * @param <S>              源对象类型
-     * @return
-     */
-    private static <T, S> T convert(T target, S source, String[] ignoreProperties, ConvertCallBack<T, S> callBack) {
-
+    public static <S, T> T convert(S source, T target, String... ignoreProperties) {
         if (target == null || source == null) {
             return target;
         }
 
-        //过滤的属性
-        List<String> ignoreList = (ignoreProperties != null) ? Arrays.asList(ignoreProperties) : null;
-
-        //拷贝相同的属性
-        copySameProperties(target, source, ignoreList);
-        if (callBack != null) {
-            callBack.convertCallBack(target, source);
-        }
-
+        List<String> ignoreList = ignoreProperties == null ? null : Arrays.asList(ignoreProperties);
+        copySameProperties(source, target, ignoreList);
         return target;
     }
 
 
     /**
-     * 拷贝相同的属性
+     * 拷贝相同的属性, 若目标属性值不为空, 则忽略
      *
      * @param target     the target
      * @param source     the source
      * @param ignoreList the ignore list
-     * @param <T>        目标对象类型
-     * @param <S>        源对象类型
+     * @param <S>        source type
+     * @param <T>        target type
      */
-    private static <T, S> void copySameProperties(T target, S source, List<String> ignoreList) {
+    private static <S, T> void copySameProperties(S source, T target, List<String> ignoreList) {
 
         //获取目标对象属性信息
         PropertyDescriptor[] targetPds = getPropertyDescriptors(target.getClass());
@@ -196,62 +175,88 @@ public class BeanUtils {
             if (targetPd.getWriteMethod() == null || (ignoreList != null && ignoreList.contains(targetPd.getName()))) {
                 continue;
             }
+
             Object value = invokeReaderMethod(source, targetPd.getName());
-            if (value != null && (targetPd.getReadMethod() == null || ClassUtils.invokeMethod(targetPd.getReadMethod(), target) == null)) {
+            if (value != null) {
                 ClassUtils.invokeMethod(targetPd.getWriteMethod(), target, value);
             }
         }
     }
 
     /**
-     * 列表转换
+     * list convert
      *
-     * @param clazz the clazz
-     * @param list  the list
-     * @param <T>   目标对象类型
-     * @param <S>   源对象类型
-     * @return the page list
+     * @param targetClass the target clazz
+     * @param sourceList  the source list
+     * @param <S>         source type
+     * @param <T>         target type
+     * @return target list
      */
-    public static <T, S> List<T> convert(Class<T> clazz, List<S> list) {
-        return convert(clazz, list, null, (ConvertCallBack<T, S>) null);
-    }
-
-    public static <T, S> List<T> convert(Class<T> clazz, List<S> list, ConvertCallBack<T, S> callBack) {
-        return convert(clazz, list, null, callBack);
+    public static <S, T> List<T> convert(Class<T> targetClass, List<S> sourceList) {
+        return convert(targetClass, sourceList, null, (String[]) null);
     }
 
     /**
-     * 列表转换
+     * list convert
      *
-     * @param targetClz        the clazz
-     * @param sourceList       the list
-     * @param ignoreProperties the ignore properties
-     * @param <T>              目标对象类型
-     * @param <S>              源对象类型
-     * @return the page list
+     * @param targetClass the target clazz
+     * @param sourceList  the source list
+     * @param callBack    after convert callback
+     * @param <S>         source type
+     * @param <T>         target type
+     * @return target list
      */
-    public static <T, S> List<T> convert(Class<T> targetClz, List<S> sourceList, String[] ignoreProperties) {
-        return convert(targetClz, sourceList, ignoreProperties, (ConvertCallBack<T, S>) null);
+    public static <S, T> List<T> convert(Class<T> targetClass, List<S> sourceList, ConvertCallBack<S, T> callBack) {
+        return convert(targetClass, sourceList, callBack, (String[]) null);
     }
 
-    public static <T, S> List<T> convert(Class<T> targetClz, List<S> sourceList, String[] ignoreProperties, ConvertCallBack<T, S> callBack) {
+    /**
+     * list convert
+     *
+     * @param targetClass      the target clazz
+     * @param sourceList       the source list
+     * @param ignoreProperties the ignore properties
+     * @param <S>              source type
+     * @param <T>              target type
+     * @return target list
+     */
+    public static <S, T> List<T> convert(Class<T> targetClass, List<S> sourceList, String... ignoreProperties) {
+        return convert(targetClass, sourceList, null, ignoreProperties);
+    }
 
-        //返回的list列表
-        List<T> resultList;
+    /**
+     * list convert
+     *
+     * @param targetClass      the target clazz
+     * @param sourceList       the source list
+     * @param callBack         after convert callback
+     * @param ignoreProperties the ignore properties
+     * @param <S>              source type
+     * @param <T>              target type
+     * @return target list
+     */
+    public static <S, T> List<T> convert(Class<T> targetClass, List<S> sourceList, ConvertCallBack<S, T> callBack, String... ignoreProperties) {
 
         if (sourceList == null || sourceList.isEmpty()) {
             return Collections.emptyList();
-        } else if (sourceList instanceof PageList) {
+        }
+
+        // 返回的list列表
+        List<T> resultList;
+        if (sourceList instanceof PageList) {
             PageList sourcePage = (PageList) sourceList;
             resultList = new PageList<>(sourcePage.getPageInfo(), sourcePage.size());
         } else {
-            resultList = new ArrayList<>();
+            resultList = new ArrayList<>(sourceList.size());
         }
 
-        //循环调用转换单个对象
-        for (S sources : sourceList) {
-            T target = ClassUtils.newInstance(targetClz);
-            resultList.add(convert(target, sources, ignoreProperties, callBack));
+        // 循环调用转换单个对象
+        for (S source : sourceList) {
+            T target = ClassUtils.newInstance(targetClass);
+            resultList.add(convert(source, target, ignoreProperties));
+            if (callBack != null) {
+                callBack.convertCallBack(source, target);
+            }
         }
 
         return resultList;

@@ -1,4 +1,6 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.insert;
+
+import com.github.lit.jdbc.statement.Statement;
 
 /**
  * User : liulu

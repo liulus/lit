@@ -1,5 +1,6 @@
 package com.github.lit.jdbc.statement;
 
+import com.github.lit.commons.util.Assert;
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
@@ -40,15 +41,26 @@ public abstract class AbstractStatement implements Statement {
 
     protected List<Object> params = new ArrayList<>();
 
-    AbstractStatement(Class<?> clazz) {
+    protected AbstractStatement(Class<?> clazz) {
         this.tableInfo = new TableInfo(clazz);
         table = new Table(tableInfo.getTableName());
     }
 
-    Column buildColumn(String fieldName) {
+    public void addParam(Object value) {
+        params.add(value);
+    }
+
+    protected String getColumnName(String fieldName) {
+        Assert.notEmpty(fieldName, "fieldName must not be empty!");
         fieldName = fieldName.trim();
         String column = tableInfo.getFieldColumnMap().get(fieldName);
-        return column == null || column.isEmpty()? new Column(fieldName): new Column(table, column);
+        return column == null || column.isEmpty() ? fieldName : column;
+    }
+
+    protected Column buildColumn(String fieldName) {
+        fieldName = fieldName.trim();
+        String column = tableInfo.getFieldColumnMap().get(fieldName);
+        return column == null || column.isEmpty() ? new Column(fieldName) : new Column(table, column);
     }
 
 }

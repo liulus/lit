@@ -1,9 +1,9 @@
 package com.github.lit.jdbc;
 
-import com.github.lit.jdbc.statement.Delete;
-import com.github.lit.jdbc.statement.Insert;
-import com.github.lit.jdbc.statement.Select;
-import com.github.lit.jdbc.statement.Update;
+import com.github.lit.jdbc.statement.delete.Delete;
+import com.github.lit.jdbc.statement.insert.Insert;
+import com.github.lit.jdbc.statement.select.Select;
+import com.github.lit.jdbc.statement.update.Update;
 
 import java.io.Serializable;
 
@@ -21,7 +21,9 @@ public interface JdbcTools {
      * @param <T> 实体对象类型
      * @return 主键, 自增和序列返回 Long 类型
      */
-    <T> Object insert(T t);
+    <T, ID> ID insert(T t);
+
+//    <T> int batchInsert(List<T> list);
 
     /**
      * 根据实体的 id 删除一条记录
@@ -82,17 +84,6 @@ public interface JdbcTools {
      */
     <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue);
 
-    /**
-     * 根据查询对象查询总数
-     *
-     * @param clazz 实体对象class
-     * @param qo    查询对象
-     * @param <T>   实体对象类型
-     * @param <Qo>  查询对象类型
-     * @return 总记录数
-     */
-    <T, Qo> int count(Class<T> clazz, Qo qo);
-
 
     Insert createInsert(Class<?> clazz);
 
@@ -100,5 +91,5 @@ public interface JdbcTools {
 
     Update createUpdate(Class<?> clazz);
 
-    <T> Select<T> createSelect(Class<T> clazz);
+    <T> Select<T> select(Class<T> clazz);
 }

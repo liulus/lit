@@ -50,18 +50,6 @@ public class PropertyUtils {
     }
 
 
-    public static void main(String[] args) throws IOException {
-
-
-//        StringBuilder builder = new StringBuilder("and234");
-//        System.out.println(builder.indexOf("and"));
-
-
-        Character c = 'c';
-        System.out.println(c.toString());
-    }
-
-
     /**
      * 加载资源文件
      *

@@ -1,5 +1,6 @@
 package com.github.lit.commons.util;
 
+import com.github.lit.commons.exception.SysException;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
@@ -47,7 +48,7 @@ public class ClassUtils {
         try {
             return field.get(obj);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("获取对象的属性值失败：" + field.getName(), e);
+            throw new SysException("获取对象的属性值失败: " + field.getName(), e);
         }
     }
 
@@ -65,7 +66,7 @@ public class ClassUtils {
         try {
             field.set(obj, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("设置对象的属性值失败：" + field.getName(), e);
+            throw new SysException("设置对象的属性值失败：" + field.getName(), e);
         }
     }
 
@@ -82,7 +83,7 @@ public class ClassUtils {
         try {
             return method.invoke(obj, value);
         } catch (Exception e) {
-            throw new RuntimeException("Method 调用失败 " + (method == null ? "null" : method.getName()), e);
+            throw new SysException("Method 调用失败 " + (method == null ? "null" : method.getName()), e);
         }
     }
 
@@ -108,7 +109,7 @@ public class ClassUtils {
         try {
             return clazz.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("根据class创建实例失败:" + (clazz == null ? "null" : clazz.getName()), e);
+            throw new SysException("根据class创建实例失败:" + (clazz == null ? "null" : clazz.getName()), e);
         }
     }
 
@@ -124,7 +125,7 @@ public class ClassUtils {
             Class<?> loadClass = getDefaultClassLoader().loadClass(clazz);
             return loadClass.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("根据class创建实例失败:" + clazz, e);
+            throw new SysException("根据class创建实例失败:" + clazz, e);
         }
     }
 
@@ -138,17 +139,37 @@ public class ClassUtils {
         try {
             return getDefaultClassLoader().loadClass(clazz);
         } catch (Exception e) {
-            throw new RuntimeException("根据class名称加载class失败:" + clazz, e);
+            throw new SysException("根据class名称加载class失败:" + clazz, e);
         }
     }
 
     /**
-     * 当前线程的classLoader
+     * Return the default ClassLoader
      *
      * @return ClassLoader
      */
     public static ClassLoader getDefaultClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = null;
+        try {
+            cl = Thread.currentThread().getContextClassLoader();
+        }
+        catch (Throwable ex) {
+            // Cannot access thread context ClassLoader - falling back...
+        }
+        if (cl == null) {
+            // No thread context class loader -> use class loader of this class.
+            cl = ClassUtils.class.getClassLoader();
+            if (cl == null) {
+                // getClassLoader() returning null indicates the bootstrap ClassLoader
+                try {
+                    cl = ClassLoader.getSystemClassLoader();
+                }
+                catch (Throwable ex) {
+                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+                }
+            }
+        }
+        return cl;
     }
 
 

@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.insert;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.commons.util.ClassUtils;
@@ -7,10 +7,7 @@ import com.github.lit.jdbc.generator.EmptyKeyGenerator;
 import com.github.lit.jdbc.generator.KeyGenerator;
 import com.github.lit.jdbc.generator.SequenceGenerator;
 import com.github.lit.jdbc.model.StatementContext;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.HexValue;
-import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
-import net.sf.jsqlparser.schema.Column;
+import com.github.lit.jdbc.statement.AbstractStatement;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,23 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * Date : 2017/6/4 9:53
  * version $Id: InsertImpl.java, v 0.1 Exp $
  */
-class InsertImpl extends AbstractStatement implements Insert {
+public class InsertImpl extends AbstractStatement implements Insert {
 
-    private net.sf.jsqlparser.statement.insert.Insert insert;
+    private List<String> columns = new ArrayList<>();
 
-    private List<Column> columns = new ArrayList<>();
-
-    private List<Expression> values = new ArrayList<>();
+    private List<String> expressions = new ArrayList<>();
 
     private Object entity = null;
 
 
-    InsertImpl(Class<?> clazz) {
+    public InsertImpl(Class<?> clazz) {
         super(clazz);
-        insert = new net.sf.jsqlparser.statement.insert.Insert();
-        insert.setTable(table);
-        insert.setColumns(columns);
-        insert.setItemsList(new ExpressionList(values));
     }
 
     @Override
@@ -49,8 +40,8 @@ class InsertImpl extends AbstractStatement implements Insert {
 
     @Override
     public Insert into(String fieldName, Object value, boolean isNative) {
-        columns.add(buildColumn(fieldName));
-        values.add(isNative ? new HexValue(value.toString()) : PARAM_EXPR);
+        columns.add(getColumnName(fieldName));
+        expressions.add(isNative ? value.toString() : JDBC_PARAM);
         if (!isNative) {
             params.add(value);
         }
@@ -59,18 +50,15 @@ class InsertImpl extends AbstractStatement implements Insert {
 
     @Override
     public Insert initEntity(Object entity) {
-        if (entity == null) {
-            return this;
-        }
         this.entity = entity;
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
 
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            Object obj = BeanUtils.invokeReaderMethod(entity, entry.getKey());
-            if (obj != null && !(obj instanceof String && ((String) obj).isEmpty())) {
-                columns.add(new Column(entry.getValue()));
-                values.add(PARAM_EXPR);
-                params.add(obj);
+            Object value = BeanUtils.invokeReaderMethod(entity, entry.getKey());
+            if (value != null) {
+                columns.add(entry.getValue());
+                expressions.add(JDBC_PARAM);
+                params.add(value);
             }
         }
         return this;
@@ -93,11 +81,12 @@ class InsertImpl extends AbstractStatement implements Insert {
             }
         }
 
+        context.setStatementType(StatementContext.Type.INSERT);
         context.setGenerateKeyByDb(tableInfo.isAutoGenerateKey() && (generator == null || generator.isGenerateBySql()));
         context.setPkColumn(tableInfo.getPkColumn());
-        context.setSql(insert.toString());
+        context.setSql(buildSql());
         context.setParams(params);
-        context.setStatementType(StatementContext.Type.INSERT);
+
 
         Object obj = executor.execute(context);
         Object id = context.isGenerateKeyByDb() ? obj : idValue;
@@ -108,6 +97,29 @@ class InsertImpl extends AbstractStatement implements Insert {
         }
 
         return id;
+    }
+
+    /**
+     * 构建 insert sql
+     *
+     * @return insert sql
+     */
+    private String buildSql() {
+        if (columns.size() <= 0) {
+            return "";
+        }
+        StringBuilder insertBuilder = new StringBuilder("insert into ( ");
+        StringBuilder valueBuilder = new StringBuilder(") value (");
+
+        for (int i = 0; i < columns.size(); i++) {
+            insertBuilder.append(columns.get(i)).append(", ");
+            valueBuilder.append(expressions.get(i)).append(", ");
+        }
+        // 去掉最后一个逗号
+        insertBuilder.deleteCharAt(insertBuilder.lastIndexOf(","));
+        valueBuilder.deleteCharAt(valueBuilder.lastIndexOf(","));
+
+        return insertBuilder.append(valueBuilder).toString();
     }
 
     /**

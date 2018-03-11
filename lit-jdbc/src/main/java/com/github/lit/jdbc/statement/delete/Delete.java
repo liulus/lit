@@ -1,4 +1,6 @@
-package com.github.lit.jdbc.statement;
+package com.github.lit.jdbc.statement.delete;
+
+import com.github.lit.jdbc.statement.where.Condition;
 
 /**
  * User : liulu

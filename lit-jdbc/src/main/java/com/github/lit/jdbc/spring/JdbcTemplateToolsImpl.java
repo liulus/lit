@@ -8,7 +8,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.util.Assert;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -23,6 +25,10 @@ public class JdbcTemplateToolsImpl extends AbstractJdbcTools {
     @Setter
     private JdbcOperations jdbcOperations;
 
+    public JdbcTemplateToolsImpl (DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
     public JdbcTemplateToolsImpl(JdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
@@ -30,9 +36,7 @@ public class JdbcTemplateToolsImpl extends AbstractJdbcTools {
     @Override
     protected StatementExecutor getDefaultExecutor() {
         if (jdbcOperations == null) {
-            if (dataSource == null) {
-                throw new RuntimeException("JdbcOperations is null, can not init..");
-            }
+            Assert.notNull(dataSource, "dataSource must not be null");
             jdbcOperations = new JdbcTemplate(dataSource);
         }
 

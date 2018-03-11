@@ -6,7 +6,7 @@ lit-jdbc 是一个简单易用的jdbc工具,
 
 ## 如何使用?
 
-目前 还没有发布到maven中央库, 可以 install 到本地库, 通过 maven 引用
+目前 已经发布到maven中央库, 通过 maven 引用
 
         <dependency>
             <groupId>com.github.lit</groupId>

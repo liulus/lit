@@ -1,5 +1,7 @@
 package com.github.lit.commons.bean;
 
+import com.github.lit.commons.exception.SysException;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -49,18 +51,19 @@ public class IntrospectionCache {
             }
             this.propertyDescriptorCache = new LinkedHashMap<>();
 
-            // 此调用较慢，所以我们只执行一次
+            // This call is slow so we do it once.
             PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
 
             for (PropertyDescriptor pd : pds) {
-                if (Class.class.equals(beanClass) && "classLoader".equals(pd.getName())) {
-                    // 忽略 Class.getClassLoader() 方法 - 没有人会需要绑定到那
+                if (Class.class.equals(beanClass) && "classLoader".equals(pd.getName())
+                        ||  "protectionDomain".equals(pd.getName())) {
+                    // Ignore Class.getClassLoader() and getProtectionDomain() methods - nobody needs to bind to those
                     continue;
                 }
                 this.propertyDescriptorCache.put(pd.getName(), pd);
             }
         } catch (IntrospectionException ex) {
-            throw new RuntimeException("初始化缓存bean信息时出现异常", ex);
+            throw new SysException("初始化缓存bean信息时出现异常", ex);
         }
     }
 
@@ -73,22 +76,21 @@ public class IntrospectionCache {
     public static IntrospectionCache forClass(Class<?> beanClass) {
 
         IntrospectionCache introspectionCache;
-
         Object value = classCache.get(beanClass);
+
+        if (value == null) {
+            introspectionCache = new IntrospectionCache(beanClass);
+            classCache.put(beanClass, introspectionCache);
+            return introspectionCache;
+        }
 
         if (value instanceof Reference) {
             @SuppressWarnings("rawtypes")
             Reference ref = (Reference) value;
-            introspectionCache = (IntrospectionCache) ref.get();
-        } else {
-            introspectionCache = (IntrospectionCache) value;
+            return (IntrospectionCache) ref.get();
         }
 
-        if (introspectionCache == null) {
-            introspectionCache = new IntrospectionCache(beanClass);
-            classCache.put(beanClass, introspectionCache);
-        }
-        return introspectionCache;
+        return (IntrospectionCache) value;
     }
 
     /**
