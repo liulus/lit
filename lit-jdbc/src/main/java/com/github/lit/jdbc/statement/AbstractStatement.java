@@ -6,8 +6,6 @@ import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.JdbcParameter;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
@@ -22,7 +20,6 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class AbstractStatement implements Statement {
 
-    protected static final Expression PARAM_EXPR = new JdbcParameter();
 
     protected static final String JDBC_PARAM = "?";
 
@@ -46,19 +43,14 @@ public abstract class AbstractStatement implements Statement {
         table = new Table(tableInfo.getTableName());
     }
 
-    public void addParam(Object value) {
-        params.add(value);
-    }
 
     protected String getColumnName(String fieldName) {
         Assert.notEmpty(fieldName, "fieldName must not be empty!");
-        fieldName = fieldName.trim();
         String column = tableInfo.getFieldColumnMap().get(fieldName);
         return column == null || column.isEmpty() ? fieldName : column;
     }
 
-    protected Column buildColumn(String fieldName) {
-        fieldName = fieldName.trim();
+    protected Column getColumnExpression(String fieldName) {
         String column = tableInfo.getFieldColumnMap().get(fieldName);
         return column == null || column.isEmpty() ? new Column(fieldName) : new Column(table, column);
     }

@@ -8,6 +8,7 @@ import com.github.lit.jdbc.generator.EmptyKeyGenerator;
 import com.github.lit.jdbc.generator.KeyGenerator;
 import com.github.lit.jdbc.generator.SequenceGenerator;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
@@ -26,6 +27,12 @@ public class TableInfo {
      * 表名
      */
     private String tableName;
+
+    /**
+     * 表别名
+     */
+    @Setter
+    private String alias;
 
     /**
      * 主键属性名
@@ -126,4 +133,10 @@ public class TableInfo {
         }
     }
 
+    public String getTableNameOrAlias() {
+        if (alias == null || alias.isEmpty()) {
+            return tableName;
+        }
+        return alias;
+    }
 }

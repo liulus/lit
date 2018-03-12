@@ -1,5 +1,6 @@
 package com.github.lit.jdbc.statement.where;
 
+import com.github.lit.jdbc.statement.Expression;
 import com.github.lit.jdbc.statement.Statement;
 
 /**
@@ -7,7 +8,7 @@ import com.github.lit.jdbc.statement.Statement;
  * Date : 2017/6/4 16:34
  * version $Id: Condition.java, v 0.1 Exp $
  */
-public interface Condition<T extends Condition<T>> extends Statement {
+public interface Condition<T> extends Statement {
 
 
     Expression<T> where(String fieldName);

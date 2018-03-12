@@ -2,7 +2,7 @@ package com.github.lit.jdbc.statement.where;
 
 import com.github.lit.jdbc.enums.Logic;
 import com.github.lit.jdbc.statement.AbstractStatement;
-import net.sf.jsqlparser.schema.Column;
+import com.github.lit.jdbc.statement.Expression;
 
 /**
  * User : liulu
@@ -10,7 +10,7 @@ import net.sf.jsqlparser.schema.Column;
  * version $Id: AbstractCondition.java, v 0.1 Exp $
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractCondition<T extends Condition<T>> extends AbstractStatement implements Condition<T> {
+public abstract class AbstractCondition<T extends Condition, E extends Expression> extends AbstractStatement implements Condition<T> {
 
     private static final String AND = "AND";
 
@@ -37,56 +37,60 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
      */
 //    protected StringBuilder having;
 
-    protected Expression<T> expression;
+//    @Setter
+//    protected E expression;
+
+    protected abstract E getExpression();
 
     protected AbstractCondition(Class<?> clazz) {
         super(clazz);
         where = new StringBuilder();
-        expression = new ExpressionImpl(this);
+//        this.expression = expression;
+//        expression = new WhereExpression(this);
     }
 
     @Override
-    public Expression<T> where(String fieldName) {
+    public E where(String fieldName) {
 
         where.append(fieldName);
 
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> and(String fieldName) {
+    public E and(String fieldName) {
         where.append(fieldName);
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> or(String fieldName) {
+    public E or(String fieldName) {
         where.append(fieldName);
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> and() {
+    public E and() {
         where.append("and");
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> or() {
+    public E or() {
         where.append("or");
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> bracket() {
+    public E bracket() {
         where.append("(");
-        return expression;
+        return getExpression();
     }
 
     @Override
-    public Expression<T> end() {
+    public E end() {
         where.append(")");
-        return expression;
+        return getExpression();
     }
 
 //    @Override
@@ -96,7 +100,7 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
 
 //    @Override
 //    public T condition(String fileName, Logic logic, Object... values) {
-//        String expression = getExpression(buildColumn(fileName), logic, values);
+//        String expression = getExpression(getColumnExpression(fileName), logic, values);
 //        if (groupBy == null) {
 //            where.append(expression);
 //        } else {
@@ -165,7 +169,7 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
 //        return (T) this;
 //    }
 
-//    @Override
+    //    @Override
     public T beanCondition(Object bean) {
 //        for (String field : tableInfo.getFieldColumnMap().keySet()) {
 //            Object value = BeanUtils.invokeReaderMethod(bean, field);
@@ -200,63 +204,6 @@ public abstract class AbstractCondition<T extends Condition<T>> extends Abstract
                 where.deleteCharAt(where.lastIndexOf(",")).append(")");
         }
 
-    }
-
-//    private void appendOperator(String logic) {
-//        if (groupBy == null) {
-//            if (where.length() != 0) {
-//                where.append(EMPTY).append(logic).append(EMPTY);
-//            }
-//            return;
-//        }
-//        if (having.length() != 0) {
-//            having.append(EMPTY).append(logic).append(EMPTY);
-//        }
-//    }
-
-    protected String getExpression(Column column, Logic logic, Object... values) {
-
-        StringBuilder result = new StringBuilder(column.toString());
-
-        if (values == null || values.length == 0 || values[0] == null) {
-            if (logic != Logic.NOT_NULL) {
-                logic = Logic.NULL;
-            }
-            return result.append(logic.getCode()).toString();
-        }
-
-        result.append(logic.getCode());
-        if (isBinaryLogic(logic)) {
-            params.add(values[0]);
-            return result.append(JDBC_PARAM).toString();
-        }
-
-        // 剩下 IN 和 NOT_IN
-        result.append(LEFT_PARENTHESIS).append(EMPTY);
-        for (int i = 0; i < values.length; i++) {
-            params.add(values[i]);
-            result.append(JDBC_PARAM);
-            if (i != values.length - 1) {
-                result.append(", ");
-            }
-        }
-        return result.append(EMPTY).append(RIGHT_PARENTHESIS).toString();
-    }
-
-    private boolean isBinaryLogic(Logic logic) {
-        switch (logic) {
-            case EQ:
-            case NOT_EQ:
-            case LT:
-            case GT:
-            case LTEQ:
-            case GTEQ:
-            case LIKE:
-            case NOT_LIKE:
-                return true;
-            default:
-                return false;
-        }
     }
 
 
