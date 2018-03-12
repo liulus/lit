@@ -20,10 +20,13 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class AbstractStatement implements Statement {
 
-
     protected static final String JDBC_PARAM = "?";
 
+    protected Table table;
+
     protected TableInfo tableInfo;
+
+    protected List<Object> params;
 
     @Setter
     protected StatementExecutor executor;
@@ -34,12 +37,10 @@ public abstract class AbstractStatement implements Statement {
     @Setter
     protected String dbName;
 
-    protected Table table;
-
-    protected List<Object> params = new ArrayList<>();
 
     protected AbstractStatement(Class<?> clazz) {
-        this.tableInfo = new TableInfo(clazz);
+        params = new ArrayList<>();
+        tableInfo = new TableInfo(clazz);
         table = new Table(tableInfo.getTableName());
     }
 

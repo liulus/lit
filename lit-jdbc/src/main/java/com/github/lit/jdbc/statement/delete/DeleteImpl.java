@@ -15,30 +15,20 @@ public class DeleteImpl extends AbstractCondition<Delete, WhereExpression> imple
     private StringBuilder delete;
 
     private WhereExpression whereExpression;
-    @Override
-    protected WhereExpression getExpression() {
-        if (whereExpression == null) {
-            whereExpression = new WhereExpression<>(this);
-        }
-        return whereExpression;
-    }
+
 
     public DeleteImpl(Class<?> clazz) {
-//        new WhereExpression<>()
         super(clazz);
         delete = new StringBuilder();
         delete.append("delete from ").append(table.getName());
     }
 
-
-
-
     @Override
     public DeleteImpl initEntity(Object entity) {
 
-        Object keyVlue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
-        if (keyVlue != null && (!(keyVlue instanceof String) || !((String) keyVlue).isEmpty())) {
-            this.where(tableInfo.getPkField()).equalsTo(keyVlue);
+        Object keyValue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
+        if (keyValue != null && (!(keyValue instanceof String) || !((String) keyValue).isEmpty())) {
+            this.where(tableInfo.getPkField()).equalsTo(keyValue);
         } else {
             throw new NullPointerException("entity [" + entity + "] id is null, can not delete!");
         }
@@ -49,5 +39,13 @@ public class DeleteImpl extends AbstractCondition<Delete, WhereExpression> imple
     public int execute() {
         delete.append(where);
         return (int) executor.execute(new StatementContext(delete.toString(), params, StatementContext.Type.DELETE));
+    }
+
+    @Override
+    protected WhereExpression getExpression() {
+        if (whereExpression == null) {
+            whereExpression = new WhereExpression<>(this);
+        }
+        return whereExpression;
     }
 }

@@ -19,7 +19,7 @@ public class JoinExpression<T> implements Expression {
 
         select.on(tableClass, fieldName);
 
-        return select.getSelectExpression();
+        return select.getExpression();
     }
 
 

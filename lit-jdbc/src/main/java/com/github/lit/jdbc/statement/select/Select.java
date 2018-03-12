@@ -11,7 +11,7 @@ import java.util.List;
  * Date : 2017/6/4 16:48
  * version $Id: Select.java, v 0.1 Exp $
  */
-public interface Select<T> extends Condition<Select<T>> {
+public interface Select<T> extends Condition<Select<T>, SelectExpression<T>> {
 
     /**
      * 查询语句中 要查询的属性(不能和 exclude 同时使用)
@@ -93,55 +93,10 @@ public interface Select<T> extends Condition<Select<T>> {
      */
     JoinExpression<T> join(JoinType joinType, Class<?> tableClass);
 
-    /**
-     * join 语句的 on 条件, simpleJoin 方法不生效
-     *
-     * @param table1 on 条件的表1
-     * @param field1 on 条件的表1中的属性
-     * @param logic  操作符
-     * @param table2 on 条件的表2
-     * @param field2 on 条件的表2中的属性
-     * @return Select
-     */
-//    Select<T> on(Class<?> table1, String field1, Logic logic, Class<?> table2, String field2);
-
     SelectExpression<T> and(Class<?> tableClass, String fieldName);
 
     SelectExpression<T> or(Class<?> tableClass, String fieldName);
 
-    /**
-     * join 语句的条件, 只有simpleJoin 生效
-     *
-     * @param table1 join 条件的表1
-     * @param field1 join 条件的表1中的属性
-     * @param logic  操作符
-     * @param table2 join 条件的表2
-     * @param field2 join 条件的表2中的属性
-     * @return Select
-     */
-//    Select<T> joinCondition(Class<?> table1, String field1, Logic logic, Class<?> table2, String field2);
-
-    /**
-     * 多表查询时, 可以指定其他表的字段条件
-     *
-     * @param table  要设置条件的表
-     * @param field  字段
-     * @param logic  操作符
-     * @param values 值
-     * @return Select
-     */
-//    Select<T> and(Class<?> table, String field, Logic logic, Object... values);
-
-    /**
-     * 多表查询时, 可以指定其他表的字段条件
-     *
-     * @param table  要设置条件的表
-     * @param field  字段
-     * @param logic  操作符
-     * @param values 值
-     * @return Select
-     */
-//    Select<T> or(Class<?> table, String field, Logic logic, Object... values);
 
     /**
      * 添加 group by 的字段
@@ -151,26 +106,7 @@ public interface Select<T> extends Condition<Select<T>> {
      */
     Select<T> groupBy(String... fields);
 
-    SelectExpression<T> having (String fieldName);
-
-    /**
-     * 添加 having 条件 默认操作符 =
-     *
-     * @param fieldName 字段名
-     * @param value     值
-     * @return Select
-     */
-//    Select<T> having(String fieldName, Object value);
-
-    /**
-     * 添加 having 条件
-     *
-     * @param fieldName 属性名
-     * @param logic     操作符
-     * @param values    值
-     * @return Select
-     */
-//    Select<T> having(String fieldName, Logic logic, Object... values);
+    SelectExpression<T> having(String fieldName);
 
     /**
      * 添加升序排列属性

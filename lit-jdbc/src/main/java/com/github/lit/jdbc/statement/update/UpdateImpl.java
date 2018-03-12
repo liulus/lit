@@ -3,8 +3,7 @@ package com.github.lit.jdbc.statement.update;
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
-import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.HexValue;
+import com.github.lit.jdbc.statement.where.WhereExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +15,18 @@ import java.util.Objects;
  * Date : 2017/6/4 9:35
  * version $Id: UpdateImpl.java, v 0.1 Exp $
  */
-public class UpdateImpl extends AbstractCondition<Update> implements Update {
+public class UpdateImpl extends AbstractCondition<Update, WhereExpression> implements Update {
 
-    protected static final Expression NULL_EXPR = new HexValue("null");
-
-//    private StringBuilder update;
 
     private List<String> columns;
 
     private List<String> expressions;
 
+    private WhereExpression whereExpression;
+
+
     public UpdateImpl(Class<?> clazz) {
         super(clazz);
-//        update = new StringBuilder();
         columns = new ArrayList<>();
         expressions = new ArrayList<>();
     }
@@ -80,7 +78,6 @@ public class UpdateImpl extends AbstractCondition<Update> implements Update {
 
     @Override
     public int execute() {
-//        update.setWhere(new HexValue(where.toString()));
         return (int) executor.execute(new StatementContext(buildSql(), params, StatementContext.Type.UPDATE));
     }
 
@@ -91,5 +88,13 @@ public class UpdateImpl extends AbstractCondition<Update> implements Update {
         }
         update.deleteCharAt(update.lastIndexOf(",")).append(where);
         return update.toString();
+    }
+
+    @Override
+    protected WhereExpression getExpression() {
+        if (whereExpression == null) {
+            whereExpression = new WhereExpression<>(this);
+        }
+        return null;
     }
 }

@@ -10,7 +10,9 @@ import com.github.lit.jdbc.statement.Expression;
  */
 public class WhereExpression<T extends Condition> implements Expression {
 
-
+    /**
+     * Select or Update or Delete
+     */
     protected T condition;
 
 
@@ -18,67 +20,56 @@ public class WhereExpression<T extends Condition> implements Expression {
         this.condition = condition;
     }
 
-//    @Override
     public T equalsTo(Object value) {
         addParamValue(Logic.EQ, value);
         return condition;
     }
 
-//    @Override
     public T notEqualsTo(Object value) {
         addParamValue(Logic.NOT_EQ, value);
         return condition;
     }
 
-//    @Override
     public T lessThan(Object value) {
         addParamValue(Logic.LT, value);
         return condition;
     }
 
-//    @Override
     public T lessThanOrEqual(Object value) {
         addParamValue(Logic.LTEQ, value);
         return condition;
     }
 
-//    @Override
     public T graterThan(Object value) {
         addParamValue(Logic.GT, value);
         return condition;
     }
 
-//    @Override
     public T graterThanOrEqual(Object value) {
         addParamValue(Logic.GTEQ, value);
         return condition;
     }
 
-//    @Override
     public T like(Object value) {
         addParamValue(Logic.LIKE, value);
         return condition;
     }
 
-//    @Override
     public T notLike(Object value) {
         addParamValue(Logic.NOT_LIKE, value);
         return condition;
     }
 
-//    @Override
     public T isNull() {
         addParamValue(Logic.NULL, (Object[]) null);
         return condition;
     }
 
-//    @Override
     public T isNotNull() {
         addParamValue(Logic.NOT_NULL, (Object[]) null);
         return condition;
     }
 
-//    @Override
     public T in(Object... values) {
         if (values != null && values.length > 0) {
             addParamValue(Logic.IN, values);
@@ -86,7 +77,6 @@ public class WhereExpression<T extends Condition> implements Expression {
         return condition;
     }
 
-//    @Override
     public T notIn(Object... values) {
         if (values != null && values.length > 0) {
             addParamValue(Logic.NOT_IN, values);

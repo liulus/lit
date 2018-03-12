@@ -1,13 +1,14 @@
 package com.github.lit.jdbc.statement.update;
 
 import com.github.lit.jdbc.statement.where.Condition;
+import com.github.lit.jdbc.statement.where.WhereExpression;
 
 /**
  * User : liulu
  * Date : 2017/6/4 17:00
  * version $Id: Update.java, v 0.1 Exp $
  */
-public interface Update extends Condition<Update> {
+public interface Update extends Condition<Update, WhereExpression> {
 
     /**
      * createUpdate 语句中的 set 字段

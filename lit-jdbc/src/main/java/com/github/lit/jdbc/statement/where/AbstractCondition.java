@@ -10,175 +10,60 @@ import com.github.lit.jdbc.statement.Expression;
  * version $Id: AbstractCondition.java, v 0.1 Exp $
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractCondition<T extends Condition, E extends Expression> extends AbstractStatement implements Condition<T> {
+public abstract class AbstractCondition<T extends Condition, E extends Expression> extends AbstractStatement implements Condition<T, E> {
 
-    private static final String AND = "AND";
-
-    private static final String OR = "OR";
-
-    private static final String EMPTY = " ";
-
-    private static final String LEFT_PARENTHESIS = "(";
-
-    private static final String RIGHT_PARENTHESIS = ")";
-
-    /**
-     * where 语句
-     */
     protected StringBuilder where;
 
-    /**
-     * groupBy 语句
-     */
-//    protected List<Expression> groupBy;
-
-    /**
-     * having 语句
-     */
-//    protected StringBuilder having;
-
-//    @Setter
-//    protected E expression;
-
-    protected abstract E getExpression();
 
     protected AbstractCondition(Class<?> clazz) {
         super(clazz);
         where = new StringBuilder();
-//        this.expression = expression;
-//        expression = new WhereExpression(this);
     }
 
     @Override
     public E where(String fieldName) {
-
-        where.append(fieldName);
-
+        where.append(getColumnName(fieldName));
         return getExpression();
     }
 
     @Override
     public E and(String fieldName) {
-        where.append(fieldName);
+        where.append(where.length() == 0 ? "" : " AND ").append(getColumnName(fieldName));
         return getExpression();
     }
 
     @Override
     public E or(String fieldName) {
-        where.append(fieldName);
+        where.append(where.length() == 0 ? "" : " OR ").append(getColumnName(fieldName));
         return getExpression();
     }
 
     @Override
-    public E and() {
-        where.append("and");
+    public E bracket(String fieldName) {
+        where.append("( ").append(getColumnName(fieldName));
         return getExpression();
     }
 
     @Override
-    public E or() {
-        where.append("or");
-        return getExpression();
-    }
-
-    @Override
-    public E bracket() {
-        where.append("(");
-        return getExpression();
-    }
-
-    @Override
-    public E end() {
-        where.append(")");
-        return getExpression();
-    }
-
-//    @Override
-//    public T condition(String fieldName, Object value) {
-//        return condition(fieldName, Logic.EQ, value);
-//    }
-
-//    @Override
-//    public T condition(String fileName, Logic logic, Object... values) {
-//        String expression = getExpression(getColumnExpression(fileName), logic, values);
-//        if (groupBy == null) {
-//            where.append(expression);
-//        } else {
-//            having.append(expression);
-//        }
-//        return (T) this;
-//    }
-
-//    @Override
-//    public T idCondition(Object value) {
-//        return idCondition(Logic.EQ, value);
-//    }
-
-//    @Override
-//    public T idCondition(Logic logic, Object... values) {
-//        return and(tableInfo.getPkField(), logic, values);
-//    }
-
-//    @Override
-//    public T where(String fieldName, Object value) {
-//        where(fieldName, Logic.EQ, value);
-//        return (T) this;
-//    }
-
-//    @Override
-//    public T where(String fieldName, Logic logic, Object... values) {
-//        return condition(fieldName, logic, values);
-//    }
-
-//    @Override
-//    public T and() {
-//        appendOperator(AND);
-//        return (T) this;
-//    }
-
-//    @Override
-//    public T and(String fieldName, Object value) {
-//        return this.and(fieldName, Logic.EQ, value);
-//    }
-
-//    @Override
-//    public T and(String fieldName, Logic logic, Object... values) {
-//        return this.and().condition(fieldName, logic, values);
-//    }
-
-//    @Override
-//    public T or() {
-//        appendOperator(OR);
-//        return (T) this;
-//    }
-
-//    @Override
-//    public T or(String fieldName, Object value) {
-//        return this.or().condition(fieldName, Logic.EQ, value);
-//    }
-//
-//    @Override
-//    public T or(String fieldName, Logic logic, Object... values) {
-//        return this.or().condition(fieldName, logic, values);
-//    }
-
-
-//    @Override
-//    public T end() {
-//        appendOperator(RIGHT_PARENTHESIS);
-//        return (T) this;
-//    }
-
-    //    @Override
-    public T beanCondition(Object bean) {
-//        for (String field : tableInfo.getFieldColumnMap().keySet()) {
-//            Object value = BeanUtils.invokeReaderMethod(bean, field);
-//            if (value != null && (!(value instanceof String) || !((String) value).isEmpty())) {
-//                and(field, value);
-//            }
-//        }
+    public T and() {
+        where.append(" AND ");
         return (T) this;
     }
+
+    @Override
+    public T or() {
+        where.append(" OR ");
+        return (T) this;
+    }
+
+
+    @Override
+    public T end() {
+        where.append(" )");
+        return (T) this;
+    }
+
+    protected abstract E getExpression();
 
     public void addParamValue(Logic logic, Object... values) {
         where.append(logic.getCode());
