@@ -15,12 +15,12 @@ public class SelectExpression<T> extends WhereExpression<Select<T>> {
     }
 
     public Select<T> equalsTo(Class<?> clazz, String fieldName) {
-        setOnExpression(Logic.EQ, clazz, fieldName);
+        setExpression(Logic.EQ, clazz, fieldName);
         return condition;
     }
 
 
-    private void setOnExpression(Logic logic, Class<?> clazz, String fieldName) {
+    private void setExpression(Logic logic, Class<?> clazz, String fieldName) {
         ((SelectImpl) condition).setExpression(logic, clazz, fieldName);
     }
 

@@ -28,16 +28,8 @@ public interface Insert extends Statement {
     Insert into(String fieldName, Object value, boolean isNative);
 
     /**
-     * 初始化 inset，将entity 中不为空的属性添加到 insert 的字段中
-     *
-     * @param entity 实体
-     * @return Insert
-     */
-    Insert initEntity(Object entity);
-
-    /**
      * @return 执行 insert 后的 id 值
      */
-    Object execute();
+    <ID> ID execute();
 
 }

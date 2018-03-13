@@ -79,7 +79,7 @@ public class PropertyUtils {
     public static void loadProperties(String resourceName) {
 
         try {
-            if (resourceName.endsWith(PRO_SUFFIX)) {
+            if (!resourceName.endsWith(PRO_SUFFIX)) {
                 resourceName += PRO_SUFFIX;
             }
             Properties prop = new Properties();
@@ -116,7 +116,7 @@ public class PropertyUtils {
      * @return property
      */
     public static String getProperty(String resourceName, String key, String defaultValue) {
-        if (resourceName.endsWith(PRO_SUFFIX)) {
+        if (!resourceName.endsWith(PRO_SUFFIX)) {
             resourceName += PRO_SUFFIX;
         }
         String finalKey = resourceName + key;

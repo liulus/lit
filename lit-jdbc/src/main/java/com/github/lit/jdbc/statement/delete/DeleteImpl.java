@@ -10,39 +10,39 @@ import com.github.lit.jdbc.statement.where.WhereExpression;
  * Date : 2017/6/4 9:51
  * version $Id: DeleteImpl.java, v 0.1 Exp $
  */
-public class DeleteImpl extends AbstractCondition<Delete, WhereExpression> implements Delete {
+public class DeleteImpl extends AbstractCondition<Delete, WhereExpression<Delete>> implements Delete {
 
     private StringBuilder delete;
 
-    private WhereExpression whereExpression;
+    private WhereExpression<Delete> whereExpression;
 
 
     public DeleteImpl(Class<?> clazz) {
         super(clazz);
         delete = new StringBuilder();
-        delete.append("delete from ").append(table.getName());
+        delete.append("DELETE FROM ").append(table.getName());
     }
 
-    @Override
+//    @Override
     public DeleteImpl initEntity(Object entity) {
 
         Object keyValue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
         if (keyValue != null && (!(keyValue instanceof String) || !((String) keyValue).isEmpty())) {
             this.where(tableInfo.getPkField()).equalsTo(keyValue);
         } else {
-            throw new NullPointerException("entity [" + entity + "] id is null, can not delete!");
+            throw new NullPointerException("primary key value must not be null for delete!");
         }
         return this;
     }
 
     @Override
     public int execute() {
-        delete.append(where);
+        delete.append(" WHERE ").append(where);
         return (int) executor.execute(new StatementContext(delete.toString(), params, StatementContext.Type.DELETE));
     }
 
     @Override
-    protected WhereExpression getExpression() {
+    protected WhereExpression<Delete> getExpression() {
         if (whereExpression == null) {
             whereExpression = new WhereExpression<>(this);
         }

@@ -15,14 +15,14 @@ import java.util.Objects;
  * Date : 2017/6/4 9:35
  * version $Id: UpdateImpl.java, v 0.1 Exp $
  */
-public class UpdateImpl extends AbstractCondition<Update, WhereExpression> implements Update {
+public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update>> implements Update {
 
 
     private List<String> columns;
 
     private List<String> expressions;
 
-    private WhereExpression whereExpression;
+    private WhereExpression<Update> whereExpression;
 
 
     public UpdateImpl(Class<?> clazz) {
@@ -45,11 +45,11 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression> imple
     }
 
 
-    @Override
+//    @Override
     public Update initEntity(Object entity, boolean isIgnoreNull) {
         Object key = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
         if (key == null) {
-            throw new NullPointerException("entity [" + entity + "] id is null, can not update!");
+            throw new NullPointerException("primary key value must not be null for update!");
         }
 
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
@@ -82,19 +82,19 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression> imple
     }
 
     private String buildSql() {
-        StringBuilder update = new StringBuilder("update ").append(table.getName()).append(" set");
+        StringBuilder update = new StringBuilder("UPDATE ").append(table.getName()).append(" SET ");
         for (int i = 0; i < columns.size(); i++) {
-            update.append(columns.get(i)).append("=").append(expressions.get(i)).append(", ");
+            update.append(columns.get(i)).append(" = ").append(expressions.get(i)).append(", ");
         }
-        update.deleteCharAt(update.lastIndexOf(",")).append(where);
+        update.deleteCharAt(update.lastIndexOf(",")).append("WHERE ").append(where);
         return update.toString();
     }
 
     @Override
-    protected WhereExpression getExpression() {
+    protected WhereExpression<Update> getExpression() {
         if (whereExpression == null) {
             whereExpression = new WhereExpression<>(this);
         }
-        return null;
+        return whereExpression;
     }
 }

@@ -8,7 +8,7 @@ import com.github.lit.jdbc.statement.where.WhereExpression;
  * Date : 2017/6/4 17:00
  * version $Id: Update.java, v 0.1 Exp $
  */
-public interface Update extends Condition<Update, WhereExpression> {
+public interface Update extends Condition<Update, WhereExpression<Update>> {
 
     /**
      * createUpdate 语句中的 set 字段
@@ -20,13 +20,7 @@ public interface Update extends Condition<Update, WhereExpression> {
     Update set(String fieldName, Object value);
 
     /**
-     * 初始化实体条件
-     *
-     * @param entity       实体
-     * @param isIgnoreNull 是否忽略null值
-     * @return update
+     * @return 受影响的记录数
      */
-    Update initEntity(Object entity, boolean isIgnoreNull);
-
     int execute();
 }

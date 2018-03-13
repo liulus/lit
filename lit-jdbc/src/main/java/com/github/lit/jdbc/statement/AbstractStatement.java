@@ -6,7 +6,6 @@ import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
 import java.util.ArrayList;
@@ -51,9 +50,6 @@ public abstract class AbstractStatement implements Statement {
         return column == null || column.isEmpty() ? fieldName : column;
     }
 
-    protected Column getColumnExpression(String fieldName) {
-        String column = tableInfo.getFieldColumnMap().get(fieldName);
-        return column == null || column.isEmpty() ? new Column(fieldName) : new Column(table, column);
-    }
+
 
 }

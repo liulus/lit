@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.beans.PropertyDescriptor;
@@ -21,7 +20,6 @@ import java.util.Objects;
  * version $Id: PublishEventAspect.java, v 0.1 Exp $
  */
 @Aspect
-@Component
 public class PublishEventAspect {
 
     private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();

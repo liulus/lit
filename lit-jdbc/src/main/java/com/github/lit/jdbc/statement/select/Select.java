@@ -74,7 +74,7 @@ public interface Select<T> extends Condition<Select<T>, SelectExpression<T>> {
      * @param tableClass join 表对应的实体
      * @return Select
      */
-    JoinExpression<T> join(Class<?> tableClass);
+    Select<T> join(Class<?> tableClass);
 
     /**
      * 添加简单join 只是将表名列在 from 后 没有 on 条件
@@ -91,7 +91,9 @@ public interface Select<T> extends Condition<Select<T>, SelectExpression<T>> {
      * @param joinType   join类型
      * @return Select
      */
-    JoinExpression<T> join(JoinType joinType, Class<?> tableClass);
+    Select<T> join(JoinType joinType, Class<?> tableClass);
+
+    SelectExpression<T> on(Class<?> tableClass, String fieldName);
 
     SelectExpression<T> and(Class<?> tableClass, String fieldName);
 

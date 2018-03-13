@@ -1,8 +1,7 @@
 package com.github.lit.jdbc.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
@@ -11,9 +10,8 @@ import java.util.List;
  * Date : 2017/6/4 10:21
  * version $Id: StatementContext.java, v 0.1 Exp $
  */
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 public class StatementContext {
 
     /**

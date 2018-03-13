@@ -22,51 +22,68 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
 
     @Override
     public E where(String fieldName) {
-        where.append(getColumnName(fieldName));
+        appendString("", fieldName);
         return getExpression();
     }
 
     @Override
     public E and(String fieldName) {
-        where.append(where.length() == 0 ? "" : " AND ").append(getColumnName(fieldName));
+        appendString(" AND ", fieldName);
         return getExpression();
     }
 
     @Override
     public E or(String fieldName) {
-        where.append(where.length() == 0 ? "" : " OR ").append(getColumnName(fieldName));
+        appendString(" OR ", fieldName);
         return getExpression();
     }
 
     @Override
     public E bracket(String fieldName) {
-        where.append("( ").append(getColumnName(fieldName));
+        appendString("( ", fieldName);
+        return getExpression();
+    }
+
+    @Override
+    public E primaryKey() {
+        appendString("", tableInfo.getPkField());
         return getExpression();
     }
 
     @Override
     public T and() {
-        where.append(" AND ");
+        appendString(" AND ", null);
         return (T) this;
     }
 
     @Override
     public T or() {
-        where.append(" OR ");
+        appendString(" OR ", null);
         return (T) this;
     }
 
 
     @Override
     public T end() {
-        where.append(" )");
+        appendString(" )", null);
         return (T) this;
     }
 
     protected abstract E getExpression();
 
+    protected void appendString(String operator, String fieldName) {
+        where.append(where.length() == 0 ? "" : operator);
+        if (fieldName != null && fieldName.length() > 0) {
+            where.append(getColumnName(fieldName));
+        }
+    }
+
     public void addParamValue(Logic logic, Object... values) {
-        where.append(logic.getCode());
+        addParamValue(where, logic, values);
+    }
+
+    protected void addParamValue(StringBuilder sb, Logic logic, Object... values) {
+        sb.append(logic.getCode());
         switch (logic) {
             case EQ:
             case NOT_EQ:
@@ -76,19 +93,18 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
             case GTEQ:
             case LIKE:
             case NOT_LIKE:
-                where.append(JDBC_PARAM);
+                sb.append(JDBC_PARAM);
                 params.add(values[0]);
                 break;
             case IN:
             case NOT_IN:
-                where.append("( ");
+                sb.append("( ");
                 for (Object value : values) {
                     params.add(value);
-                    where.append(JDBC_PARAM).append(", ");
+                    sb.append(JDBC_PARAM).append(", ");
                 }
-                where.deleteCharAt(where.lastIndexOf(",")).append(")");
+                sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
         }
-
     }
 
 

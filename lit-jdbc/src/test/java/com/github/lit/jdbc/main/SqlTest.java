@@ -1,0 +1,100 @@
+package com.github.lit.jdbc.main;
+
+import com.github.lit.jdbc.JdbcTools;
+import com.github.lit.jdbc.model.Goods;
+import com.github.lit.jdbc.model.Supplier;
+import com.github.lit.jdbc.util.DBUtils;
+import org.junit.Test;
+
+/**
+ * User : liulu
+ * Date : 2018/3/13 10:39
+ * version $Id: SqlTest.java, v 0.1 Exp $
+ */
+public class SqlTest {
+
+    private static JdbcTools jdbcTools;
+
+    static {
+        jdbcTools = DBUtils.getJdbcTools();
+    }
+
+    private Goods goods = Goods.builder().code("00000000").name("test_goods").barCode("61232764726537263")
+            .inventory(20).price(19.98).specification("500ml*12").purchaserCode("33018002")
+            .supplierCode("00391")
+            .goodsId(3L)
+            .build();
+
+    @Test
+    public void insert() {
+        jdbcTools.insert(goods);
+    }
+
+    @Test
+    public void insert2() {
+        jdbcTools.createInsert(Goods.class)
+                .into("code", "00000000")
+                .into("name", "test_goods")
+                .into("price", 19.98)
+                .into("purchaser_Code", "'33018002'", true)
+                .execute();
+    }
+
+    @Test
+    public void update() {
+        jdbcTools.update(goods);
+    }
+
+    @Test
+    public void update2() {
+        jdbcTools.createUpdate(Goods.class)
+                .set("price", 19.98)
+                .set("name", null)
+                .and("goodsId").equalsTo(3L)
+                .and()
+                .bracket("name").like("222")
+                .or("inventory").lessThanOrEqual(23)
+                .end()
+                .execute();
+    }
+
+    @Test
+    public void delete() {
+        jdbcTools.delete(goods);
+    }
+
+    @Test
+    public void delete2() {
+        jdbcTools.createDelete(Goods.class)
+                .where("goodsId").equalsTo(3L)
+                .execute();
+    }
+
+    @Test
+    public void select1() {
+        jdbcTools.select(Goods.class).tableAlias("lg")
+                .include("supplierCode")
+                .join(Supplier.class)
+                .on(Goods.class, "supplierCode").equalsTo(Supplier.class, "code")
+                .tableAlias("ls")
+                .where("goodsId").equalsTo(3L)
+                .and(Goods.class, "supplierCode").equalsTo(Supplier.class, "code")
+                .list();
+    }
+
+    @Test
+    public void select2() {
+        jdbcTools.select(Goods.class).tableAlias("lg")
+                .include("supplierCode")
+                .function("count").alias("goodsCount")
+                .tableAlias("ls")
+                .where("goodsId").graterThan(3L)
+                .and("price").graterThanOrEqual(10D)
+                .groupBy("supplierCode")
+                .and("goodsCount").graterThan(100)
+                .and("goodsCount").lessThan(200)
+                .list();
+    }
+
+
+}

@@ -19,6 +19,8 @@ public interface Condition<T extends Condition,E extends Expression> extends Sta
 
     E bracket(String fieldName);
 
+    E primaryKey();
+
     T and();
 
     T or();

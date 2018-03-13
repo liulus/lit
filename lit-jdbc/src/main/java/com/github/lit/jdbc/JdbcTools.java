@@ -6,6 +6,7 @@ import com.github.lit.jdbc.statement.select.Select;
 import com.github.lit.jdbc.statement.update.Update;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * User : liulu
@@ -22,8 +23,6 @@ public interface JdbcTools {
      * @return 主键, 自增和序列返回 Long 类型
      */
     <T, ID> ID insert(T t);
-
-//    <T> int batchInsert(List<T> list);
 
     /**
      * 根据实体的 id 删除一条记录
@@ -83,6 +82,10 @@ public interface JdbcTools {
      * @return 实体对象
      */
     <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue);
+
+    <T> T find(Class<T> clazz, String sql, Object[] args);
+
+    <T> List<T> findForList(Class<T> clazz, String sql, Object[] args);
 
 
     Insert createInsert(Class<?> clazz);

@@ -48,7 +48,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
         return this;
     }
 
-    @Override
+//    @Override
     public Insert initEntity(Object entity) {
         this.entity = entity;
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
@@ -108,8 +108,8 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (columns.size() <= 0) {
             return "";
         }
-        StringBuilder insertBuilder = new StringBuilder("insert into ( ");
-        StringBuilder valueBuilder = new StringBuilder(") value (");
+        StringBuilder insertBuilder = new StringBuilder("INSERT INTO ( ");
+        StringBuilder valueBuilder = new StringBuilder(") VALUE ( ");
 
         for (int i = 0; i < columns.size(); i++) {
             insertBuilder.append(columns.get(i)).append(", ");
@@ -117,7 +117,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
         }
         // 去掉最后一个逗号
         insertBuilder.deleteCharAt(insertBuilder.lastIndexOf(","));
-        valueBuilder.deleteCharAt(valueBuilder.lastIndexOf(","));
+        valueBuilder.deleteCharAt(valueBuilder.lastIndexOf(",")).append(")");
 
         return insertBuilder.append(valueBuilder).toString();
     }
