@@ -1,6 +1,5 @@
 package com.github.lit.jdbc.model;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,6 @@ import java.util.List;
  * version $Id: StatementContext.java, v 0.1 Exp $
  */
 @Data
-@Builder
 @NoArgsConstructor
 public class StatementContext {
 
