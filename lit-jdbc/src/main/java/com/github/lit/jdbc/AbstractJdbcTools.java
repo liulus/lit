@@ -84,8 +84,12 @@ public abstract class AbstractJdbcTools implements JdbcTools {
 
     @Override
     public <T> T find(Class<T> clazz, String sql, Object[] args) {
-        StatementContext context = StatementContext.builder().sql(sql).params(Arrays.asList(args))
-                .entityClass(clazz).requireType(clazz).statementType(StatementContext.Type.SELECT_SINGLE).build();
+        StatementContext context = new StatementContext();
+        context.setEntityClass(clazz);
+        context.setRequireType(clazz);
+        context.setSql(sql);
+        context.setParams(Arrays.asList(args));
+        context.setStatementType(StatementContext.Type.SELECT_SINGLE);
 
         //noinspection unchecked
         return (T) statementExecutor.execute(context);
@@ -93,8 +97,13 @@ public abstract class AbstractJdbcTools implements JdbcTools {
 
     @Override
     public <T> List<T> findForList(Class<T> clazz, String sql, Object[] args) {
-        StatementContext context = StatementContext.builder().sql(sql).params(Arrays.asList(args))
-                .entityClass(clazz).requireType(clazz).statementType(StatementContext.Type.SELECT_LIST).build();
+        StatementContext context = new StatementContext();
+        context.setEntityClass(clazz);
+        context.setRequireType(clazz);
+        context.setSql(sql);
+        context.setParams(Arrays.asList(args));
+        context.setStatementType(StatementContext.Type.SELECT_LIST);
+
         //noinspection unchecked
         return (List<T>) statementExecutor.execute(context);
     }
