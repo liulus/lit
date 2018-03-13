@@ -20,6 +20,7 @@ ext {
             druid                 : "com.alibaba:druid:${druidVersion}",
             mysql                 : "mysql:mysql-connector-java:5.1.38",
             oracle                : "com.oracle:ojdbc6:11.2.0.3",
+            velocity              : "org.apache.velocity:velocity:1.7",
             spring_context        : "org.springframework:spring-context:${springVersion}",
             spring_context_support: "org.springframework:spring-context-support:${springVersion}",
             spring_jdbc           : "org.springframework:spring-jdbc:${springVersion}",

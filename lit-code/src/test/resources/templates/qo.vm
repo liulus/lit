@@ -1,0 +1,23 @@
+package ${packageName};
+
+import com.ipampas.framework.model.Page;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+/**
+ * ${table.desc}
+ *
+ * @author generator
+ * @version 1.0.0
+ */
+@Getter
+@Setter
+@ToString
+public class ${qo.shortClassName} extends Page {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = ${serialVersionUID}L;
+
+
+}

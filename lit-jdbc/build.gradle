@@ -15,5 +15,4 @@ dependencies {
     testCompile libs.logback_classic
     testCompile libs.jcl_over_slf4j
 
-
 }

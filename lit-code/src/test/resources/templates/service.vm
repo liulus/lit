@@ -1,0 +1,56 @@
+package ${packageName};
+
+import ${model.longClassName};
+import ${qo.longClassName};
+
+import java.util.List;
+
+/**
+ * ${table.desc} service 接口
+ *
+ * @author generator
+ * @version 1.0.0
+ */
+public interface ${service.shortClassName} {
+
+    /**
+     * 新增${table.desc}
+     *
+     * @param ${model.firstLowerClassName}
+     * @return 新记录的Id
+     */
+    Long create(${model.shortClassName} ${model.firstLowerClassName});
+
+    /**
+     * 删除${table.desc}
+     *
+     * @param id
+     * @return
+     */
+    int removeById(Long id);
+
+    /**
+     * 修改${table.desc}, 忽略null值
+     *
+     * @param ${model.firstLowerClassName}
+     * @return
+     */
+    int modify(${model.shortClassName} ${model.firstLowerClassName});
+
+    /**
+     * 查询${table.desc}
+     *
+     * @param id
+     * @return ${table.desc}
+     */
+    ${model.shortClassName} findById(Long id);
+
+    /**
+     * 分页查询${table.desc}列表
+     *
+     * @param ${qo.firstLowerClassName} 查询对象
+     * @return ${table.desc}列表
+     */
+    List<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName});
+
+}

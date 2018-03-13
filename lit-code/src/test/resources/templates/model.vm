@@ -1,0 +1,31 @@
+package ${packageName};
+
+import lombok.*;
+
+import java.io.Serializable;
+#foreach($im in ${importClasses})
+import ${im};
+#end
+
+/**
+ * ${table.desc}
+ *
+ * @author generator
+ * @version 1.0.0
+ */
+@Getter
+@Setter
+@ToString
+public class ${model.shortClassName} implements Serializable{
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = ${serialVersionUID}L;
+
+#foreach($column in ${table.columns})
+#if(${column.comment})
+    /** ${column.comment} */
+#end
+    private ${column.javaType} ${column.camelName};
+
+#end
+}

@@ -1,0 +1,58 @@
+package ${packageName};
+
+import com.github.pagehelper.PageHelper;
+import ${model.longClassName};
+import ${qo.longClassName};
+import ${mapper.longClassName};
+import ${service.longClassName};
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.List;
+
+/**
+ * ${table.desc} service 接口实现
+ *
+ * @author generator
+ * @version 1.0.0
+ */
+@Service
+@Slf4j
+@Transactional
+public class ${serviceImpl.shortClassName} implements ${service.shortClassName} {
+
+    @Resource
+    private ${mapper.shortClassName} ${mapper.firstLowerClassName};
+
+
+    @Override
+    public Long create(${model.shortClassName} ${model.firstLowerClassName}) {
+        ${mapper.firstLowerClassName}.insert(${model.firstLowerClassName});
+        return ${model.firstLowerClassName}.getId();
+    }
+
+    @Override
+    public int removeById(Long id) {
+        return ${mapper.firstLowerClassName}.deleteById(id);
+    }
+
+    @Override
+    public int modify(${model.shortClassName} ${model.firstLowerClassName}) {
+        return ${mapper.firstLowerClassName}.updateById(${model.firstLowerClassName});
+    }
+
+    @Override
+    public ${model.shortClassName} findById(Long id) {
+        return ${mapper.firstLowerClassName}.findById(id);
+    }
+
+    @Override
+    public List<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName}) {
+        PageHelper.startPage(${qo.firstLowerClassName}.getPageNo(), ${qo.firstLowerClassName}.getPageSize());
+        return ${mapper.firstLowerClassName}.findPageList(${qo.firstLowerClassName});
+    }
+
+
+}

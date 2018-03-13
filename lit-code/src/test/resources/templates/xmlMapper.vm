@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="${mapper.longClassName}">
+    <resultMap id="BaseResultMap" type="${model.longClassName}">
+#foreach($column in ${table.columns})
+#if(${column.isPrimaryKey})
+#set($primaryKey = $column)
+        <id column="${column.name}" property="${column.camelName}"/>
+#else
+        <result column="${column.name}" property="${column.camelName}"/>
+#end
+#end
+    </resultMap>
+    
+    <sql id="base_column_list">
+#set($columnSize = ${table.columns.size()})
+#foreach($column in ${table.columns})
+${column.name}#if($velocityCount < $columnSize), #end
+#end
+
+    </sql>
+
+    <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="base_column_list"/>
+        from ${table.name}
+        where ${primaryKey.name} = #{id}
+    </select>
+
+    <select id="findPageList" resultMap="BaseResultMap" parameterType="${qo.longClassName}">
+        select <include refid="base_column_list"/>
+        from ${table.name}
+        <!-- 自定义查询条件 待补充  -->
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="${primaryKey.camelName}" parameterType="${model.longClassName}">
+        insert into ${table.name}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+#foreach($column in ${table.columns})
+            <if test="${column.camelName} != null">
+                ${column.name},
+            </if>
+#end
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+#foreach($column in ${table.columns})
+            <if test="${column.camelName} != null">
+                #{${column.camelName}},
+            </if>
+#end
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="${model.longClassName}">
+        update ${table.name}
+        <set>
+#foreach($column in ${table.columns})
+#if(!${column.isPrimaryKey})
+            <if test="${column.camelName} != null">
+                ${column.name} = #{${column.camelName}},
+            </if>
+#end
+#end
+        </set>
+        where ${primaryKey.name} = #{${primaryKey.camelName}}
+    </update>
+
+    <delete id="deleteById" parameterType="java.lang.Long">
+        delete from ${table.name} where ${primaryKey.name} = #{id}
+    </delete>
+
+</mapper>

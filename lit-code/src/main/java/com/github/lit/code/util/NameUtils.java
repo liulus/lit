@@ -1,4 +1,4 @@
-package com.github.lit.commons.util;
+package com.github.lit.code.util;
 
 /**
  * 命名工具类
@@ -63,6 +63,7 @@ public class NameUtils {
     }
 
     /**
+     *
      * @param name 原名称
      * @return 首字母小写名称
      */

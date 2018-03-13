@@ -1,0 +1,27 @@
+{
+  "constant": {
+    "overwrite": true,
+    "onChildModule": true,
+    "baseModule": "lit-code"
+  },
+  "jdbc": {
+    "url": "jdbc:mysql://localhost:3306/panshi?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
+    "user": "root",
+    "password": "123456"
+  },
+  "table": {
+    "name": "role",
+    "desc": "角色",
+    "tasks": [
+      "model"
+    ]
+  },
+  "tasks": [
+    {
+      "name": "model",
+      "template": "/templates/test.vm",
+      "module": "${baseModule}",
+      "package": "com.github.lit.code.test"
+    }
+  ]
+}
