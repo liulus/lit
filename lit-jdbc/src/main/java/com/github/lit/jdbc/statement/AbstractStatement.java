@@ -19,8 +19,6 @@ import java.util.List;
 @NoArgsConstructor
 public abstract class AbstractStatement implements Statement {
 
-    protected static final String JDBC_PARAM = "?";
-
     protected Table table;
 
     protected TableInfo tableInfo;

@@ -54,7 +54,6 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
      */
     private List<OrderByElement> orderBy;
 
-
     /**
      * 黑名单字段
      */

@@ -93,7 +93,7 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
             case GTEQ:
             case LIKE:
             case NOT_LIKE:
-                sb.append(JDBC_PARAM);
+                sb.append("?");
                 params.add(values[0]);
                 break;
             case IN:
@@ -101,7 +101,7 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
                 sb.append("( ");
                 for (Object value : values) {
                     params.add(value);
-                    sb.append(JDBC_PARAM).append(", ");
+                    sb.append("?").append(", ");
                 }
                 sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
         }

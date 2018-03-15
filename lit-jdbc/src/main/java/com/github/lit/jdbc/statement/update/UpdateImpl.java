@@ -36,7 +36,7 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
 
         columns.add(getColumnName(fieldName));
 
-        expressions.add(value == null ? "null" : JDBC_PARAM);
+        expressions.add(value == null ? "null" : "?");
         if (value != null) {
             params.add(value);
         }
@@ -65,7 +65,7 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
                 if (obj == null) {
                     expressions.add("null");
                 } else {
-                    expressions.add(JDBC_PARAM);
+                    expressions.add("?");
                     params.add(obj);
                 }
 

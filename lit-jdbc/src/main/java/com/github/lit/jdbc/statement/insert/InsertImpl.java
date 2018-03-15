@@ -41,7 +41,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
     @Override
     public Insert into(String fieldName, Object value, boolean isNative) {
         columns.add(getColumnName(fieldName));
-        expressions.add(isNative ? value.toString() : JDBC_PARAM);
+        expressions.add(isNative ? value.toString() : "?");
         if (!isNative) {
             params.add(value);
         }
@@ -57,7 +57,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
             Object value = BeanUtils.invokeReaderMethod(entity, entry.getKey());
             if (value != null) {
                 columns.add(entry.getValue());
-                expressions.add(JDBC_PARAM);
+                expressions.add("?");
                 params.add(value);
             }
         }

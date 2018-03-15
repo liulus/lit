@@ -12,15 +12,11 @@ import com.github.lit.jdbc.statement.where.WhereExpression;
  */
 public class DeleteImpl extends AbstractCondition<Delete, WhereExpression<Delete>> implements Delete {
 
-    private StringBuilder delete;
-
     private WhereExpression<Delete> whereExpression;
 
 
     public DeleteImpl(Class<?> clazz) {
         super(clazz);
-        delete = new StringBuilder();
-        delete.append("DELETE FROM ").append(table.getName());
     }
 
 //    @Override
@@ -37,8 +33,8 @@ public class DeleteImpl extends AbstractCondition<Delete, WhereExpression<Delete
 
     @Override
     public int execute() {
-        delete.append(" WHERE ").append(where);
-        return (int) executor.execute(new StatementContext(delete.toString(), params, StatementContext.Type.DELETE));
+        String sql = "DELETE FROM " + table.getName() + " WHERE " + where;
+        return (int) executor.execute(new StatementContext(sql, params, StatementContext.Type.DELETE));
     }
 
     @Override

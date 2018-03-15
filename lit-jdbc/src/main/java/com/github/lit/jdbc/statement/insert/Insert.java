@@ -30,6 +30,6 @@ public interface Insert extends Statement {
     /**
      * @return 执行 insert 后的 id 值
      */
-    <ID> ID execute();
+    Object execute();
 
 }
