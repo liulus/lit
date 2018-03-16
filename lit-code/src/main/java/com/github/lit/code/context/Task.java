@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -28,8 +29,6 @@ public class Task implements Serializable {
     private String tableName;
 
     private String generateClass;
-
-    private String plugin;
 
     private String template;
 
@@ -58,6 +57,8 @@ public class Task implements Serializable {
     private String srcDir = "src/main/java";
 
     private String _package = "";
+
+    private List<String> plugins;
 
 
     public String getShortClassName() {

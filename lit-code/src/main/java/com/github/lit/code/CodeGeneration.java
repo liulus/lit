@@ -3,9 +3,9 @@ package com.github.lit.code;
 import com.github.lit.code.config.Configuration;
 import com.github.lit.code.config.ConfigurationBuilder;
 import com.github.lit.code.context.GenerationException;
-import com.github.lit.code.context.GenerationExecutor;
 import com.github.lit.code.datebase.DataBaseProvider;
 import com.github.lit.code.datebase.DateBaseProviderFactory;
+import com.github.lit.code.executor.GenerationExecutor;
 import com.github.lit.code.parser.ConfigParser;
 
 import java.util.logging.Logger;
@@ -37,11 +37,6 @@ public class CodeGeneration {
 
     public static void registerProvider(DataBaseProvider dataBaseProvider) {
         DateBaseProviderFactory.registerProvider(dataBaseProvider);
-    }
-
-
-    public static void main(String[] args) {
-        run();
     }
 
 }

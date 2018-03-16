@@ -19,6 +19,7 @@
   "tasks": [
     {
       "name": "model",
+      "plugins": ["com.github.lit.code.plugin.SerialVersionUIDPlugin"],
       "template": "/templates/test.vm",
       "module": "${baseModule}",
       "package": "com.github.lit.code.test"

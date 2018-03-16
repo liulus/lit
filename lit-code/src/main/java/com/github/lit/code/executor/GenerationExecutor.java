@@ -1,9 +1,14 @@
-package com.github.lit.code.context;
+package com.github.lit.code.executor;
 
 import com.github.lit.code.config.Configuration;
+import com.github.lit.code.context.Table;
+import com.github.lit.code.context.Task;
+import com.github.lit.code.plugin.PluginExecutor;
+import com.github.lit.code.util.ClassUtils;
 import com.github.lit.code.util.FileUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.context.Context;
 
 import java.io.File;
 import java.io.StringWriter;
@@ -42,6 +47,7 @@ public class GenerationExecutor {
             task.setTableName(task.processTableName(table.getName()));
             context.put(task.getName(), task);
 
+            executePlugin(configuration, context, task);
 
             String targetDir = rootDir + File.separator + task.getModule();
             String filePath = targetDir + task.getFileName();
@@ -54,4 +60,20 @@ public class GenerationExecutor {
             FileUtils.writeToFile(resultText, filePath, overwrite);
         }
     }
+
+
+    private static void executePlugin(Configuration configuration, Context context, Task task) {
+
+        List<String> plugins = task.getPlugins();
+        if (plugins == null || plugins.isEmpty()) {
+            return;
+        }
+
+        for (String plugin : plugins) {
+            PluginExecutor pluginExecutor = (PluginExecutor) ClassUtils.newInstance(plugin);
+            pluginExecutor.execute(configuration, context, task);
+        }
+    }
+
+
 }

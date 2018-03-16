@@ -52,7 +52,6 @@ public class FileUtils {
     public static void writeToFile (String text, String filePath, boolean overwrite) {
 
         try {
-
             File file = new File(filePath);
             if (file.exists() && !overwrite) {
                 LOGGER.info(String.format("file %s is exist, do nothing", filePath));
