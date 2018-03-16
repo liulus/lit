@@ -28,12 +28,12 @@ public class EventConfig {
     }
 
     @Bean
-    public PublishEventAspect publishEventAspect() {
-        return new PublishEventAspect();
+    public PublishEventAspect publishEventAspect(EventPublisher eventPublisher) {
+        return new PublishEventAspect(eventPublisher);
     }
 
     @EventListener
-    @Event(eventClass = AppStartedEvent.class)
+    @Event(AppStartedEvent.class)
     public void registerEvent(ContextRefreshedEvent event) {
 
         ApplicationContext context = event.getApplicationContext();

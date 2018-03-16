@@ -14,7 +14,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD})
 public @interface Event {
 
-    Class<?> eventClass();
+    Class<?>[] value() default {};
+
+    Class<?>[] classes() default {};
 
     Type publishType() default Type.ASYNC;
 

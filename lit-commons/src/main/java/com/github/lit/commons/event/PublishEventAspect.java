@@ -2,6 +2,9 @@ package com.github.lit.commons.event;
 
 import com.github.lit.commons.bean.BeanUtils;
 import com.github.lit.commons.util.ClassUtils;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
@@ -9,7 +12,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 
-import javax.annotation.Resource;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -20,26 +22,35 @@ import java.util.Objects;
  * version $Id: PublishEventAspect.java, v 0.1 Exp $
  */
 @Aspect
+@NoArgsConstructor
 public class PublishEventAspect {
 
     private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
-    @Resource
+    @Setter
+    @Getter
     private EventPublisher eventPublisher;
+
+    public PublishEventAspect(EventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
+    }
 
     @After("@annotation(event)")
     public void publishEvent(JoinPoint joinPoint, Event event) {
 
-        Class<?> eventClass = event.eventClass();
-
-        Object eventObj = newInstanceAndInitProperty(eventClass, joinPoint);
-
-        if (Objects.equals(event.publishType(), Event.Type.SYNC)) {
-            eventPublisher.publish(eventObj);
-        } else if (Objects.equals(event.publishType(), Event.Type.ASYNC)) {
-            eventPublisher.asyncPublish(eventObj);
+        Class<?>[] classes = event.value();
+        if (classes.length == 0) {
+            classes = event.classes();
         }
+        for (Class<?> eventClass : classes) {
+            Object eventObj = newInstanceAndInitProperty(eventClass, joinPoint);
 
+            if (Objects.equals(event.publishType(), Event.Type.SYNC)) {
+                eventPublisher.publish(eventObj);
+            } else if (Objects.equals(event.publishType(), Event.Type.ASYNC)) {
+                eventPublisher.asyncPublish(eventObj);
+            }
+        }
     }
 
     /**
