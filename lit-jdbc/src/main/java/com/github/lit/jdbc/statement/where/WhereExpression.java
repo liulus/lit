@@ -21,11 +21,19 @@ public class WhereExpression<T extends Condition> implements Expression {
     }
 
     public T equalsTo(Object value) {
+        if (value == null) {
+            isNull();
+            return condition;
+        }
         addParamValue(Logic.EQ, value);
         return condition;
     }
 
     public T notEqualsTo(Object value) {
+        if (value == null) {
+            isNotNull();
+            return condition;
+        }
         addParamValue(Logic.NOT_EQ, value);
         return condition;
     }
