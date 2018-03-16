@@ -66,7 +66,7 @@ allprojects {
 }
 
 
-archivesBaseName = "lit-box"
+archivesBaseName = "lit"
 
 apply plugin: 'signing'
 
@@ -108,12 +108,12 @@ uploadArchives {
                 packaging 'jar'
                 // optionally artifactId can be defined here
                 description 'a simple orm tools'
-                url 'https://github.com/liulus/lit-box'
+                url 'https://github.com/liulus/lit'
 
                 scm {
-                    connection 'scm:git@github.com:liulus/lit-box.git'
-                    developerConnection 'scm:git@github.com:liulus/lit-box.git'
-                    url 'https://github.com/liulus/lit-box'
+                    connection 'scm:git@github.com:liulus/lit.git'
+                    developerConnection 'scm:git@github.com:liulus/lit.git'
+                    url 'https://github.com/liulus/lit'
                 }
 
                 licenses {

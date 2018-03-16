@@ -1,4 +1,4 @@
-rootProject.name = 'lit-box'
+rootProject.name = 'lit'
 include 'lit-commons'
 include 'lit-jdbc'
 include 'lit-code'
