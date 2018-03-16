@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.config;
+package com.github.lit.test.config;
 
 /**
  * User : liulu

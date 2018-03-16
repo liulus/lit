@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.util;
+package com.github.lit.test.util;
 
 import com.github.lit.commons.util.PropertyUtils;
 import com.github.lit.jdbc.AbstractJdbcTools;

@@ -1,0 +1,12 @@
+archivesBaseName = "lit-test"
+dependencies {
+    testCompile project(':lit-jdbc')
+
+    testCompile libs.slf4j_api
+    testCompile libs.c3p0
+    testCompile libs.mysql
+    testCompile libs.spring_test
+    testCompile libs.spring_jdbc
+    testCompile libs.spring_context
+
+}

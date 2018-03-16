@@ -1,9 +1,9 @@
-package com.github.lit.jdbc.main;
+package com.github.lit.test.main;
 
 import com.github.lit.jdbc.JdbcTools;
-import com.github.lit.jdbc.model.Goods;
-import com.github.lit.jdbc.model.Supplier;
-import com.github.lit.jdbc.util.DBUtils;
+import com.github.lit.test.model.Goods;
+import com.github.lit.test.model.Supplier;
+import com.github.lit.test.util.DBUtils;
 import org.junit.Test;
 
 /**

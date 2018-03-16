@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.config;
+package com.github.lit.test.config;
 
 import com.github.lit.jdbc.spring.config.EnableLitJdbc;
 import com.mchange.v2.c3p0.ComboPooledDataSource;

@@ -1,4 +1,4 @@
-package com.github.lit.jdbc.model;
+package com.github.lit.test.model;
 
 import com.github.lit.commons.page.Page;
 import lombok.Builder;
