@@ -2,7 +2,7 @@ package com.github.lit.code.parser;
 
 import com.github.lit.code.config.Configuration;
 import com.github.lit.code.context.ConfigConst;
-import com.oracle.javafx.jmx.json.JSONDocument;
+import com.google.gson.JsonElement;
 
 import java.util.Map;
 
@@ -19,12 +19,12 @@ public class ConstantParser implements ConfigParser {
     }
 
     @Override
-    public void parser(Configuration configuration, JSONDocument jsonDocument) {
-        if (!jsonDocument.isObject()) {
+    public void parser(Configuration configuration, JsonElement jsonElement) {
+        if (jsonElement.isJsonArray()) {
             return;
         }
-        for (Map.Entry<String, Object> entry : jsonDocument.object().entrySet()) {
-            String value = String.valueOf(entry.getValue());
+        for (Map.Entry<String, JsonElement> entry : jsonElement.getAsJsonObject().entrySet()) {
+            String value = entry.getValue().getAsString();
             if (value == null || value.length() == 0 || "null".equals(value)) {
                 continue;
             }

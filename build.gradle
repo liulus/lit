@@ -10,6 +10,7 @@ ext {
 
     libs = [
             guava                 : "com.google.guava:guava:20.0",
+            gson                  : "com.google.code.gson:gson:2.8.2",
             junit                 : "junit:junit:4.12",
             lombok                : "org.projectlombok:lombok:1.16.14",
             slf4j_api             : "org.slf4j:slf4j-api:${slf4jVersion}",

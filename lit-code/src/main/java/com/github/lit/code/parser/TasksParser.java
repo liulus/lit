@@ -4,10 +4,8 @@ import com.github.lit.code.config.Configuration;
 import com.github.lit.code.context.ConfigConst;
 import com.github.lit.code.context.GenerationException;
 import com.github.lit.code.context.Task;
-import com.github.lit.code.util.BeanUtils;
-import com.oracle.javafx.jmx.json.JSONDocument;
-
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 /**
  * User : liulu
@@ -22,22 +20,19 @@ public class TasksParser implements ConfigParser {
     }
 
     @Override
-    public void parser(Configuration configuration, JSONDocument jsonDocument) {
-        if (!jsonDocument.isArray()) {
+    public void parser(Configuration configuration, JsonElement jsonElement) {
+        if (jsonElement.isJsonObject()) {
             throw new GenerationException("tasks 配置项必须是数组");
         }
-        List<Object> array = jsonDocument.array();
-        if (array == null || array.isEmpty()) {
-            return;
-        }
-        for (Object obj : array) {
-            JSONDocument subDocument = (JSONDocument) obj;
-            if (subDocument.isArray()) {
+
+        Gson gson = new Gson();
+        for (JsonElement subElement : jsonElement.getAsJsonArray()) {
+            if (subElement.isJsonArray()) {
                 throw new GenerationException("tasks子项不能为数组!");
             }
-            Task task = BeanUtils.mapToBean(subDocument.object(), Task.class);
-            String _package = subDocument.getString("package");
-            task.set_package(_package);
+            Task task = gson.fromJson(subElement.toString(), Task.class);
+            String _Package = subElement.getAsJsonObject().get("package").getAsString();
+            task.set_package(_Package);
             configuration.addTask(task);
         }
     }

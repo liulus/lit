@@ -1,7 +1,7 @@
 package com.github.lit.code.parser;
 
 import com.github.lit.code.config.Configuration;
-import com.oracle.javafx.jmx.json.JSONDocument;
+import com.google.gson.JsonElement;
 
 /**
  * User : liulu
@@ -12,5 +12,5 @@ public interface ConfigParser {
 
     String getConfigKey();
 
-    void parser(Configuration configuration, JSONDocument jsonDocument);
+    void parser(Configuration configuration, JsonElement jsonElement);
 }

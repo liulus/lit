@@ -4,8 +4,8 @@ import com.github.lit.code.config.Configuration;
 import com.github.lit.code.config.JdbcConfig;
 import com.github.lit.code.context.ConfigConst;
 import com.github.lit.code.context.GenerationException;
-import com.github.lit.code.util.BeanUtils;
-import com.oracle.javafx.jmx.json.JSONDocument;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 /**
  * User : liulu
@@ -20,11 +20,12 @@ public class JdbcParser implements ConfigParser {
     }
 
     @Override
-    public void parser(Configuration configuration, JSONDocument jsonDocument) {
-        if (jsonDocument.isArray()) {
+    public void parser(Configuration configuration, JsonElement jsonElement) {
+        if (jsonElement.isJsonArray()) {
             throw new GenerationException("table 配置项不能是数组!");
         }
-        JdbcConfig jdbcConfig = BeanUtils.mapToBean(jsonDocument.object(), JdbcConfig.class);
+
+        JdbcConfig jdbcConfig = new Gson().fromJson(jsonElement.toString(), JdbcConfig.class);
         if (jdbcConfig.getDbName() != null && !jdbcConfig.getDbName().isEmpty()) {
             jdbcConfig.setDbName(jdbcConfig.getDbName().toUpperCase());
         }

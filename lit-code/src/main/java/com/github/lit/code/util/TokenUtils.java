@@ -14,11 +14,11 @@ public class TokenUtils {
     private static final String CLOSE_TOKEN = "}";
 
 
-    public static String parseToken(Map<String, Object> context, String text) {
+    public static String parseToken(Map<String, String> context, String text) {
         return parseToken(context, text, OPEN_TOKEN, CLOSE_TOKEN);
     }
 
-    public static String parseToken(Map<String, Object> context, String text, String openToken, String closeToken) {
+    public static String parseToken(Map<String, String> context, String text, String openToken, String closeToken) {
         if (text == null || text.isEmpty()) {
             return text;
         }
@@ -40,8 +40,8 @@ public class TokenUtils {
             // openToken 和 closeToken 之间的 key
             String key = String.valueOf(src, start + openToken.length(), end - start - openToken.length());
             // key 对应的 value 存在 -> 替换, 不存在 -> 不做处理
-            Object value = context.get(key);
-            if (value != null) {
+            String value = context.get(key);
+            if (value != null && !value.isEmpty()) {
                 result.append(value);
             } else {
                 result.append(src, start, end - start + closeToken.length());

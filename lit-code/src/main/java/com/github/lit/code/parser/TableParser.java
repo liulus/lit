@@ -8,9 +8,9 @@ import com.github.lit.code.context.GenerationException;
 import com.github.lit.code.context.Table;
 import com.github.lit.code.datebase.DataBaseProvider;
 import com.github.lit.code.datebase.DateBaseProviderFactory;
-import com.github.lit.code.util.BeanUtils;
 import com.github.lit.code.util.DBUtils;
-import com.oracle.javafx.jmx.json.JSONDocument;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,16 +37,17 @@ public class TableParser implements ConfigParser {
     }
 
     @Override
-    public void parser(Configuration configuration, JSONDocument jsonDocument) {
+    public void parser(Configuration configuration, JsonElement jsonElement) {
 
         JdbcConfig jdbcConfig = configuration.getJdbcConfig();
         if (jdbcConfig == null) {
             throw new GenerationException("未找到数据库连接配置, 不能解析表信息! 如果不需要解析表信息, 请将配置文件中的 table 配置删除!");
         }
-        if (jsonDocument.isArray()) {
+        if (jsonElement.isJsonArray()) {
             throw new GenerationException("table 配置项不能是数组!");
         }
-        Table table = BeanUtils.mapToBean(jsonDocument.object(), Table.class);
+
+        Table table = new Gson().fromJson(jsonElement.toString(), Table.class);
         configuration.setTable(table);
 
         // 初始化数据连接
