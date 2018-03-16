@@ -36,7 +36,7 @@ public interface Select<T> extends Condition<Select<T>, SelectExpression<T>> {
      * @param fieldNames 实体中的属性
      * @return Select
      */
-    Select<T> addField(Class<?> tableClass, String... fieldNames);
+    Select<T> additionalField(Class<?> tableClass, String... fieldNames);
 
     Select<T> function(String funcName);
 
