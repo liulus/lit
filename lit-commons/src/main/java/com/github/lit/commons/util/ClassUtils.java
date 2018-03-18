@@ -1,7 +1,6 @@
 package com.github.lit.commons.util;
 
 import com.github.lit.commons.exception.SysException;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -130,16 +129,42 @@ public class ClassUtils {
     }
 
     /**
+     * Determine whether the {@link Class} identified by the supplied name is present
+     * and can be loaded. Will return {@code false} if either the class or
+     * one of its dependencies is not present or cannot be loaded.
+     *
+     * @param className the name of the class to check
+     *                  (may be {@code null}, which indicates the default class loader)
+     * @return whether the specified class is present
+     */
+    public static boolean isPresent(String className) {
+        try {
+            loadClass(className);
+            return true;
+        } catch (Throwable ex) {
+            // Class or one of its dependencies is not present...
+            return false;
+        }
+    }
+
+    /**
      * 加载类
      *
-     * @param clazz class
+     * @param name class
      * @return Class对象
      */
-    public static Class<?> loadClass(String clazz) {
+    public static Class<?> loadClass(String name) {
+        return loadClass(name, null);
+    }
+
+    public static Class<?> loadClass(String name, ClassLoader classLoader) {
+        if (classLoader == null) {
+            classLoader = getDefaultClassLoader();
+        }
         try {
-            return getDefaultClassLoader().loadClass(clazz);
+            return classLoader != null ? classLoader.loadClass(name) : Class.forName(name);
         } catch (Exception e) {
-            throw new SysException("根据class名称加载class失败:" + clazz, e);
+            throw new SysException("根据class名称加载class失败:" + name, e);
         }
     }
 
@@ -152,8 +177,7 @@ public class ClassUtils {
         ClassLoader cl = null;
         try {
             cl = Thread.currentThread().getContextClassLoader();
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Cannot access thread context ClassLoader - falling back...
         }
         if (cl == null) {
@@ -163,8 +187,7 @@ public class ClassUtils {
                 // getClassLoader() returning null indicates the bootstrap ClassLoader
                 try {
                     cl = ClassLoader.getSystemClassLoader();
-                }
-                catch (Throwable ex) {
+                } catch (Throwable ex) {
                     // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
                 }
             }

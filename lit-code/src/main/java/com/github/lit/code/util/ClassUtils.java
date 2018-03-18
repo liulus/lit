@@ -4,8 +4,6 @@ package com.github.lit.code.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * 反射工具类
@@ -13,23 +11,6 @@ import java.util.Map;
  * Date : 2016-10-2 9:48
  */
 public class ClassUtils {
-
-    /**
-     * Map with primitive wrapper type as key and corresponding primitive
-     * type as value, for example: Integer.class -> int.class.
-     */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<Class<?>, Class<?>>(8);
-
-    static {
-        primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
-        primitiveWrapperTypeMap.put(Byte.class, byte.class);
-        primitiveWrapperTypeMap.put(Character.class, char.class);
-        primitiveWrapperTypeMap.put(Double.class, double.class);
-        primitiveWrapperTypeMap.put(Float.class, float.class);
-        primitiveWrapperTypeMap.put(Integer.class, int.class);
-        primitiveWrapperTypeMap.put(Long.class, long.class);
-        primitiveWrapperTypeMap.put(Short.class, short.class);
-    }
 
 
     /**
@@ -154,28 +135,5 @@ public class ClassUtils {
         return classLoader;
     }
 
-
-    /**
-     * Check if the given class represents a primitive wrapper,
-     * i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double.
-     *
-     * @param clazz the class to check
-     * @return whether the given class is a primitive wrapper class
-     */
-    public static boolean isPrimitiveWrapper(Class<?> clazz) {
-        return primitiveWrapperTypeMap.containsKey(clazz);
-    }
-
-    /**
-     * Check if the given class represents a primitive (i.e. boolean, byte,
-     * char, short, int, long, float, or double) or a primitive wrapper
-     * (i.e. Boolean, Byte, Character, Short, Integer, Long, Float, or Double).
-     *
-     * @param clazz the class to check
-     * @return whether the given class is a primitive or primitive wrapper class
-     */
-    public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
-        return (clazz.isPrimitive() || isPrimitiveWrapper(clazz));
-    }
 
 }
