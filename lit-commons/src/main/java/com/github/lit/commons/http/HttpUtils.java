@@ -20,8 +20,6 @@ public class HttpUtils {
 
         URL url = new URL("www.baidu.com");
 
-        HttpURLConnection httpURLConnection = new HttpURLConnection(url);
-
 
         HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
         OutputStream outputStream1 = urlConnection.getOutputStream();

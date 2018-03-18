@@ -79,21 +79,31 @@ public class WhereExpression<T extends Condition> implements Expression {
     }
 
     public T in(Object... values) {
-        if (values != null && values.length > 0) {
-            addParamValue(Logic.IN, values);
+        if (values == null || values.length == 0 || values[0] == null) {
+            return condition;
         }
+        if (values.length == 1) {
+            addParamValue(Logic.EQ, values[0]);
+            return condition;
+        }
+        addParamValue(Logic.IN, values);
         return condition;
     }
 
     public T notIn(Object... values) {
-        if (values != null && values.length > 0) {
-            addParamValue(Logic.NOT_IN, values);
+        if (values == null || values.length == 0 || values[0] == null) {
+            return condition;
         }
+        if (values.length == 1) {
+            addParamValue(Logic.NOT_EQ, values[0]);
+            return condition;
+        }
+        addParamValue(Logic.NOT_IN, values);
         return condition;
     }
 
 
-    private void addParamValue(Logic logic, Object...values) {
+    private void addParamValue(Logic logic, Object... values) {
         ((AbstractCondition) condition).addParamValue(logic, values);
     }
 
