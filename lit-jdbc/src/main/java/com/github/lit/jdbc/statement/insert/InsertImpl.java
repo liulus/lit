@@ -108,8 +108,8 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (columns.size() <= 0) {
             return "";
         }
-        StringBuilder insertBuilder = new StringBuilder("INSERT INTO ( ");
-        StringBuilder valueBuilder = new StringBuilder(") VALUE ( ");
+        StringBuilder insertBuilder = new StringBuilder("INSERT INTO ").append(tableInfo.getTableName()).append(" ( ");
+        StringBuilder valueBuilder = new StringBuilder(") VALUES ( ");
 
         for (int i = 0; i < columns.size(); i++) {
             insertBuilder.append(columns.get(i)).append(", ");
