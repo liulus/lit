@@ -4,10 +4,10 @@
 <mapper namespace="${mapper.longClassName}">
     <resultMap id="BaseResultMap" type="${model.longClassName}">
 #foreach($column in ${table.columns})
-#if(${column.isPrimaryKey})
+#if(${column.primaryKey})
 #set($primaryKey = $column)
         <id column="${column.name}" property="${column.camelName}"/>
-#else
+#elseif($column.name != 'tenant_id')
         <result column="${column.name}" property="${column.camelName}"/>
 #end
 #end
@@ -16,7 +16,7 @@
     <sql id="base_column_list">
 #set($columnSize = ${table.columns.size()})
 #foreach($column in ${table.columns})
-${column.name}#if($velocityCount < $columnSize), #end
+#if($column.name != 'tenant_id')${column.name}#end#if($velocityCount < $columnSize && $column.name != 'tenant_id'), #end
 #end
 
     </sql>
@@ -25,7 +25,7 @@ ${column.name}#if($velocityCount < $columnSize), #end
         select
         <include refid="base_column_list"/>
         from ${table.name}
-        where ${primaryKey.name} = #{id}
+        where ${primaryKey.name} = #{id} and teant_id = #{tenantId}
     </select>
 
     <select id="findPageList" resultMap="BaseResultMap" parameterType="${qo.longClassName}">
@@ -38,16 +38,24 @@ ${column.name}#if($velocityCount < $columnSize), #end
         insert into ${table.name}
         <trim prefix="(" suffix=")" suffixOverrides=",">
 #foreach($column in ${table.columns})
+#if($column.name != 'tenant_id')
             <if test="${column.camelName} != null">
                 ${column.name},
             </if>
+#else
+            tenant_id,
+#end
 #end
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
 #foreach($column in ${table.columns})
+#if(${column.name} == 'tenant_id')
+            #{tenantId},
+#else
             <if test="${column.camelName} != null">
                 #{${column.camelName}},
             </if>
+#end
 #end
         </trim>
     </insert>
@@ -57,17 +65,19 @@ ${column.name}#if($velocityCount < $columnSize), #end
         <set>
 #foreach($column in ${table.columns})
 #if(!${column.isPrimaryKey})
-            <if test="${column.camelName} != null">
-                ${column.name} = #{${column.camelName}},
-            </if>
+#if($column.name != 'tenant_id')
+        <if test="${column.camelName} != null">
+            ${column.name} = #{${column.camelName}},
+        </if>
+#end
 #end
 #end
         </set>
-        where ${primaryKey.name} = #{${primaryKey.camelName}}
+        where ${primaryKey.name} = #{${primaryKey.camelName}} and teant_id = #{tenantId}
     </update>
 
     <delete id="deleteById" parameterType="java.lang.Long">
-        delete from ${table.name} where ${primaryKey.name} = #{id}
+        delete from ${table.name} where ${primaryKey.name} = #{id} and teant_id = #{tenantId}
     </delete>
 
 </mapper>

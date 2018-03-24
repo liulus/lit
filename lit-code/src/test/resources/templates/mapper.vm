@@ -1,4 +1,4 @@
-package ${packageName};
+package ${mapper.packageName};
 
 import ${model.longClassName};
 import ${qo.longClassName};

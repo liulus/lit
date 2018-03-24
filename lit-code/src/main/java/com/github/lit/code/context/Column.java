@@ -1,5 +1,6 @@
 package com.github.lit.code.context;
 
+import com.github.lit.code.util.NameUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -35,5 +36,9 @@ public class Column implements Serializable {
     private String javaType;
 
     private String javaClass;
+
+    public String getCamelName() {
+        return NameUtils.getCamelName(name);
+    }
 
 }

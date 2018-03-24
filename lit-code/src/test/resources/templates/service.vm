@@ -1,9 +1,9 @@
-package ${packageName};
+package ${service.packageName};
 
+import com.ipampas.framework.model.Page;
 import ${model.longClassName};
 import ${qo.longClassName};
 
-import java.util.List;
 
 /**
  * ${table.desc} service 接口
@@ -51,6 +51,6 @@ public interface ${service.shortClassName} {
      * @param ${qo.firstLowerClassName} 查询对象
      * @return ${table.desc}列表
      */
-    List<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName});
+    Page<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName});
 
 }

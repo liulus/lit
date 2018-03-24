@@ -34,12 +34,12 @@ public class InsertImpl extends AbstractStatement implements Insert {
     }
 
     @Override
-    public Insert into(String fieldName, Object value) {
-        return into(fieldName, value, false);
+    public Insert set(String fieldName, Object value) {
+        return set(fieldName, value, false);
     }
 
     @Override
-    public Insert into(String fieldName, Object value, boolean isNative) {
+    public Insert set(String fieldName, Object value, boolean isNative) {
         columns.add(getColumnName(fieldName));
         expressions.add(isNative ? value.toString() : "?");
         if (!isNative) {
@@ -74,10 +74,10 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (generator != null) {
             if (generator instanceof SequenceGenerator) {
                 idValue = ((SequenceGenerator) generator).generateKey(dbName, tableInfo.getSequenceName());
-                this.into(tableInfo.getPkField(), idValue, true);
+                this.set(tableInfo.getPkField(), idValue, true);
             } else {
                 idValue = generator.generateKey(dbName);
-                this.into(tableInfo.getPkField(), idValue);
+                this.set(tableInfo.getPkField(), idValue);
             }
         }
 

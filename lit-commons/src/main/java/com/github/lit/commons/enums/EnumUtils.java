@@ -1,4 +1,4 @@
-package com.github.lit.commons.util;
+package com.github.lit.commons.enums;
 
 /**
  * User : liulu

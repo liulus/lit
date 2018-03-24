@@ -1,5 +1,5 @@
 -- MYSQL 建表语句
-CREATE TABLE lit_goods (
+CREATE TABLE test_goods (
     goods_Id bigint NOT NULL AUTO_INCREMENT COMMENT '商品Id',
     code VARCHAR(32) NOT NULL COMMENT '商品编码',
     bar_code VARCHAR(32) COMMENT '商品条形码',

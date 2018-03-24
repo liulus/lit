@@ -33,10 +33,10 @@ public class SqlTest {
     @Test
     public void insert2() {
         jdbcTools.createInsert(Goods.class)
-                .into("code", "00000000")
-                .into("name", "test_goods")
-                .into("price", 19.98)
-                .into("purchaser_Code", "'33018002'", true)
+                .set("code", "00000000")
+                .set("name", "test_goods")
+                .set("price", 19.98)
+                .set("purchaser_Code", "'33018002'", true)
                 .execute();
     }
 

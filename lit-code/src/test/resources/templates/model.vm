@@ -1,9 +1,9 @@
-package ${packageName};
+package ${model.packageName};
 
 import lombok.*;
 
 import java.io.Serializable;
-#foreach($im in ${importClasses})
+#foreach($im in ${table.importClasses})
 import ${im};
 #end
 
@@ -13,19 +13,21 @@ import ${im};
  * @author generator
  * @version 1.0.0
  */
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
+@NoArgsConstructor
 public class ${model.shortClassName} implements Serializable{
 
     /** serialVersionUID */
     private static final long serialVersionUID = ${serialVersionUID}L;
 
 #foreach($column in ${table.columns})
-#if(${column.comment})
+#if(${column.comment} && $column.name != 'tenant_id')
     /** ${column.comment} */
 #end
+#if($column.name != 'tenant_id')
     private ${column.javaType} ${column.camelName};
 
+#end
 #end
 }

@@ -1,8 +1,10 @@
 {
   "constant": {
     "overwrite": true,
-    "onChildModule": true,
-    "baseModule": "lit-code"
+    "onChildModule": false,
+    "rootDir": "/Users/liulu/Documents/project/git/panshi/",
+    "baseModule": "operation",
+    "basePackage": "com.ipampas.panshi.operation"
   },
   "jdbc": {
     "url": "jdbc:mysql://localhost:3306/panshi?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
@@ -10,19 +12,66 @@
     "password": "123456"
   },
   "table": {
-    "name": "role",
-    "desc": "角色",
+    "name": "dictionary",
+    "desc": "字典",
     "tasks": [
-      "model"
+      "model",
+      "qo",
+      "mapper",
+      "xmlMapper",
+      "service",
+      "serviceImpl"
     ]
   },
   "tasks": [
     {
       "name": "model",
-      "plugins": ["com.github.lit.code.plugin.SerialVersionUIDPlugin"],
-      "template": "/templates/test.vm",
-      "module": "${baseModule}",
-      "package": "com.github.lit.code.test"
+      "plugins": [
+        "com.github.lit.code.plugin.SerialVersionUIDPlugin"
+      ],
+      "template": "/templates/model.vm",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-model",
+      "package": "${basePackage}.model"
+    },
+    {
+      "name": "qo",
+      "plugins": [
+        "com.github.lit.code.plugin.SerialVersionUIDPlugin"
+      ],
+      "template": "/templates/qo.vm",
+      "suffixAdd": "Qo",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-model",
+      "package": "${basePackage}.dto"
+    },
+    {
+      "name": "mapper",
+      "template": "/templates/mapper.vm",
+      "suffixAdd": "Mapper",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
+      "package": "${basePackage}.mapper"
+    },
+    {
+      "name": "xmlMapper",
+      "template": "/templates/xmlMapper.vm",
+      "suffixAdd": "Mapper",
+      "fileType": ".xml",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
+      "srcDir": "src/main/resources",
+      "package": "mapper.${basePackage}.mapper"
+    },
+    {
+      "name": "service",
+      "template": "/templates/service.vm",
+      "suffixAdd": "Service",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-api",
+      "package": "${basePackage}.service"
+    },
+    {
+      "name": "serviceImpl",
+      "suffixAdd": "ServiceImpl",
+      "template": "/templates/serviceImpl.vm",
+      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
+      "package": "${basePackage}.service.iml"
     }
   ]
 }

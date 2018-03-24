@@ -17,7 +17,7 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@Table(name = "lit_supplier")
+@Table(name = "test_supplier")
 public class Supplier implements Serializable {
 
     private static final long serialVersionUID = 548793140920612818L;
