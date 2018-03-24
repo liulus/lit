@@ -313,7 +313,7 @@ set方法第一个参数是属性名, 第二个参数是属性的值, 执行 sql
 * 指定 where 条件
 
 where 中的逻辑( >, <=, like) 等以方法的形式代替, 可用的方法有:  
-   like, notLike, isNull, isNotNull, in, notIn
+   like, notLike, isNull, isNotNull, in, notIn  
    equalsTo(=), notEqualsTo(!=), lessThan(<), lessThanOrEqual(<=), graterThan(>), graterThanOrEqual(>=)
 
 ```
