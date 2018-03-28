@@ -12,7 +12,7 @@ lit-jdbc 是一个简单易用的jdbc工具,
 
 ```xml
     <dependency>
-        <groupId>com.github.lit</groupId>
+        <groupId>com.github.liulus</groupId>
         <artifactId>lit-jdbc</artifactId>
         <version>2.0</version>
     </dependency>
