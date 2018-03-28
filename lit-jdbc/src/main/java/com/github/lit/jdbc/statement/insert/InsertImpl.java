@@ -35,20 +35,28 @@ public class InsertImpl extends AbstractStatement implements Insert {
 
     @Override
     public Insert set(String fieldName, Object value) {
-        return set(fieldName, value, false);
-    }
 
-    @Override
-    public Insert set(String fieldName, Object value, boolean isNative) {
         columns.add(getColumnName(fieldName));
+        if (value == null) {
+            expressions.add("null");
+            return this;
+        }
         expressions.add(isNative ? value.toString() : "?");
-        if (!isNative) {
+        if (isNative) {
+            isNative = false;
+        } else {
             params.add(value);
         }
         return this;
     }
 
-//    @Override
+    @Override
+    public Insert natively() {
+        isNative = true;
+        return this;
+    }
+
+    //    @Override
     public Insert initEntity(Object entity) {
         this.entity = entity;
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
@@ -74,7 +82,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (generator != null) {
             if (generator instanceof SequenceGenerator) {
                 idValue = ((SequenceGenerator) generator).generateKey(dbName, tableInfo.getSequenceName());
-                this.set(tableInfo.getPkField(), idValue, true);
+                this.natively().set(tableInfo.getPkField(), idValue);
             } else {
                 idValue = generator.generateKey(dbName);
                 this.set(tableInfo.getPkField(), idValue);

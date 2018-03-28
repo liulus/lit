@@ -25,6 +25,8 @@ public abstract class AbstractStatement implements Statement {
 
     protected List<Object> params;
 
+    protected boolean isNative = false;
+
     @Setter
     protected StatementExecutor executor;
 

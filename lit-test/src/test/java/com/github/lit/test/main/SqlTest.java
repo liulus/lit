@@ -36,7 +36,7 @@ public class SqlTest {
                 .set("code", "00000000")
                 .set("name", "test_goods")
                 .set("price", 19.98)
-                .set("purchaser_Code", "'33018002'", true)
+                .natively().set("purchaser_Code", "'33018002'")
                 .execute();
     }
 
@@ -88,11 +88,12 @@ public class SqlTest {
                 .include("supplierCode")
                 .function("count").alias("goodsCount")
                 .tableAlias("ls")
-                .where("goodsId").graterThan(3L)
+                .where("goodsId").natively().graterThan(3L)
+                .natively()
                 .and("price").graterThanOrEqual(10D)
                 .groupBy("supplierCode")
                 .and("goodsCount").graterThan(100)
-                .and("goodsCount").lessThan(200)
+                .and("goodsCount").lessThanOrEqual(200)
                 .list();
     }
 

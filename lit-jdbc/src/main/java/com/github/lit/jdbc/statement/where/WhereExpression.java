@@ -20,6 +20,11 @@ public class WhereExpression<T extends Condition> implements Expression {
         this.condition = condition;
     }
 
+    public WhereExpression<T> natively() {
+        condition.natively();
+        return this;
+    }
+
     public T equalsTo(Object value) {
         if (value == null) {
             isNull();
