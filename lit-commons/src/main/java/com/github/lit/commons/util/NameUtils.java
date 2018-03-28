@@ -5,6 +5,7 @@ package com.github.lit.commons.util;
  * User : liulu
  * Date : 2016-10-4 16:05
  */
+@SuppressWarnings("Duplicates")
 public class NameUtils {
 
     /**
@@ -14,7 +15,7 @@ public class NameUtils {
      * @return 驼峰命名
      */
     public static String getCamelName(String name) {
-        return getCamelName(name, '_');
+        return getCamelName(name, "_");
     }
 
     /**
@@ -24,17 +25,20 @@ public class NameUtils {
      * @param delimiter 分隔符
      * @return 驼峰命名
      */
-    public static String getCamelName(String name, Character delimiter) {
+    public static String getCamelName(String name, String delimiter) {
 
         if (name == null || name.isEmpty()) {
             return "";
         }
+
+        char delimiterChar = delimiter.charAt(0);
+
         StringBuilder sb = new StringBuilder();
         name = name.toLowerCase();
 
         for (int i = 0; i < name.length(); i++) {
             char c = name.charAt(i);
-            if (c == delimiter) {
+            if (c == delimiterChar) {
                 i++;
                 sb.append(Character.toUpperCase(name.charAt(i)));
             } else {
@@ -43,6 +47,30 @@ public class NameUtils {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 将名称首字母大写
+     *
+     * @param name 原名称
+     * @return 首字母大写名称
+     */
+    public static String getFirstUpperName(String name) {
+        if (name == null || name.isEmpty()) {
+            return "";
+        }
+        return Character.toUpperCase(name.charAt(0)) + name.substring(1);
+    }
+
+    /**
+     * @param name 原名称
+     * @return 首字母小写名称
+     */
+    public static String getFirstLowerName(String name) {
+        if (name == null || name.isEmpty()) {
+            return "";
+        }
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
     /**

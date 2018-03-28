@@ -10,10 +10,4 @@ dependencies {
     compileOnly libs.spring_tx
     compileOnly libs.spring_context
 
-    testCompile libs.c3p0
-    testCompile libs.spring_test
-    testCompile libs.logback_classic
-    testCompile libs.jcl_over_slf4j
-
-
 }

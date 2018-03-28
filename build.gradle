@@ -10,6 +10,7 @@ ext {
 
     libs = [
             guava                 : "com.google.guava:guava:20.0",
+            gson                  : "com.google.code.gson:gson:2.8.2",
             junit                 : "junit:junit:4.12",
             lombok                : "org.projectlombok:lombok:1.16.14",
             slf4j_api             : "org.slf4j:slf4j-api:${slf4jVersion}",
@@ -20,6 +21,7 @@ ext {
             druid                 : "com.alibaba:druid:${druidVersion}",
             mysql                 : "mysql:mysql-connector-java:5.1.38",
             oracle                : "com.oracle:ojdbc6:11.2.0.3",
+            velocity              : "org.apache.velocity:velocity:1.7",
             spring_context        : "org.springframework:spring-context:${springVersion}",
             spring_context_support: "org.springframework:spring-context-support:${springVersion}",
             spring_jdbc           : "org.springframework:spring-jdbc:${springVersion}",
@@ -33,7 +35,7 @@ ext {
 
 allprojects {
     group = 'com.github.liulus'
-    version = '2.0.0-SNAPSHOT'
+    version = '2.0-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'maven'
@@ -62,76 +64,76 @@ allprojects {
     javadoc {
         options.encoding = "UTF-8"
     }
-}
+
+    apply plugin: 'signing'
 
 
-archivesBaseName = "lit"
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
 
-apply plugin: 'signing'
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
 
+    artifacts {
+        archives javadocJar, sourcesJar
+    }
 
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
+    signing {
+        sign configurations.archives
+    }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-artifacts {
-    archives javadocJar, sourcesJar
-}
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: 'liulu', password: 'Lycd1993981!')
+                }
 
-signing {
-    sign configurations.archives
-}
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: 'liulu', password: 'Lycd1993981!')
+                }
 
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: 'liulu', password: 'Lycd1993981!')
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: 'liulu', password: 'Lycd1993981!')
-            }
-
-            pom.project {
-                name 'lit'
-                packaging 'jar'
-                // optionally artifactId can be defined here
-                description 'a simple orm tools'
-                url 'https://github.com/liulus/lit'
-
-                scm {
-                    connection 'scm:git@github.com:liulus/lit.git'
-                    developerConnection 'scm:git@github.com:liulus/lit.git'
+                pom.project {
+                    name 'lit'
+                    packaging 'jar'
+                    // optionally artifactId can be defined here
+                    description 'a simple orm tools'
                     url 'https://github.com/liulus/lit'
-                }
 
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    scm {
+                        connection 'scm:git@github.com:liulus/lit.git'
+                        developerConnection 'scm:git@github.com:liulus/lit.git'
+                        url 'https://github.com/liulus/lit'
                     }
-                }
 
-                developers {
-                    developer {
-                        name 'liulu'
-                        email 'skary0812@yeah.net'
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            name 'liulu'
+                            email 'skary0812@yeah.net'
+                        }
                     }
                 }
             }
         }
     }
 }
+
+
+archivesBaseName = "lit"
+
 
 
 

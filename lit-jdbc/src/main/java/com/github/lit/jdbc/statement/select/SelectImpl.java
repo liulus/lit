@@ -54,7 +54,6 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
      */
     private List<OrderByElement> orderBy;
 
-
     /**
      * 黑名单字段
      */
@@ -129,7 +128,7 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    public Select<T> addField(Class<?> tableClass, String... fieldNames) {
+    public Select<T> additionalField(Class<?> tableClass, String... fieldNames) {
         initJoin(tableClass);
 
         for (String fieldName : fieldNames) {

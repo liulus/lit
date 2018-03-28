@@ -51,6 +51,12 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
     }
 
     @Override
+    public T natively() {
+        isNative = true;
+        return (T) this;
+    }
+
+    @Override
     public T and() {
         appendString(" AND ", null);
         return (T) this;
@@ -93,15 +99,24 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
             case GTEQ:
             case LIKE:
             case NOT_LIKE:
-                sb.append(JDBC_PARAM);
-                params.add(values[0]);
+                sb.append(isNative ? String.valueOf(values[0]) : "?");
+                if (isNative) {
+                    isNative = false;
+                } else {
+                    params.add(values[0]);
+                }
                 break;
             case IN:
             case NOT_IN:
                 sb.append("( ");
                 for (Object value : values) {
-                    params.add(value);
-                    sb.append(JDBC_PARAM).append(", ");
+                    sb.append(isNative ? String.valueOf(value) : "?").append(", ");
+                    if (!isNative) {
+                        params.add(value);
+                    }
+                }
+                if (isNative) {
+                    isNative = false;
                 }
                 sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
         }

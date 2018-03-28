@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ import java.util.List;
 @Slf4j
 public class JdbcTemplateExecutor extends AbstractStatementExecutor {
 
-    private static final Class<?>[] SINGLE_CLASS_ARRAY = new Class<?>[]{Number.class, String.class};
+    private static final Class<?>[] SIMPLE_CLASS_ARRAY = new Class<?>[]{Number.class, CharSequence.class, Date.class};
 
 
     @Setter
@@ -99,7 +100,7 @@ public class JdbcTemplateExecutor extends AbstractStatementExecutor {
             return jdbcTemplate.queryForList(sql, args, context.getRequireType());
         }
 
-        for (Class<?> clazz : SINGLE_CLASS_ARRAY) {
+        for (Class<?> clazz : SIMPLE_CLASS_ARRAY) {
             if (clazz.isAssignableFrom(context.getRequireType())) {
                 return jdbcTemplate.queryForList(sql, args, context.getRequireType());
             }

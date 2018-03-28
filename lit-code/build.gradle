@@ -1,0 +1,9 @@
+archivesBaseName = "lit-code"
+
+dependencies {
+    compile libs.velocity
+    compile libs.gson
+
+    testCompile libs.mysql
+
+}

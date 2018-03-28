@@ -21,6 +21,8 @@ public interface Condition<T extends Condition,E extends Expression> extends Sta
 
     E primaryKey();
 
+    T natively();
+
     T and();
 
     T or();

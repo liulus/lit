@@ -34,21 +34,29 @@ public class InsertImpl extends AbstractStatement implements Insert {
     }
 
     @Override
-    public Insert into(String fieldName, Object value) {
-        return into(fieldName, value, false);
-    }
+    public Insert set(String fieldName, Object value) {
 
-    @Override
-    public Insert into(String fieldName, Object value, boolean isNative) {
         columns.add(getColumnName(fieldName));
-        expressions.add(isNative ? value.toString() : JDBC_PARAM);
-        if (!isNative) {
+        if (value == null) {
+            expressions.add("null");
+            return this;
+        }
+        expressions.add(isNative ? value.toString() : "?");
+        if (isNative) {
+            isNative = false;
+        } else {
             params.add(value);
         }
         return this;
     }
 
-//    @Override
+    @Override
+    public Insert natively() {
+        isNative = true;
+        return this;
+    }
+
+    //    @Override
     public Insert initEntity(Object entity) {
         this.entity = entity;
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
@@ -57,7 +65,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
             Object value = BeanUtils.invokeReaderMethod(entity, entry.getKey());
             if (value != null) {
                 columns.add(entry.getValue());
-                expressions.add(JDBC_PARAM);
+                expressions.add("?");
                 params.add(value);
             }
         }
@@ -74,10 +82,10 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (generator != null) {
             if (generator instanceof SequenceGenerator) {
                 idValue = ((SequenceGenerator) generator).generateKey(dbName, tableInfo.getSequenceName());
-                this.into(tableInfo.getPkField(), idValue, true);
+                this.natively().set(tableInfo.getPkField(), idValue);
             } else {
                 idValue = generator.generateKey(dbName);
-                this.into(tableInfo.getPkField(), idValue);
+                this.set(tableInfo.getPkField(), idValue);
             }
         }
 
@@ -108,8 +116,8 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (columns.size() <= 0) {
             return "";
         }
-        StringBuilder insertBuilder = new StringBuilder("INSERT INTO ( ");
-        StringBuilder valueBuilder = new StringBuilder(") VALUE ( ");
+        StringBuilder insertBuilder = new StringBuilder("INSERT INTO ").append(tableInfo.getTableName()).append(" ( ");
+        StringBuilder valueBuilder = new StringBuilder(") VALUES ( ");
 
         for (int i = 0; i < columns.size(); i++) {
             insertBuilder.append(columns.get(i)).append(", ");

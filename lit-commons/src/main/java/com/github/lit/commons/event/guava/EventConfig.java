@@ -1,9 +1,6 @@
 package com.github.lit.commons.event.guava;
 
-import com.github.lit.commons.event.AppStartedEvent;
-import com.github.lit.commons.event.Event;
-import com.github.lit.commons.event.EventComponent;
-import com.github.lit.commons.event.EventPublisher;
+import com.github.lit.commons.event.*;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import org.springframework.context.ApplicationContext;
@@ -30,9 +27,13 @@ public class EventConfig {
         return new GuavaEventPublisher(new EventBus(), asyncEventBus);
     }
 
+    @Bean
+    public PublishEventAspect publishEventAspect(EventPublisher eventPublisher) {
+        return new PublishEventAspect(eventPublisher);
+    }
 
     @EventListener
-    @Event(eventClass = AppStartedEvent.class)
+    @Event(AppStartedEvent.class)
     public void registerEvent(ContextRefreshedEvent event) {
 
         ApplicationContext context = event.getApplicationContext();

@@ -1,0 +1,61 @@
+package ${packageName};
+
+import com.github.pagehelper.Page;
+import ${model.longClassName};
+import ${qo.longClassName};
+import ${service.longClassName};
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+
+/**
+ * ${table.desc} rest 接口
+ *
+ * Author: Created by code generator
+ * Date: ${date}
+ */
+@RestController
+@RequestMapping("/${model.pathThroughClassName}")
+public class ${rest.shortClassName} {
+
+    @Resource
+    private ${service.shortClassName} ${service.firstLowerClassName};
+
+
+    @PostMapping("/list")
+    public com.ipampas.framework.model.Page<${model.shortClassName}> list(@RequestBody ${qo.shortClassName} ${qo.firstLowerClassName}) {
+        Page<${model.shortClassName}> list = (Page<${model.shortClassName}>) ${service.firstLowerClassName}.findPageList(${qo.firstLowerClassName});
+
+        // myBatis 分页对象转为 pps 统一分页对象
+        com.ipampas.framework.model.Page<${model.shortClassName}> result = new com.ipampas.framework.model.Page<>();
+        result.setPageNo(list.getPageNum());
+        result.setPageRecords(list);
+        result.setPageSize(list.getPageSize());
+        result.setTotalRecords(list.getTotal());
+
+        return result;
+    }
+
+    @GetMapping("/{id}")
+    public ${model.shortClassName} detail(@PathVariable Long id) {
+        return ${service.firstLowerClassName}.findById(id);
+    }
+
+    @PostMapping
+    public Long add(@RequestBody ${model.shortClassName} ${model.firstLowerClassName}) {
+        return ${service.firstLowerClassName}.insert(${model.firstLowerClassName});
+    }
+
+    @PutMapping
+    public Integer update(@RequestBody ${model.shortClassName} ${model.firstLowerClassName}) {
+        return ${service.firstLowerClassName}.updateById(${model.firstLowerClassName});
+    }
+
+    @DeleteMapping("{id}")
+    public Integer deleteById(@PathVariable Long id) {
+        return ${service.firstLowerClassName}.deleteById(id);
+    }
+
+
+}
+

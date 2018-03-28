@@ -1,0 +1,21 @@
+package ${qo.packageName};
+
+import com.ipampas.framework.model.Page;
+import lombok.*;
+
+/**
+ * ${table.desc}
+ *
+ * @author generator
+ * @version 1.0.0
+ */
+@Data
+@Builder
+@NoArgsConstructor
+public class ${qo.shortClassName} extends Page {
+
+    /** serialVersionUID */
+    private static final long serialVersionUID = ${serialVersionUID}L;
+
+
+}

@@ -38,7 +38,7 @@ public class BeanUtils {
      * @return t
      */
     public static <T> T underLineKeyMapToBean(Map<String, Object> map, Class<T> beanClass) {
-        return mapToBean(map, beanClass, '_');
+        return mapToBean(map, beanClass, "_");
     }
 
     /**
@@ -51,7 +51,7 @@ public class BeanUtils {
      * @param <T>       bean 的类型
      * @return t
      */
-    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, Character delimiter) {
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> beanClass, String delimiter) {
 
         if (map == null || map.isEmpty()) {
             return null;
@@ -64,7 +64,7 @@ public class BeanUtils {
             if (value != null) {
                 String propertyName = entry.getKey();
                 if (delimiter != null) {
-                    propertyName = propertyName.contains(delimiter.toString()) ?
+                    propertyName = propertyName.contains(delimiter) ?
                             NameUtils.getCamelName(propertyName, delimiter)
                             : propertyName.toLowerCase();
                 }
@@ -97,7 +97,7 @@ public class BeanUtils {
      * @return t list
      */
     public static <T> List<T> underlineKeyMapToBean(List<Map<String, Object>> mapList, Class<T> beanClass) {
-        return mapToBean(mapList, beanClass, '_');
+        return mapToBean(mapList, beanClass, "_");
     }
 
     /**
@@ -110,7 +110,7 @@ public class BeanUtils {
      * @param <T>       the type parameter
      * @return t list
      */
-    public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass, Character delimiter) {
+    public static <T> List<T> mapToBean(List<Map<String, Object>> mapList, Class<T> beanClass, String delimiter) {
 
         if (mapList == null) {
             return null;

@@ -20,12 +20,25 @@ public class WhereExpression<T extends Condition> implements Expression {
         this.condition = condition;
     }
 
+    public WhereExpression<T> natively() {
+        condition.natively();
+        return this;
+    }
+
     public T equalsTo(Object value) {
+        if (value == null) {
+            isNull();
+            return condition;
+        }
         addParamValue(Logic.EQ, value);
         return condition;
     }
 
     public T notEqualsTo(Object value) {
+        if (value == null) {
+            isNotNull();
+            return condition;
+        }
         addParamValue(Logic.NOT_EQ, value);
         return condition;
     }
@@ -71,21 +84,31 @@ public class WhereExpression<T extends Condition> implements Expression {
     }
 
     public T in(Object... values) {
-        if (values != null && values.length > 0) {
-            addParamValue(Logic.IN, values);
+        if (values == null || values.length == 0 || values[0] == null) {
+            return condition;
         }
+        if (values.length == 1) {
+            addParamValue(Logic.EQ, values[0]);
+            return condition;
+        }
+        addParamValue(Logic.IN, values);
         return condition;
     }
 
     public T notIn(Object... values) {
-        if (values != null && values.length > 0) {
-            addParamValue(Logic.NOT_IN, values);
+        if (values == null || values.length == 0 || values[0] == null) {
+            return condition;
         }
+        if (values.length == 1) {
+            addParamValue(Logic.NOT_EQ, values[0]);
+            return condition;
+        }
+        addParamValue(Logic.NOT_IN, values);
         return condition;
     }
 
 
-    private void addParamValue(Logic logic, Object...values) {
+    private void addParamValue(Logic logic, Object... values) {
         ((AbstractCondition) condition).addParamValue(logic, values);
     }
 

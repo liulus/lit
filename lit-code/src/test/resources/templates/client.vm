@@ -1,0 +1,39 @@
+package ${packageName};
+
+import com.ipampas.framework.model.Page;
+import ${model.longClassName};
+import ${qo.longClassName};
+import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
+/**
+* ${table.desc} 接口客户端
+*
+* Author: Created by code generator
+* Date: ${date}
+*/
+@FeignClient("panshi-server")
+public interface ${client.shortClassName} {
+
+
+    @PostMapping("/${model.pathThroughClassName}/list")
+    Page<${model.shortClassName}> findPageList(@RequestBody ${qo.shortClassName} ${qo.firstLowerClassName});
+
+
+    @GetMapping("/${model.pathThroughClassName}/{id}")
+    ${model.shortClassName} get(@PathVariable("id") Long id);
+
+
+    @PostMapping("/${model.pathThroughClassName}")
+    Long insert(@RequestBody ${model.shortClassName} ${model.firstLowerClassName});
+
+
+    @PutMapping("/${model.pathThroughClassName}")
+    Integer update(@RequestBody ${model.shortClassName} ${model.firstLowerClassName});
+
+
+    @DeleteMapping("/${model.pathThroughClassName}/{id}")
+    Integer deleteById(@PathVariable("id") Long id);
+
+
+}
