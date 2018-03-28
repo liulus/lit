@@ -1,6 +1,8 @@
 # lit-jdbc
 
-lit-jdbc 是一个简单易用的jdbc工具,
+lit-jdbc 是一个简单易用的jdbc工具, 
+
+借鉴 [selfly@dexcoder-assistant](https://github.com/selfly/dexcoder-assistant)
 
 可以在service或其他需要的地方注入 JdbcTools 来完成对数据库的操作
 
