@@ -32,9 +32,9 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
     }
 
     @Override
-    public Update set(String fieldName, Object value) {
+    public Update set(String property, Object value) {
 
-        columns.add(getColumnName(fieldName));
+        columns.add(getColumn(property));
 
         expressions.add(value == null ? "null" : "?");
         if (value != null) {
@@ -44,10 +44,14 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
         return this;
     }
 
+    @Override
+    public Update set(PropertyFunction<?, ?> property, Object value) {
+        return set(getProperty(property), value);
+    }
 
-//    @Override
+    //    @Override
     public Update initEntity(Object entity, boolean isIgnoreNull) {
-        Object key = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
+        Object key = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkProperty());
         if (key == null) {
             throw new NullPointerException("primary key value must not be null for update!");
         }
@@ -55,7 +59,7 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
 
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            if (Objects.equals(tableInfo.getPkField(), entry.getKey())) {
+            if (Objects.equals(tableInfo.getPkProperty(), entry.getKey())) {
                 continue;
             }
 
@@ -71,7 +75,7 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
 
             }
         }
-        where(tableInfo.getPkField()).equalsTo(key);
+        where(tableInfo.getPkProperty()).equalsTo(key);
 
         return this;
     }

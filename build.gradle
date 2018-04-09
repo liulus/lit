@@ -35,7 +35,7 @@ ext {
 
 allprojects {
     group = 'com.github.liulus'
-    version = '2.0'
+    version = '2.1-SNAPSHOT'
 
     apply plugin: 'java'
     apply plugin: 'maven'

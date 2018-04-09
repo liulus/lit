@@ -34,9 +34,9 @@ public class InsertImpl extends AbstractStatement implements Insert {
     }
 
     @Override
-    public Insert set(String fieldName, Object value) {
+    public Insert set(String property, Object value) {
 
-        columns.add(getColumnName(fieldName));
+        columns.add(getColumn(property));
         if (value == null) {
             expressions.add("null");
             return this;
@@ -48,6 +48,11 @@ public class InsertImpl extends AbstractStatement implements Insert {
             params.add(value);
         }
         return this;
+    }
+
+    @Override
+    public <T, R> Insert set(PropertyFunction<T, R>  property, Object value) {
+        return set(getProperty(property), value);
     }
 
     @Override
@@ -82,10 +87,10 @@ public class InsertImpl extends AbstractStatement implements Insert {
         if (generator != null) {
             if (generator instanceof SequenceGenerator) {
                 idValue = ((SequenceGenerator) generator).generateKey(dbName, tableInfo.getSequenceName());
-                this.natively().set(tableInfo.getPkField(), idValue);
+                this.natively().set(tableInfo.getPkProperty(), idValue);
             } else {
                 idValue = generator.generateKey(dbName);
-                this.set(tableInfo.getPkField(), idValue);
+                this.set(tableInfo.getPkProperty(), idValue);
             }
         }
 
@@ -100,7 +105,7 @@ public class InsertImpl extends AbstractStatement implements Insert {
         Object id = context.isGenerateKeyByDb() ? obj : idValue;
 
         if (entity != null) {
-            BeanUtils.invokeWriteMethod(entity, tableInfo.getPkField(), id);
+            BeanUtils.invokeWriteMethod(entity, tableInfo.getPkProperty(), id);
             entity = null;
         }
 

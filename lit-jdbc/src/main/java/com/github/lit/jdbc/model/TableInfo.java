@@ -1,6 +1,7 @@
 package com.github.lit.jdbc.model;
 
 import com.github.lit.commons.bean.BeanUtils;
+import com.github.lit.commons.util.ClassUtils;
 import com.github.lit.commons.util.NameUtils;
 import com.github.lit.jdbc.annotation.*;
 import com.github.lit.jdbc.enums.GenerationType;
@@ -37,7 +38,7 @@ public class TableInfo {
     /**
      * 主键属性名
      */
-    private String pkField;
+    private String pkProperty;
 
     /**
      * 主键对应的列名
@@ -86,24 +87,24 @@ public class TableInfo {
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
             // 过滤有 @Transient 注解的字段
-            if (field.isAnnotationPresent(Transient.class)) {
+            if (field.isAnnotationPresent(Transient.class) || !ClassUtils.isSimpleValueType(field.getType())) {
                 continue;
             }
 
-            String fieldName = field.getName();
+            String property = field.getName();
             Column column = field.getAnnotation(Column.class);
-            String columnName = column != null ? column.name().toLowerCase() : NameUtils.getUnderLineName(fieldName);
+            String columnName = column != null ? column.name().toLowerCase() : NameUtils.getUnderLineName(property);
 
             // 主键信息 : 有 @Id 注解的字段，没有默认是 类名+Id
-            if (field.isAnnotationPresent(Id.class) || (fieldName.equalsIgnoreCase(clazz.getSimpleName() + "Id") && pkField == null)) {
-                pkField = fieldName;
+            if (field.isAnnotationPresent(Id.class) || (property.equalsIgnoreCase(clazz.getSimpleName() + "Id") && pkProperty == null)) {
+                pkProperty = property;
                 pkColumn = columnName;
                 initAutoKeyInfo(field);
             }
             // 将字段对应的列放到 map 中
-            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(clazz, fieldName);
+            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(clazz, property);
             if (descriptor != null && descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
-                fieldColumnMap.put(fieldName, columnName);
+                fieldColumnMap.put(property, columnName);
             }
         }
     }

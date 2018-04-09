@@ -70,6 +70,9 @@ public class NameUtils {
         if (name == null || name.isEmpty()) {
             return "";
         }
+        if (Character.isLowerCase(name.charAt(0))) {
+            return name;
+        }
         return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
 

@@ -12,11 +12,13 @@ public interface Insert extends Statement {
     /**
      * insert 语句操作的字段和值
      *
-     * @param fieldName 字段名
+     * @param property 字段名
      * @param value     字段值
      * @return Insert
      */
-    Insert set(String fieldName, Object value);
+    Insert set(String property, Object value);
+
+    <T, R> Insert set(PropertyFunction<T, R> property, Object value);
 
     /**
      * 不使用 ? 占位符拼接sql

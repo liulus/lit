@@ -76,12 +76,12 @@ public interface JdbcTools {
      * 根据某一属性查询一条记录
      *
      * @param clazz         实体对象class
-     * @param propertyName  属性名
+     * @param property  属性名
      * @param propertyValue 属性值
      * @param <T>           实体对象类型
      * @return 实体对象
      */
-    <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue);
+    <T> T findByProperty(Class<T> clazz, String property, Object propertyValue);
 
     <T> T find(Class<T> clazz, String sql, Object[] args);
 

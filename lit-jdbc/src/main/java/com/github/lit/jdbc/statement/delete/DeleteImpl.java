@@ -22,9 +22,9 @@ public class DeleteImpl extends AbstractCondition<Delete, WhereExpression<Delete
 //    @Override
     public DeleteImpl initEntity(Object entity) {
 
-        Object keyValue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkField());
+        Object keyValue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkProperty());
         if (keyValue != null && (!(keyValue instanceof String) || !((String) keyValue).isEmpty())) {
-            this.where(tableInfo.getPkField()).equalsTo(keyValue);
+            this.where(tableInfo.getPkProperty()).equalsTo(keyValue);
         } else {
             throw new NullPointerException("primary key value must not be null for delete!");
         }

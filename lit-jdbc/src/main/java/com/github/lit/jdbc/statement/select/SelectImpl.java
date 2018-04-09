@@ -109,31 +109,47 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     // -------------------------------- select item ----------------------------------
 
     @Override
-    public Select<T> include(String... fieldNames) {
+    public Select<T> include(String... properties) {
         // 自定义白名单, 不添加默认字段
         addDefaultColumn = false;
-        for (String fieldName : fieldNames) {
-            selectItems.add(new SelectExpressionItem(getColumnExpression(fieldName)));
+        for (String property : properties) {
+            selectItems.add(new SelectExpressionItem(getColumnExpression(property)));
         }
         return this;
     }
 
     @Override
-    public Select<T> exclude(String... fieldNames) {
+    public <R> Select<T> include(PropertyFunction<T, R> property) {
+        return include(getProperty(property));
+    }
+
+    @Override
+    public Select<T> exclude(String... properties) {
         if (excludes == null) {
-            excludes = new ArrayList<>(fieldNames.length);
+            excludes = new ArrayList<>(properties.length);
         }
-        excludes.addAll(Arrays.asList(fieldNames));
+        excludes.addAll(Arrays.asList(properties));
         return this;
     }
 
     @Override
-    public Select<T> additionalField(Class<?> tableClass, String... fieldNames) {
+    public <R> Select<T> exclude(PropertyFunction<T, R> property) {
+        return exclude(getProperty(property));
+    }
+
+    @Override
+    public Select<T> additionalField(Class<?> tableClass, String... properties) {
         initJoin(tableClass);
 
-        for (String fieldName : fieldNames) {
-            selectItems.add(new SelectExpressionItem(getColumnExpression(tableClass, fieldName)));
+        for (String property : properties) {
+            selectItems.add(new SelectExpressionItem(getColumnExpression(tableClass, property)));
         }
+        return this;
+    }
+
+    @Override
+    public <S, R> Select<T> additionalField(PropertyFunction<S, R> property) {
+        additionalField(getPropertyClass(property), getProperty(property));
         return this;
     }
 
@@ -144,25 +160,30 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    public Select<T> function(String funcName, String... fieldNames) {
-        function(funcName, false, fieldNames);
+    public Select<T> function(String funcName, String... properties) {
+        function(funcName, false, properties);
         return this;
     }
 
     @Override
-    public Select<T> function(String funcName, boolean distinct, String... fieldNames) {
+    public <S, R> Select<T> function(String funcName, PropertyFunction<S, R> property) {
+        return function(funcName, getProperty(property));
+    }
+
+    @Override
+    public Select<T> function(String funcName, boolean distinct, String... properties) {
         // 自定义函数时, 不添加默认字段
         addDefaultColumn = false;
 
         Function function = new Function();
 
-        boolean noFuncColumns = fieldNames == null || fieldNames.length == 0 || fieldNames[0] == null;
+        boolean noFuncColumns = properties == null || properties.length == 0 || properties[0] == null;
         if (noFuncColumns) {
             function.setAllColumns(true);
         } else {
-            List<Expression> funcColumns = new ArrayList<>(fieldNames.length);
-            for (String fieldName : fieldNames) {
-                funcColumns.add(getColumnExpression(fieldName));
+            List<Expression> funcColumns = new ArrayList<>(properties.length);
+            for (String property : properties) {
+                funcColumns.add(getColumnExpression(property));
             }
             function.setParameters(new ExpressionList(funcColumns));
         }
@@ -245,8 +266,14 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    public SelectExpression<T> on(Class<?> tableClass, String fieldName) {
-        getLastJoin().setOnExpression(getColumnExpression(tableClass, fieldName));
+    public SelectExpression<T> on(Class<?> tableClass, String property) {
+        getLastJoin().setOnExpression(getColumnExpression(tableClass, property));
+        return getExpression();
+    }
+
+    @Override
+    public <S, R> SelectExpression<T> on(PropertyFunction<S, R> property) {
+        getLastJoin().setOnExpression(getColumnExpression(getPropertyClass(property), getProperty(property)));
         return getExpression();
     }
 
@@ -280,23 +307,33 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     // -------------------------------- condition ----------------------------------
 
     @Override
-    public SelectExpression<T> and(Class<?> tableClass, String fieldName) {
+    public SelectExpression<T> and(Class<?> tableClass, String property) {
         if (lastOperation == Operation.HAVING) {
-            appendString(having, " AND ", tableClass, fieldName);
+            appendString(having, " AND ", tableClass, property);
             return getExpression();
         }
-        appendString(where, " AND ", tableClass, fieldName);
+        appendString(where, " AND ", tableClass, property);
         return getExpression();
     }
 
     @Override
-    public SelectExpression<T> or(Class<?> tableClass, String fieldName) {
+    public <S, R> SelectExpression<T> and(PropertyFunction<S, R> property) {
+        return and(getPropertyClass(property), getProperty(property));
+    }
+
+    @Override
+    public SelectExpression<T> or(Class<?> tableClass, String property) {
         if (lastOperation == Operation.HAVING) {
-            appendString(having, " OR ", tableClass, fieldName);
+            appendString(having, " OR ", tableClass, property);
             return getExpression();
         }
-        appendString(where, " OR ", tableClass, fieldName);
+        appendString(where, " OR ", tableClass, property);
         return getExpression();
+    }
+
+    @Override
+    public <S, R> SelectExpression<T> or(PropertyFunction<S, R> property) {
+        return or(getPropertyClass(property), getProperty(property));
     }
 
     @Override
@@ -313,29 +350,49 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    public SelectExpression<T> having(String fieldName) {
-        having.append(getColumnExpression(fieldName).toString());
+    public <R> Select<T> groupBy(PropertyFunction<T, R> property) {
+        return groupBy(getProperty(property));
+    }
+
+    @Override
+    public SelectExpression<T> having(String property) {
+        having.append(getColumnExpression(property).toString());
         return getExpression();
     }
 
     @Override
-    public Select<T> asc(String... fieldNames) {
-        return order(true, fieldNames);
+    public <R> SelectExpression<T> having(PropertyFunction<T, R> property) {
+        return having(getProperty(property));
     }
 
     @Override
-    public Select<T> desc(String... fieldNames) {
-        return order(false, fieldNames);
+    public Select<T> asc(String... properties) {
+        return order(true, properties);
     }
 
-    private Select<T> order(boolean asc, String... fieldNames) {
+    @Override
+    public <R> Select<T> asc(PropertyFunction<T, R> property) {
+        return asc(getProperty(property));
+    }
+
+    @Override
+    public Select<T> desc(String... properties) {
+        return order(false, properties);
+    }
+
+    @Override
+    public <R> Select<T> desc(PropertyFunction<T, R> property) {
+        return desc(getProperty(property));
+    }
+
+    private Select<T> order(boolean asc, String... properties) {
         if (orderBy == null) {
             orderBy = new ArrayList<>();
         }
 
-        for (String fieldName : fieldNames) {
+        for (String property : properties) {
             OrderByElement element = new OrderByElement();
-            element.setExpression(getColumnExpression(fieldName));
+            element.setExpression(getColumnExpression(property));
             element.setAsc(asc);
             orderBy.add(element);
         }
@@ -430,24 +487,24 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    protected void appendString(String operator, String fieldName) {
+    protected void appendString(String operator, String property) {
         if (lastOperation == Operation.JOIN) {
             throw new UnsupportedOperationException("join expression should not invoke this method!");
         }
         if (lastOperation == Operation.HAVING) {
-            appendString(having, operator, entityClass, fieldName);
+            appendString(having, operator, entityClass, property);
             return;
         }
-        appendString(where, operator, entityClass, fieldName);
+        appendString(where, operator, entityClass, property);
     }
 
-    private void appendString(StringBuilder sb, String operator, Class<?> clazz, String fieldName) {
+    private void appendString(StringBuilder sb, String operator, Class<?> clazz, String property) {
         if (lastOperation == Operation.JOIN) {
             throw new UnsupportedOperationException("join expression should not invoke this method!");
         }
         sb.append(sb.length() == 0 ? "" : operator);
-        if (fieldName != null && fieldName.length() > 0) {
-            sb.append(getColumnExpression(clazz, fieldName));
+        if (property != null && property.length() > 0) {
+            sb.append(getColumnExpression(clazz, property));
         }
     }
 
@@ -499,18 +556,18 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     /**
      * 由 SelectExpression 调用, 可能是 join on, where, having 的条件, 根据 lastOperation 判断
      *
-     * @param logic     logic
-     * @param clazz     class
-     * @param fieldName fieldName
+     * @param logic    logic
+     * @param clazz    class
+     * @param property property
      */
-    public void setExpression(Logic logic, Class<?> clazz, String fieldName) {
+    public void setExpression(Logic logic, Class<?> clazz, String property) {
 
         if (lastOperation == Operation.JOIN) {
             lastOperation = Operation.NONE;
-            setJoinOnExpression(logic, clazz, fieldName);
+            setJoinOnExpression(logic, clazz, property);
             return;
         }
-        Column columnExpression = getColumnExpression(clazz, fieldName);
+        Column columnExpression = getColumnExpression(clazz, property);
         if (lastOperation == Operation.HAVING) {
             having.append(logic.getCode()).append(columnExpression.toString());
             return;
@@ -518,7 +575,7 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
         where.append(logic.getCode()).append(columnExpression.toString());
     }
 
-    private void setJoinOnExpression(Logic logic, Class<?> clazz, String fieldName) {
+    private void setJoinOnExpression(Logic logic, Class<?> clazz, String property) {
         Join join = getLastJoin();
         Expression left = join.getOnExpression();
 
@@ -536,44 +593,44 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
             throw new UnsupportedOperationException("join on expression do not support this logic" + logic.getCode());
         }
         binaryExpression.setLeftExpression(left);
-        binaryExpression.setRightExpression(getColumnExpression(clazz, fieldName));
+        binaryExpression.setRightExpression(getColumnExpression(clazz, property));
         join.setOnExpression(binaryExpression);
     }
 
 
-    private Column getColumnExpression(String fieldName) {
-        String column = tableInfo.getFieldColumnMap().get(fieldName);
-        return column == null || column.isEmpty() ? new Column(fieldName) : new Column(table, column);
+    private Column getColumnExpression(String property) {
+        String column = tableInfo.getFieldColumnMap().get(property);
+        return column == null || column.isEmpty() ? new Column(property) : new Column(table, column);
     }
 
-    private Column getColumnExpression(Class<?> clazz, String fieldName) {
+    private Column getColumnExpression(Class<?> clazz, String property) {
         if (clazz == null) {
-            return new Column(fieldName);
+            return new Column(property);
         }
         if (Objects.equals(clazz, entityClass)) {
-            return getColumnExpression(fieldName);
+            return getColumnExpression(property);
         }
         Table table = joinTables.get(clazz);
         if (table == null) {
-            return new Column(fieldName);
+            return new Column(property);
         }
-        String column = joinTableInfos.get(clazz).getFieldColumnMap().get(fieldName);
-        return column == null || column.isEmpty() ? new Column(fieldName) : new Column(table, column);
+        String column = joinTableInfos.get(clazz).getFieldColumnMap().get(property);
+        return column == null || column.isEmpty() ? new Column(property) : new Column(table, column);
     }
 
-    private String getColumnName(Class<?> clazz, String fieldName) {
+    private String getColumnName(Class<?> clazz, String property) {
         if (clazz == null) {
-            return fieldName;
+            return property;
         }
         if (Objects.equals(clazz, entityClass)) {
-            return tableInfo.getTableNameOrAlias() + "." + getColumnName(fieldName);
+            return tableInfo.getTableNameOrAlias() + "." + getColumn(property);
         }
         TableInfo joinTableInfo = joinTableInfos.get(clazz);
         if (joinTableInfo == null) {
-            return fieldName;
+            return property;
         }
-        String column = joinTableInfo.getFieldColumnMap().get(fieldName);
-        return column == null || column.isEmpty() ? fieldName : joinTableInfo.getTableNameOrAlias() + "." + column;
+        String column = joinTableInfo.getFieldColumnMap().get(property);
+        return column == null || column.isEmpty() ? property : joinTableInfo.getTableNameOrAlias() + "." + column;
     }
 
     enum Operation {

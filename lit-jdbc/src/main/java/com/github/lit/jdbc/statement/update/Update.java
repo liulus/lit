@@ -13,11 +13,13 @@ public interface Update extends Condition<Update, WhereExpression<Update>> {
     /**
      * createUpdate 语句中的 set 字段
      *
-     * @param fieldName 字段名
+     * @param property 字段名
      * @param value     字段值
      * @return update
      */
-    Update set(String fieldName, Object value);
+    Update set(String property, Object value);
+
+    Update set(PropertyFunction<?, ?> property, Object value);
 
     /**
      * @return 受影响的记录数

@@ -78,8 +78,8 @@ public abstract class AbstractJdbcTools implements JdbcTools {
     }
 
     @Override
-    public <T> T findByProperty(Class<T> clazz, String propertyName, Object propertyValue) {
-        return select(clazz).where(propertyName).equalsTo(propertyValue).single();
+    public <T> T findByProperty(Class<T> clazz, String property, Object propertyValue) {
+        return select(clazz).where(property).equalsTo(propertyValue).single();
     }
 
     @Override

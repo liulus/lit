@@ -1,6 +1,7 @@
 package com.github.lit.test.main;
 
 import com.github.lit.jdbc.JdbcTools;
+import com.github.lit.test.base.BaseTest;
 import com.github.lit.test.model.Goods;
 import com.github.lit.test.model.Supplier;
 import com.github.lit.test.util.DBUtils;
@@ -11,7 +12,7 @@ import org.junit.Test;
  * Date : 2018/3/13 10:39
  * version $Id: SqlTest.java, v 0.1 Exp $
  */
-public class SqlTest {
+public class SqlTest extends BaseTest {
 
     private static JdbcTools jdbcTools;
 
@@ -95,6 +96,44 @@ public class SqlTest {
                 .and("goodsCount").graterThan(100)
                 .and("goodsCount").lessThanOrEqual(200)
                 .list();
+    }
+
+    @Test
+    public void test3() {
+
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 10000; i++) {
+            jdbcTools.select(Goods.class).tableAlias("lg")
+                    .include("supplierCode")
+                    .function("count").alias("goodsCount")
+                    .tableAlias("ls")
+                    .where("goodsId").natively().graterThan(3L)
+                    .natively()
+                    .and("price").graterThanOrEqual(10D)
+                    .groupBy("supplierCode")
+                    .and("goodsCount").graterThan(100)
+                    .and("goodsCount").lessThanOrEqual(200);
+        }
+
+        printUseTime(start);
+
+        start = System.currentTimeMillis();
+
+        for (int i = 0; i < 10000; i++) {
+            jdbcTools.select(Goods.class).tableAlias("lg")
+                    .include(Goods::getSupplierCode)
+                    .function("count").alias("goodsCount")
+                    .tableAlias("ls")
+                    .where(Goods::getGoodsId).natively().graterThan(3L)
+                    .natively()
+                    .and(Goods::getCode).graterThanOrEqual(10D)
+                    .groupBy(Goods::getSupplierCode)
+                    .and("goodsCount").graterThan(100)
+                    .and("goodsCount").lessThanOrEqual(200);
+        }
+        printUseTime(start);
+
+
     }
 
 

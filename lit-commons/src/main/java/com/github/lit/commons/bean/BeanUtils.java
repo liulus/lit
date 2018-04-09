@@ -62,13 +62,13 @@ public class BeanUtils {
 
             Object value = entry.getValue();
             if (value != null) {
-                String propertyName = entry.getKey();
+                String property = entry.getKey();
                 if (delimiter != null) {
-                    propertyName = propertyName.contains(delimiter) ?
-                            NameUtils.getCamelName(propertyName, delimiter)
-                            : propertyName.toLowerCase();
+                    property = property.contains(delimiter) ?
+                            NameUtils.getCamelName(property, delimiter)
+                            : property.toLowerCase();
                 }
-                invokeWriteMethod(result, propertyName, value);
+                invokeWriteMethod(result, property, value);
             }
         }
         return result;
@@ -276,25 +276,25 @@ public class BeanUtils {
      * 返回JavaBean给定JavaBean给定属性的 <code>PropertyDescriptors</code>
      *
      * @param beanClass    the other class
-     * @param propertyName the name of the property
+     * @param property the name of the property
      * @return the corresponding PropertyDescriptor, or <code>null</code> if none
      */
-    public static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass, String propertyName) {
-        return IntrospectionCache.forClass(beanClass).getPropertyDescriptor(propertyName);
+    public static PropertyDescriptor getPropertyDescriptor(Class<?> beanClass, String property) {
+        return IntrospectionCache.forClass(beanClass).getPropertyDescriptor(property);
     }
 
     /**
      * 执行指定属性的 reader 方法 （get方法）
      *
      * @param bean         执行方法的对象
-     * @param propertyName 执行reader 方法的属性
+     * @param property 执行reader 方法的属性
      * @return 方法返回值
      */
-    public static Object invokeReaderMethod(Object bean, String propertyName) {
+    public static Object invokeReaderMethod(Object bean, String property) {
         if (bean == null) {
             return null;
         }
-        PropertyDescriptor pd = getPropertyDescriptor(bean.getClass(), propertyName);
+        PropertyDescriptor pd = getPropertyDescriptor(bean.getClass(), property);
         return pd == null ? null : ClassUtils.invokeMethod(pd.getReadMethod(), bean);
     }
 
@@ -302,14 +302,14 @@ public class BeanUtils {
      * 执行指定属性的 Write 方法 （set方法）
      *
      * @param bean         执行方法的对象
-     * @param propertyName 执行Write 方法的属性
+     * @param property 执行Write 方法的属性
      * @param values       要设置的值
      */
-    public static void invokeWriteMethod(Object bean, String propertyName, Object... values) {
+    public static void invokeWriteMethod(Object bean, String property, Object... values) {
         if (bean == null) {
             return;
         }
-        PropertyDescriptor pd = getPropertyDescriptor(bean.getClass(), propertyName);
+        PropertyDescriptor pd = getPropertyDescriptor(bean.getClass(), property);
         Method writeMethod;
         if (pd == null || (writeMethod = pd.getWriteMethod()) == null) {
             return;

@@ -21,32 +21,52 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
     }
 
     @Override
-    public E where(String fieldName) {
-        appendString("", fieldName);
+    public E where(String property) {
+        appendString("", property);
         return getExpression();
     }
 
     @Override
-    public E and(String fieldName) {
-        appendString(" AND ", fieldName);
+    public <S, R> E where(PropertyFunction<S, R>  property) {
+        return where(getProperty(property));
+    }
+
+    @Override
+    public E and(String property) {
+        appendString(" AND ", property);
         return getExpression();
     }
 
     @Override
-    public E or(String fieldName) {
-        appendString(" OR ", fieldName);
+    public <S, R> E and(PropertyFunction<S, R> property) {
+        return and(getProperty(property));
+    }
+
+    @Override
+    public E or(String property) {
+        appendString(" OR ", property);
         return getExpression();
     }
 
     @Override
-    public E bracket(String fieldName) {
-        appendString("( ", fieldName);
+    public <S, R> E or(PropertyFunction<S, R> property) {
+        return or(getProperty(property));
+    }
+
+    @Override
+    public E bracket(String property) {
+        appendString("( ", property);
         return getExpression();
+    }
+
+    @Override
+    public <S, R> E bracket(PropertyFunction<S, R> property) {
+        return bracket(getProperty(property));
     }
 
     @Override
     public E primaryKey() {
-        appendString("", tableInfo.getPkField());
+        appendString("", tableInfo.getPkProperty());
         return getExpression();
     }
 
@@ -68,7 +88,6 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
         return (T) this;
     }
 
-
     @Override
     public T end() {
         appendString(" )", null);
@@ -77,10 +96,10 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
 
     protected abstract E getExpression();
 
-    protected void appendString(String operator, String fieldName) {
+    protected void appendString(String operator, String property) {
         where.append(where.length() == 0 ? "" : operator);
-        if (fieldName != null && fieldName.length() > 0) {
-            where.append(getColumnName(fieldName));
+        if (property != null && property.length() > 0) {
+            where.append(getColumn(property));
         }
     }
 
@@ -121,6 +140,5 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
                 sb.deleteCharAt(sb.lastIndexOf(",")).append(")");
         }
     }
-
 
 }

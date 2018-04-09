@@ -14,14 +14,14 @@ public class SelectExpression<T> extends WhereExpression<Select<T>> {
         super(select);
     }
 
-    public Select<T> equalsTo(Class<?> clazz, String fieldName) {
-        setExpression(Logic.EQ, clazz, fieldName);
+    public Select<T> equalsTo(Class<?> clazz, String property) {
+        setExpression(Logic.EQ, clazz, property);
         return condition;
     }
 
 
-    private void setExpression(Logic logic, Class<?> clazz, String fieldName) {
-        ((SelectImpl) condition).setExpression(logic, clazz, fieldName);
+    private void setExpression(Logic logic, Class<?> clazz, String property) {
+        ((SelectImpl) condition).setExpression(logic, clazz, property);
     }
 
 }
