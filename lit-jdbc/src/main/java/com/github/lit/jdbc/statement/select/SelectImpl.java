@@ -502,7 +502,13 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
         if (lastOperation == Operation.JOIN) {
             throw new UnsupportedOperationException("join expression should not invoke this method!");
         }
-        sb.append(sb.length() == 0 ? "" : operator);
+        if (sb.length() == 0) {
+            if (operator.contains("(")) {
+                sb.append(operator);
+            }
+        } else {
+            sb.append(operator);
+        }
         if (property != null && property.length() > 0) {
             sb.append(getColumnExpression(clazz, property));
         }

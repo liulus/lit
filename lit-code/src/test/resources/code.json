@@ -3,24 +3,22 @@
     "overwrite": true,
     "onChildModule": false,
     "rootDir": "/Users/liulu/Documents/project/git/panshi/",
-    "baseModule": "operation",
-    "basePackage": "com.ipampas.panshi.operation"
+    "baseModule": "product",
+    "basePackage": "com.ipampas.panshi.product"
   },
   "jdbc": {
-    "url": "jdbc:mysql://localhost:3306/panshi?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
+    "url": "jdbc:mysql://localhost:3306/panshi_dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
     "user": "root",
     "password": "123456"
   },
   "table": {
-    "name": "dictionary",
-    "desc": "字典",
+    "name": "product",
+    "desc": "产品",
     "tasks": [
       "model",
       "qo",
       "mapper",
-      "xmlMapper",
-      "service",
-      "serviceImpl"
+      "xmlMapper"
     ]
   },
   "tasks": [
@@ -71,7 +69,7 @@
       "suffixAdd": "ServiceImpl",
       "template": "/templates/serviceImpl.vm",
       "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
-      "package": "${basePackage}.service.iml"
+      "package": "${basePackage}.service.impl"
     }
   ]
 }

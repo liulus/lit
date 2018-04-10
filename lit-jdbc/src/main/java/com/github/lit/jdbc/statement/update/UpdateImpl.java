@@ -45,7 +45,7 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
     }
 
     @Override
-    public Update set(PropertyFunction<?, ?> property, Object value) {
+    public <T, R> Update set(PropertyFunction<T, R> property, Object value) {
         return set(getProperty(property), value);
     }
 

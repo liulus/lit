@@ -43,7 +43,7 @@ public class DBUtils {
                 jdbcConfig.setDbName(connection.getMetaData().getDatabaseProductName().toUpperCase());
             }
         } catch (Exception e) {
-            throw new GenerationException("创建数据库连接失败! 检查连接信息是否正确!");
+            throw new GenerationException("创建数据库连接失败! 检查连接信息是否正确!", e);
         }
     }
 
