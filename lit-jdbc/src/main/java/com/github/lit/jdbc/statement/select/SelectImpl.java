@@ -502,11 +502,10 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
         if (lastOperation == Operation.JOIN) {
             throw new UnsupportedOperationException("join expression should not invoke this method!");
         }
-        if (sb.length() == 0) {
-            if (operator.contains("(")) {
-                sb.append(operator);
-            }
-        } else {
+        if (sb.length() != 0) {
+            sb.append(operator);
+        }
+        if (operator.contains("(")) {
             sb.append(operator);
         }
         if (property != null && property.length() > 0) {
