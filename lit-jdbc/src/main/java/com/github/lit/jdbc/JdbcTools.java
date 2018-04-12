@@ -72,6 +72,8 @@ public interface JdbcTools {
      */
     <T> T get(Class<T> clazz, Serializable id);
 
+    <T> List<T> findByIds(Class<T> clazz, Serializable[] id);
+
     /**
      * 根据某一属性查询一条记录
      *

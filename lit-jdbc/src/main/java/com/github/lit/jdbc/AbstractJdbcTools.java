@@ -78,6 +78,11 @@ public abstract class AbstractJdbcTools implements JdbcTools {
     }
 
     @Override
+    public <T> List<T> findByIds(Class<T> clazz, Serializable[] id) {
+        return select(clazz).primaryKey().in((Object[]) id).list();
+    }
+
+    @Override
     public <T> T findByProperty(Class<T> clazz, String property, Object propertyValue) {
         return select(clazz).where(property).equalsTo(propertyValue).single();
     }
