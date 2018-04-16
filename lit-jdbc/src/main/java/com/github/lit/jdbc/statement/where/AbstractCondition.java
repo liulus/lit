@@ -27,7 +27,7 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
     }
 
     @Override
-    public <S, R> E where(PropertyFunction<S, R>  property) {
+    public <S, R> E where(PropertyFunction<S, R> property) {
         return where(getProperty(property));
     }
 
@@ -129,8 +129,8 @@ public abstract class AbstractCondition<T extends Condition, E extends Expressio
             case NOT_IN:
                 sb.append("( ");
                 for (Object value : values) {
-                    sb.append(isNative ? String.valueOf(value) : "?").append(", ");
-                    if (!isNative) {
+                    sb.append(value == null ? "null" : isNative ? value.toString() : "?").append(", ");
+                    if (value != null && !isNative) {
                         params.add(value);
                     }
                 }

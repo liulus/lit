@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
@@ -35,8 +37,28 @@ public class PublishEventAspect {
         this.eventPublisher = eventPublisher;
     }
 
+    @Before("@annotation(event)")
+    public void publishBefore(JoinPoint joinPoint, Event event) {
+        if (event.joinTime() == Event.JoinTime.BEFORE) {
+            publishEvent(joinPoint, event, null);
+        }
+    }
+
     @After("@annotation(event)")
-    public void publishEvent(JoinPoint joinPoint, Event event) {
+    public void publishAfter(JoinPoint joinPoint, Event event) {
+        if (event.joinTime() == Event.JoinTime.AFTER) {
+            publishEvent(joinPoint, event, null);
+        }
+    }
+
+    @AfterReturning(value = "@annotation(event)", returning = "returnValue")
+    public void publishAfterReturn(JoinPoint joinPoint, Event event, Object returnValue) {
+        if (event.joinTime() == Event.JoinTime.AFTER_RETURN) {
+            publishEvent(joinPoint, event, returnValue);
+        }
+    }
+
+    private void publishEvent(JoinPoint joinPoint, Event event, Object returnValue) {
 
         Class<?>[] classes = event.value();
         if (classes.length == 0) {
@@ -44,14 +66,32 @@ public class PublishEventAspect {
         }
         for (Class<?> eventClass : classes) {
             Object eventObj = newInstanceAndInitProperty(eventClass, joinPoint);
-
-            if (Objects.equals(event.publishType(), Event.Type.SYNC)) {
+            // before 只能 sync 方式
+            if (event.joinTime() == Event.JoinTime.BEFORE) {
                 eventPublisher.publish(eventObj);
-            } else if (Objects.equals(event.publishType(), Event.Type.ASYNC)) {
+                continue;
+            }
+            if (event.joinTime() == Event.JoinTime.AFTER_RETURN) {
+                initReturnValue(eventObj, event.returnProperty(), returnValue);
+            }
+            if (event.publishType() == Event.Type.SYNC) {
+                eventPublisher.publish(eventObj);
+            } else if (event.publishType() == Event.Type.ASYNC) {
                 eventPublisher.asyncPublish(eventObj);
             }
         }
+
+
+
     }
+
+    private void initReturnValue(Object eventObj, String returnProperty, Object returnValue) {
+        if (returnValue == null) {
+            return;
+        }
+        BeanUtils.invokeWriteMethod(eventObj, returnProperty, returnValue);
+    }
+
 
     /**
      * 实例化 事件对象 并将切入点方法参数的值注入事件对象的属性中, 规则:

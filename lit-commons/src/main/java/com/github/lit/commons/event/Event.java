@@ -18,10 +18,21 @@ public @interface Event {
 
     Class<?>[] classes() default {};
 
-    Type publishType() default Type.ASYNC;
+    JoinTime joinTime() default JoinTime.AFTER_RETURN;
+
+    String returnProperty() default "returnValue";
+
+    Type publishType() default Type.SYNC;
 
     enum Type {
         SYNC,
         ASYNC,;
     }
+
+    enum JoinTime {
+        BEFORE,
+        AFTER,
+        AFTER_RETURN,
+    }
+
 }

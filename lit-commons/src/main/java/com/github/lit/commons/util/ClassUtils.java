@@ -172,7 +172,7 @@ public class ClassUtils {
         try {
             return method.invoke(obj, value);
         } catch (Exception e) {
-            throw new SysException("Method 调用失败 " + (method == null ? "null" : method.getName()), e);
+            throw new SysException("Method 调用失败 " + method.getName(), e);
         }
     }
 

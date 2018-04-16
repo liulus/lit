@@ -24,7 +24,7 @@ public class EventConfig {
 
         AsyncEventBus asyncEventBus = new AsyncEventBus("async-default", Executors.newFixedThreadPool(10));
 
-        return new GuavaEventPublisher(new EventBus(), asyncEventBus);
+        return new GuavaEventPublisher(new EventBus(new EventExceptionHandler()), asyncEventBus);
     }
 
     @Bean
@@ -44,5 +44,4 @@ public class EventConfig {
             publisher.register(eventListener);
         }
     }
-
 }

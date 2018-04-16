@@ -84,10 +84,10 @@ public class WhereExpression<T extends Condition> implements Expression {
     }
 
     public T in(Object... values) {
-        if (values == null || values.length == 0 || values[0] == null) {
-            return condition;
+        if (values == null || values.length == 0) {
+            values = new Object[]{null};
         }
-        if (values.length == 1) {
+        if (values.length == 1 && values[0] != null) {
             addParamValue(Logic.EQ, values[0]);
             return condition;
         }
@@ -96,10 +96,10 @@ public class WhereExpression<T extends Condition> implements Expression {
     }
 
     public T notIn(Object... values) {
-        if (values == null || values.length == 0 || values[0] == null) {
-            return condition;
+        if (values == null || values.length == 0) {
+            values = new Object[]{null};
         }
-        if (values.length == 1) {
+        if (values.length == 1 && values[0] != null) {
             addParamValue(Logic.NOT_EQ, values[0]);
             return condition;
         }
