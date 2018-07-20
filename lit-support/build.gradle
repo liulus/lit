@@ -1,0 +1,7 @@
+archivesBaseName = "lit-support"
+
+subprojects {
+    dependencies {
+        compile project(':lit-util')
+    }
+}

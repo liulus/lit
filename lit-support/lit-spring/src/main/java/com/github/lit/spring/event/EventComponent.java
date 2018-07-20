@@ -1,4 +1,4 @@
-package com.github.lit.event;
+package com.github.lit.spring.event;
 
 import org.springframework.stereotype.Component;
 

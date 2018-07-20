@@ -1,4 +1,4 @@
-package com.github.lit.event;
+package com.github.lit.spring.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,6 +1,6 @@
-package com.github.lit.event.guava;
+package com.github.lit.spring.event.guava;
 
-import com.github.lit.event.*;
+import com.github.lit.spring.event.*;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import org.springframework.context.ApplicationContext;
@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
  * Date : 2017/8/3 20:47
  * version $Id: EventConfig.java, v 0.1 Exp $
  */
-public class EventConfig {
+public class GuavaEventConfig {
 
 
     @Bean
@@ -24,7 +24,7 @@ public class EventConfig {
 
         AsyncEventBus asyncEventBus = new AsyncEventBus("async-default", Executors.newFixedThreadPool(10));
 
-        return new GuavaEventPublisher(new EventBus(new EventExceptionHandler()), asyncEventBus);
+        return new GuavaEventPublisher(new EventBus(new GuavaEventExceptionHandler()), asyncEventBus);
     }
 
     @Bean

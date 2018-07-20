@@ -3,7 +3,7 @@ archivesBaseName = "lit-jdbc"
 dependencies {
 
     compile libs.jsqlparser
-    compile project(':lit-commons')
+    compile project(':lit-util')
 
     compileOnly libs.slf4j_api
     compileOnly libs.spring_jdbc

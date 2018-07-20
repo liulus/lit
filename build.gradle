@@ -22,6 +22,7 @@ ext {
             mysql                 : "mysql:mysql-connector-java:5.1.38",
             oracle                : "com.oracle:ojdbc6:11.2.0.3",
             velocity              : "org.apache.velocity:velocity:1.7",
+            servlet_api           : "javax.servlet:javax.servlet-api:3.1.0",
             spring_context        : "org.springframework:spring-context:${springVersion}",
             spring_context_support: "org.springframework:spring-context-support:${springVersion}",
             spring_jdbc           : "org.springframework:spring-jdbc:${springVersion}",
@@ -29,6 +30,7 @@ ext {
             spring_orm            : "org.springframework:spring-orm:${springVersion}",
             spring_aop            : "org.springframework:spring-aop:${springVersion}",
             spring_aspects        : "org.springframework:spring-aspects:${springVersion}",
+            spring_webmvc         : "org.springframework:spring-webmvc:${springVersion}",
             spring_test           : "org.springframework:spring-test:${springVersion}",
     ]
 }
@@ -51,6 +53,7 @@ allprojects {
 
     dependencies {
         compileOnly libs.lombok
+        compileOnly libs.slf4j_api
 
         testCompile libs.junit
     }

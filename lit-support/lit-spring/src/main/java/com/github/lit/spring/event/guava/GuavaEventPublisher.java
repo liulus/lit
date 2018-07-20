@@ -1,7 +1,7 @@
-package com.github.lit.event.guava;
+package com.github.lit.spring.event.guava;
 
-import com.github.lit.event.EventPublisher;
 import com.github.lit.exception.BizException;
+import com.github.lit.spring.event.EventPublisher;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import lombok.Getter;
@@ -49,11 +49,15 @@ public class GuavaEventPublisher implements EventPublisher {
     public void publish(Object event) {
         eventBus.post(event);
         // 处理自定义异常
-        BizException bizException = EventExceptionHandler.getBizException();
-        if (bizException != null) {
-            throw bizException;
+        BizException bizException = GuavaEventExceptionHandler.getBizException();
+        try {
+            if (bizException != null) {
+                throw bizException;
+            }
+        } finally {
+            GuavaEventExceptionHandler.clearBizException();
         }
-        EventExceptionHandler.clearBizException();
+
     }
 
     @Override

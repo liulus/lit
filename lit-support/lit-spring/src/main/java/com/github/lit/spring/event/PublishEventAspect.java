@@ -1,4 +1,4 @@
-package com.github.lit.event;
+package com.github.lit.spring.event;
 
 import com.github.lit.bean.BeanUtils;
 import com.github.lit.util.ClassUtils;
@@ -80,8 +80,6 @@ public class PublishEventAspect {
                 eventPublisher.asyncPublish(eventObj);
             }
         }
-
-
 
     }
 

@@ -1,4 +1,4 @@
-package com.github.lit.event.guava;
+package com.github.lit.spring.event.guava;
 
 import org.springframework.context.annotation.Import;
 
@@ -15,6 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  */
 @Target(TYPE)
 @Retention(RUNTIME)
-@Import(EventConfig.class)
+@Import(GuavaEventConfig.class)
 public @interface EnableGuavaEvent {
 }

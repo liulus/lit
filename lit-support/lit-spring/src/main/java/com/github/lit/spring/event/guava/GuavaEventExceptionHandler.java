@@ -1,4 +1,4 @@
-package com.github.lit.event.guava;
+package com.github.lit.spring.event.guava;
 
 import com.github.lit.exception.BizException;
 import com.google.common.eventbus.EventBus;
@@ -14,7 +14,7 @@ import java.util.logging.Logger;
  * Date : 2018/4/16 11:16
  * version $Id: EventExceptionHandler.java, v 0.1 Exp $
  */
-public class EventExceptionHandler implements SubscriberExceptionHandler {
+public class GuavaEventExceptionHandler implements SubscriberExceptionHandler {
 
     private static final ThreadLocal<BizException> BIZ_EXCEPTION = new ThreadLocal<>();
 

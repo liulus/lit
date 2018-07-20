@@ -1,4 +1,4 @@
-package com.github.lit.context;
+package com.github.lit.constant;
 
 /**
  * User : liulu
@@ -19,7 +19,7 @@ public final class ResultConst {
 
     public static final String PAGE_INFO = "pageInfo";
 
-    public static final String MASSAGE = "message";
+    public static final String MESSAGE = "message";
 
     public static final String MASSAGE_TYPE = "messageType";
 
