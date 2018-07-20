@@ -25,10 +25,10 @@
         select
         <include refid="base_column_list"/>
         from ${table.name}
-        where ${primaryKey.name} = #{id} and teant_id = #{tenantId}
+        where ${primaryKey.name} = #{id} and tenant_id = #{tenantId}
     </select>
 
-    <select id="findPageList" resultMap="BaseResultMap" parameterType="${qo.longClassName}">
+    <select id="findList" resultMap="BaseResultMap" parameterType="${qo.longClassName}">
         select <include refid="base_column_list"/>
         from ${table.name}
         <!-- 自定义查询条件 待补充  -->
@@ -73,11 +73,11 @@
 #end
 #end
         </set>
-        where ${primaryKey.name} = #{${primaryKey.camelName}} and teant_id = #{tenantId}
+        where ${primaryKey.name} = #{${primaryKey.camelName}} and tenant_id = #{tenantId}
     </update>
 
     <delete id="deleteById" parameterType="java.lang.Long">
-        delete from ${table.name} where ${primaryKey.name} = #{id} and teant_id = #{tenantId}
+        delete from ${table.name} where ${primaryKey.name} = #{id} and tenant_id = #{tenantId}
     </delete>
 
 </mapper>

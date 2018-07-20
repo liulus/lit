@@ -1,6 +1,6 @@
 package ${model.packageName};
 
-import lombok.*;
+import lombok.Data;
 
 import java.io.Serializable;
 #foreach($im in ${table.importClasses})
@@ -14,8 +14,6 @@ import ${im};
  * @version 1.0.0
  */
 @Data
-@Builder
-@NoArgsConstructor
 public class ${model.shortClassName} implements Serializable{
 
     /** serialVersionUID */

@@ -2,23 +2,26 @@
   "constant": {
     "overwrite": true,
     "onChildModule": false,
-    "rootDir": "/Users/liulu/Documents/project/git/panshi/",
-    "baseModule": "product",
-    "basePackage": "com.ipampas.panshi.product"
+    "rootDir": "/Users/liulu/Documents/project/git/qianniu",
+    "baseModule": "qn-common",
+    "basePackage": "com.ipampas.qianniu",
+    "modelPackage": "product"
   },
   "jdbc": {
-    "url": "jdbc:mysql://localhost:3306/panshi_dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
+    "url": "jdbc:mysql://10.10.100.56:3306/qianniu_dev?useSSL=false&useUnicode=true&characterEncoding=UTF-8",
     "user": "root",
     "password": "123456"
   },
   "table": {
-    "name": "product",
-    "desc": "产品",
+    "name": "sign_product",
+    "desc": "3.0产品",
     "tasks": [
       "model",
       "qo",
       "mapper",
-      "xmlMapper"
+      "xmlMapper",
+      "service",
+      "serviceImpl"
     ]
   },
   "tasks": [
@@ -28,8 +31,8 @@
         "com.github.lit.code.plugin.SerialVersionUIDPlugin"
       ],
       "template": "/templates/model.vm",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-model",
-      "package": "${basePackage}.model"
+      "module": "${baseModule}",
+      "package": "${basePackage}.model.${modelPackage}"
     },
     {
       "name": "qo",
@@ -38,38 +41,38 @@
       ],
       "template": "/templates/qo.vm",
       "suffixAdd": "Qo",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-model",
-      "package": "${basePackage}.dto"
+      "module": "${baseModule}",
+      "package": "${basePackage}.model.${modelPackage}"
     },
     {
       "name": "mapper",
       "template": "/templates/mapper.vm",
       "suffixAdd": "Mapper",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
-      "package": "${basePackage}.mapper"
+      "module": "${baseModule}",
+      "package": "${basePackage}.mapper.${modelPackage}"
     },
     {
       "name": "xmlMapper",
       "template": "/templates/xmlMapper.vm",
       "suffixAdd": "Mapper",
       "fileType": ".xml",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
+      "module": "${baseModule}",
       "srcDir": "src/main/resources",
-      "package": "mapper.${basePackage}.mapper"
+      "package": "${basePackage}.mapper.${modelPackage}"
     },
     {
       "name": "service",
       "template": "/templates/service.vm",
       "suffixAdd": "Service",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-api",
-      "package": "${basePackage}.service"
+      "module": "${baseModule}",
+      "package": "${basePackage}.service.${modelPackage}"
     },
     {
       "name": "serviceImpl",
       "suffixAdd": "ServiceImpl",
       "template": "/templates/serviceImpl.vm",
-      "module": "panshi-${baseModule}/panshi-${baseModule}-impl",
-      "package": "${basePackage}.service.impl"
+      "module": "${baseModule}",
+      "package": "${basePackage}.service.${modelPackage}.impl"
     }
   ]
 }

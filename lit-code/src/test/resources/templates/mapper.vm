@@ -51,7 +51,7 @@ public interface ${mapper.shortClassName} {
      * @param ${qo.firstLowerClassName} 查询对象
      * @return ${table.desc}列表
      */
-    List<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName});
+    List<${model.shortClassName}> findList(${qo.shortClassName} ${qo.firstLowerClassName});
 
 
 }

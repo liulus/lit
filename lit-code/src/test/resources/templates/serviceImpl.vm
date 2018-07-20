@@ -2,7 +2,7 @@ package ${serviceImpl.packageName};
 
 import com.github.pagehelper.PageHelper;
 import com.ipampas.framework.model.Page;
-import com.ipampas.panshi.common.util.PageUtils;
+import com.ipampas.qianniu.util.PageUtils;
 import ${model.longClassName};
 import ${qo.longClassName};
 import ${mapper.longClassName};
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * ${table.desc} service 接口实现
@@ -52,7 +53,7 @@ public class ${serviceImpl.shortClassName} implements ${service.shortClassName} 
     @Override
     public Page<${model.shortClassName}> findPageList(${qo.shortClassName} ${qo.firstLowerClassName}) {
         PageHelper.startPage(${qo.firstLowerClassName}.getPageNo(), ${qo.firstLowerClassName}.getPageSize());
-        List<${model.shortClassName}> pageList = ${mapper.firstLowerClassName}.findPageList(${qo.firstLowerClassName});
+        List<${model.shortClassName}> pageList = ${mapper.firstLowerClassName}.findList(${qo.firstLowerClassName});
         return PageUtils.transToPage(pageList);
     }
 

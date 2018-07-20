@@ -33,7 +33,7 @@ public class EventConfig {
     }
 
     @EventListener
-    @Event(AppStartedEvent.class)
+    @Event(value = AppStartedEvent.class, publishType = Event.Type.ASYNC)
     public void registerEvent(ContextRefreshedEvent event) {
 
         ApplicationContext context = event.getApplicationContext();
