@@ -1,6 +1,6 @@
 package com.github.lit.code.context;
 
-import com.github.lit.code.util.NameUtils;
+import com.github.lit.util.NameUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

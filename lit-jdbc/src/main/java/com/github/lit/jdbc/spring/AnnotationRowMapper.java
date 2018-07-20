@@ -1,10 +1,10 @@
 package com.github.lit.jdbc.spring;
 
-import com.github.lit.commons.bean.BeanUtils;
-import com.github.lit.commons.util.ClassUtils;
-import com.github.lit.commons.util.NameUtils;
+import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.annotation.Column;
 import com.github.lit.jdbc.annotation.Transient;
+import com.github.lit.util.ClassUtils;
+import com.github.lit.util.NameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.NotWritablePropertyException;

@@ -1,13 +1,13 @@
 package com.github.lit.jdbc.model;
 
-import com.github.lit.commons.bean.BeanUtils;
-import com.github.lit.commons.util.ClassUtils;
-import com.github.lit.commons.util.NameUtils;
+import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.annotation.*;
 import com.github.lit.jdbc.enums.GenerationType;
 import com.github.lit.jdbc.generator.EmptyKeyGenerator;
 import com.github.lit.jdbc.generator.KeyGenerator;
 import com.github.lit.jdbc.generator.SequenceGenerator;
+import com.github.lit.util.ClassUtils;
+import com.github.lit.util.NameUtils;
 import lombok.Getter;
 import lombok.Setter;
 

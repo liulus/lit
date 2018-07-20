@@ -1,6 +1,5 @@
 package com.github.lit.jdbc;
 
-import com.github.lit.commons.util.Assert;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.page.DefaultPageHandler;
 import com.github.lit.jdbc.page.StatementPageHandler;
@@ -12,6 +11,7 @@ import com.github.lit.jdbc.statement.insert.InsertImpl;
 import com.github.lit.jdbc.statement.select.Select;
 import com.github.lit.jdbc.statement.update.Update;
 import com.github.lit.jdbc.statement.update.UpdateImpl;
+import com.github.lit.util.Assert;
 import lombok.Setter;
 
 import javax.sql.DataSource;

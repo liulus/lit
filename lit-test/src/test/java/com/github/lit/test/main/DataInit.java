@@ -1,10 +1,10 @@
 package com.github.lit.test.main;
 
-import com.github.lit.commons.util.ClassUtils;
 import com.github.lit.jdbc.JdbcTools;
 import com.github.lit.test.base.SpringBaseTest;
 import com.github.lit.test.model.Goods;
 import com.github.lit.test.model.Supplier;
+import com.github.lit.util.ClassUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;

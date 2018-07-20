@@ -1,12 +1,12 @@
 package com.github.lit.jdbc.statement;
 
-import com.github.lit.commons.exception.SysException;
-import com.github.lit.commons.util.Assert;
-import com.github.lit.commons.util.ClassUtils;
-import com.github.lit.commons.util.NameUtils;
+import com.github.lit.exception.SysException;
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
+import com.github.lit.util.Assert;
+import com.github.lit.util.ClassUtils;
+import com.github.lit.util.NameUtils;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.sf.jsqlparser.schema.Table;

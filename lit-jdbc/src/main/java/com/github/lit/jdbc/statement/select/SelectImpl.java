@@ -1,12 +1,12 @@
 package com.github.lit.jdbc.statement.select;
 
-import com.github.lit.commons.page.Page;
-import com.github.lit.commons.page.PageList;
 import com.github.lit.jdbc.enums.JoinType;
 import com.github.lit.jdbc.enums.Logic;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
+import com.github.lit.page.Page;
+import com.github.lit.page.PageList;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;

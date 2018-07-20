@@ -1,6 +1,6 @@
 package com.github.lit.jdbc.statement.delete;
 
-import com.github.lit.commons.bean.BeanUtils;
+import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
 import com.github.lit.jdbc.statement.where.WhereExpression;

@@ -1,8 +1,8 @@
 package com.github.lit.jdbc.spring;
 
-import com.github.lit.commons.util.ClassUtils;
 import com.github.lit.jdbc.AbstractStatementExecutor;
 import com.github.lit.jdbc.model.StatementContext;
+import com.github.lit.util.ClassUtils;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

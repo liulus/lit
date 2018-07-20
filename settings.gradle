@@ -3,4 +3,5 @@ include 'lit-commons'
 include 'lit-jdbc'
 include 'lit-code'
 include 'lit-test'
+include 'lit-util'
 

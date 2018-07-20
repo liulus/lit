@@ -1,8 +1,8 @@
 package com.github.lit.jdbc.statement.select;
 
-import com.github.lit.commons.page.Page;
 import com.github.lit.jdbc.enums.JoinType;
 import com.github.lit.jdbc.statement.where.Condition;
+import com.github.lit.page.Page;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
 archivesBaseName = "lit-commons"
 
 dependencies {
+    compile project(':lit-util')
     compileOnly libs.slf4j_api
     compileOnly libs.guava
     compileOnly libs.spring_jdbc

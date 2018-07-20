@@ -1,9 +1,9 @@
 package com.github.lit.test.util;
 
-import com.github.lit.commons.util.PropertyUtils;
 import com.github.lit.jdbc.AbstractJdbcTools;
 import com.github.lit.jdbc.JdbcTools;
 import com.github.lit.jdbc.spring.JdbcTemplateToolsImpl;
+import com.github.lit.util.PropertyUtils;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;

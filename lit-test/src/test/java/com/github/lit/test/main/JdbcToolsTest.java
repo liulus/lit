@@ -1,9 +1,9 @@
 package com.github.lit.test.main;
 
-import com.github.lit.commons.page.PageInfo;
-import com.github.lit.commons.page.PageList;
 import com.github.lit.jdbc.JdbcTools;
 import com.github.lit.jdbc.statement.select.Select;
+import com.github.lit.page.PageInfo;
+import com.github.lit.page.PageList;
 import com.github.lit.test.base.SpringBaseTest;
 import com.github.lit.test.model.Goods;
 import com.github.lit.test.model.GoodsVo;
