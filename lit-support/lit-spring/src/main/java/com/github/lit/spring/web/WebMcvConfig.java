@@ -1,16 +1,19 @@
 package com.github.lit.spring.web;
 
 import com.github.lit.spring.event.guava.EnableGuavaEvent;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
-import org.springframework.web.accept.ContentNegotiationManagerFactoryBean;
+import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.method.annotation.ModelAttributeMethodProcessor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -18,8 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestResponseBody
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,50 +34,24 @@ import java.util.List;
 @ComponentScan("com.github.lit.spring")
 public class WebMcvConfig {
 
-    @Resource
-    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
-
-    @PostConstruct
-    public void initJsonAndFormArgumentResolver() {
-
-        JsonAndFormArgumentResolver jsonAndFormArgumentResolver = null;
-        ModelAttributeMethodProcessor modelAttributeMethodProcessor = null;
-        RequestResponseBodyMethodProcessor requestResponseBodyMethodProcessor = null;
-
-        for (HandlerMethodArgumentResolver argumentResolver : requestMappingHandlerAdapter.getArgumentResolvers()) {
-            if (argumentResolver instanceof JsonAndFormArgumentResolver) {
-                jsonAndFormArgumentResolver = (JsonAndFormArgumentResolver) argumentResolver;
-                continue;
-            }
-            if (argumentResolver instanceof RequestResponseBodyMethodProcessor) {
-                requestResponseBodyMethodProcessor = (RequestResponseBodyMethodProcessor) argumentResolver;
-                continue;
-            }
-            if (argumentResolver instanceof ModelAttributeMethodProcessor) {
-                modelAttributeMethodProcessor = (ModelAttributeMethodProcessor) argumentResolver;
-            }
-        }
-        if (jsonAndFormArgumentResolver != null) {
-            jsonAndFormArgumentResolver.setModelAttributeMethodProcessor(modelAttributeMethodProcessor);
-            jsonAndFormArgumentResolver.setRequestResponseBodyMethodProcessor(requestResponseBodyMethodProcessor);
-        }
-    }
-
+    /**
+     * 配置多视图解析器
+     *
+     * @param manager       manager 会自动构建，configureContentNegotiation可以进行配置
+     * @param viewResolvers 当前项目的 viewResolver, (此时会包含上面配置的 freemarkerViewResolver)
+     * @return ContentNegotiatingViewResolver
+     * @see WebMvcConfigurerAdapter#configureContentNegotiation(org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer)
+     */
     @Bean
-    public ContentNegotiatingViewResolver contentNegotiatingViewResolver(List<ViewResolver> viewResolvers) {
+    public ContentNegotiatingViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager, List<ViewResolver> viewResolvers) {
 
         ContentNegotiatingViewResolver viewResolver = new ContentNegotiatingViewResolver();
-
-        ContentNegotiationManagerFactoryBean bean = new ContentNegotiationManagerFactoryBean();
-        bean.setIgnoreAcceptHeader(true);
-        bean.setDefaultContentType(MediaType.TEXT_HTML);
+        viewResolver.setContentNegotiationManager(manager);
 
         View jackson2JsonView = new MappingJackson2JsonView();
-
-        viewResolver.setContentNegotiationManager(bean.getObject());
         viewResolver.setDefaultViews(Collections.singletonList(jackson2JsonView));
-        viewResolver.setViewResolvers(viewResolvers);
 
+        viewResolver.setViewResolvers(viewResolvers);
         return viewResolver;
     }
 
@@ -108,6 +83,52 @@ public class WebMcvConfig {
             @Override
             public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
                 argumentResolvers.add(new JsonAndFormArgumentResolver());
+            }
+
+            @Override
+            public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+                configurer.defaultContentType(MediaType.TEXT_HTML);
+                configurer.ignoreAcceptHeader(true);
+            }
+        };
+    }
+
+    @Bean
+    public BeanPostProcessor jsonAndFormArgumentResolverProcessor() {
+        return new BeanPostProcessor() {
+            @Override
+            public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+                return bean;
+            }
+
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+
+                if (bean instanceof RequestMappingHandlerAdapter) {
+                    JsonAndFormArgumentResolver jsonAndFormArgumentResolver = null;
+                    ModelAttributeMethodProcessor modelAttributeMethodProcessor = null;
+                    RequestResponseBodyMethodProcessor requestResponseBodyMethodProcessor = null;
+
+                    for (HandlerMethodArgumentResolver argumentResolver : ((RequestMappingHandlerAdapter) bean).getArgumentResolvers()) {
+                        if (argumentResolver instanceof JsonAndFormArgumentResolver) {
+                            jsonAndFormArgumentResolver = (JsonAndFormArgumentResolver) argumentResolver;
+                            continue;
+                        }
+                        if (argumentResolver instanceof RequestResponseBodyMethodProcessor) {
+                            requestResponseBodyMethodProcessor = (RequestResponseBodyMethodProcessor) argumentResolver;
+                            continue;
+                        }
+                        if (argumentResolver instanceof ModelAttributeMethodProcessor) {
+                            modelAttributeMethodProcessor = (ModelAttributeMethodProcessor) argumentResolver;
+                        }
+                    }
+                    if (jsonAndFormArgumentResolver != null) {
+                        jsonAndFormArgumentResolver.setModelAttributeMethodProcessor(modelAttributeMethodProcessor);
+                        jsonAndFormArgumentResolver.setRequestResponseBodyMethodProcessor(requestResponseBodyMethodProcessor);
+                    }
+                }
+
+                return bean;
             }
         };
     }
