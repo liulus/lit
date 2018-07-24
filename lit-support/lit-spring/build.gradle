@@ -1,8 +1,0 @@
-archivesBaseName = "lit-spring"
-
-dependencies {
-    compileOnly libs.servlet_api
-    compileOnly libs.spring_webmvc
-    compileOnly libs.guava
-    compileOnly libs.spring_aspects
-}

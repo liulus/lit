@@ -4,6 +4,3 @@ include 'lit-code'
 include 'lit-test'
 include 'lit-util'
 include 'lit-support'
-include 'lit-support:lit-spring'
-findProject(':lit-support:lit-web')?.name = 'lit-spring'
-

@@ -1,7 +1,10 @@
 archivesBaseName = "lit-support"
 
-subprojects {
-    dependencies {
-        compile project(':lit-util')
-    }
+dependencies {
+    compile project(':lit-util')
+
+    compileOnly libs.servlet_api
+    compileOnly libs.spring_webmvc
+    compileOnly libs.spring_aspects
+    compileOnly libs.guava
 }
