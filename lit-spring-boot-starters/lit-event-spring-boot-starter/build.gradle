@@ -1,0 +1,6 @@
+archivesBaseName = "lit-event-spring-boot-starter"
+
+dependencies {
+    compile libs.guava
+    compile libs.spring_aspects
+}

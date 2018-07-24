@@ -1,0 +1,8 @@
+archivesBaseName = "lit-spring-boot-starters"
+
+subprojects {
+    dependencies {
+        compile project(':lit-support')
+        compile libs.spring_boot_autoconfigure
+    }
+}
