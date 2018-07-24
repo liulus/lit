@@ -75,8 +75,8 @@ public interface BaseMapper<Entity> {
      * 根据查询条件查询记录
      *
      * @param condition   condition
-     * @param <Condition> <Condition>
-     * @return List<Entity>
+     * @param <Condition> Condition
+     * @return List Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectByCondition")
     <Condition> List<Entity> selectByCondition(Condition condition);

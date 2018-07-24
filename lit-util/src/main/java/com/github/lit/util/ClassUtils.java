@@ -371,7 +371,9 @@ public class ClassUtils {
 
     /**
      * Check whether the specified class is a CGLIB-generated class.
+     *
      * @param clazz the class to check
+     * @return boolean
      */
     public static boolean isCglibProxyClass(Class<?> clazz) {
         return (clazz != null && isCglibProxyClassName(clazz.getName()));
@@ -379,7 +381,9 @@ public class ClassUtils {
 
     /**
      * Check whether the specified class name is a CGLIB-generated class.
+     *
      * @param className the class name to check
+     * @return boolean
      */
     public static boolean isCglibProxyClassName(String className) {
         return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));

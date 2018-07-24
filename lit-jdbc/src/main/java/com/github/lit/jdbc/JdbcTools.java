@@ -20,6 +20,7 @@ public interface JdbcTools {
      *
      * @param t   实体对象
      * @param <T> 实体对象类型
+     * @param <ID> id
      * @return 主键, 自增和序列返回 Long 类型
      */
     <T, ID> ID insert(T t);
