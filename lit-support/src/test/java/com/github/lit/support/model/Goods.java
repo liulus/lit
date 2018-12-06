@@ -25,5 +25,4 @@ public class Goods implements Serializable {
 
     private Date createdAt;
 
-
 }

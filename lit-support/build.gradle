@@ -9,7 +9,7 @@ dependencies {
     compileOnly libs.guava
     compileOnly libs.mybatis
 
-//    testCompile libs.logback_classic
-//    testCompile libs.jcl_over_slf4j
-//    testCompile libs.mysql
+    testCompile libs.logback_classic
+    testCompile libs.jcl_over_slf4j
+    testCompile libs.mysql
 }

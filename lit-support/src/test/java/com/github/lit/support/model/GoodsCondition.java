@@ -29,5 +29,4 @@ public class GoodsCondition implements Serializable {
 
     private String code;
 
-
 }

@@ -5,6 +5,7 @@ import com.github.lit.support.mybatis.builder.Logic;
 import com.github.lit.support.mybatis.builder.PropertyFunction;
 import com.github.lit.support.mybatis.builder.SerializedLambdaUtils;
 import com.github.lit.support.mybatis.builder.TableMataDate;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
 import org.springframework.beans.BeanUtils;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @version : v1.0
  * date : 7/24/18 11:04
  */
+@Slf4j
 public class BaseSqlProvider {
 
 
@@ -51,6 +53,7 @@ public class BaseSqlProvider {
                 sql.VALUES(entry.getValue(), getTokenParam(entry.getKey()));
             }
         }
+        log.info("\n" + sql.toString());
         return sql.toString();
     }
 
@@ -76,26 +79,30 @@ public class BaseSqlProvider {
                 sql.SET(getEquals(entry.getValue(), entry.getKey()));
             }
         }
-
-        return sql.WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty())).toString();
+        sql.WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+        log.info("\n" + sql.toString());
+        return sql.toString();
     }
 
     public String delete(ProviderContext context) {
         Class<?> entityClass = getEntityClass(context);
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
 
-        return new SQL().DELETE_FROM(mataDate.getTableName())
-                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()))
-                .toString();
+        SQL sql = new SQL().DELETE_FROM(mataDate.getTableName())
+                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+        log.info(sql.toString());
+        return sql.toString();
     }
 
     public String selectById(ProviderContext context) {
         Class<?> entityClass = getEntityClass(context);
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
 
-        return new SQL().SELECT(mataDate.getBaseColumns())
+        SQL sql = new SQL().SELECT(mataDate.getBaseColumns())
                 .FROM(mataDate.getTableName())
-                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()))
+                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+        log.info("\n" + sql.toString());
+        return sql
                 .toString();
     }
 
@@ -106,9 +113,13 @@ public class BaseSqlProvider {
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
         String column = mataDate.getFieldColumnMap().get(property);
 
-        return new SQL().SELECT(mataDate.getBaseColumns())
+
+        SQL sql = new SQL().SELECT(mataDate.getBaseColumns())
                 .FROM(mataDate.getTableName())
-                .WHERE(getEquals(column, property))
+                .WHERE(getEquals(column, "value"));
+        log.info("\n" + sql.toString());
+
+        return sql
                 .toString();
     }
 
@@ -145,6 +156,7 @@ public class BaseSqlProvider {
                 }
             }
         }
+        log.info("\n" + sql.toString());
         return sql.toString();
     }
 

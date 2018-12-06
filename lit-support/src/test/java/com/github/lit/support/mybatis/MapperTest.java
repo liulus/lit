@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * User : liulu
@@ -70,7 +69,6 @@ public class MapperTest {
     @Test
     public void test4() {
         Goods goods = goodsMapper.selectByProperty(Goods::getCode, "2332");
-        List<Goods> goods1 = goodsMapper.selectListByProperty(Goods::getCode, "2e3");
     }
 
 
