@@ -2,13 +2,13 @@ archivesBaseName = "lit-test"
 dependencies {
     testCompile project(':lit-jdbc')
 
-    testCompile libs.slf4j_api
-    testCompile libs.jcl_over_slf4j
-    testCompile libs.logback_classic
-    testCompile libs.c3p0
-    testCompile libs.mysql
-    testCompile libs.spring_test
-    testCompile libs.spring_jdbc
-    testCompile libs.spring_context
+    testCompile slf4j_api
+    testCompile jcl_over_slf4j
+    testCompile logback_classic
+    testCompile c3p0
+    testCompile mysql
+    testCompile spring_test
+    testCompile spring_jdbc
+    testCompile spring_context
 
 }

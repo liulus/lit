@@ -1,6 +1,5 @@
 package com.github.lit.support.web;
 
-import com.github.lit.constant.ResultConst;
 import com.github.lit.page.PageInfo;
 import com.github.lit.page.PageList;
 import com.github.lit.support.util.SpelUtils;
@@ -32,7 +31,7 @@ public class ModelAttributeInterceptor implements HandlerInterceptor {
             return;
         }
         ModelMap modelMap = modelAndView.getModelMap();
-        modelMap.put(ResultConst.SUCCESS, true);
+        modelMap.put("success", true);
 
         // 处理自定义视图名称
         if (request.getRequestURI().endsWith(".json")) {
@@ -55,7 +54,7 @@ public class ModelAttributeInterceptor implements HandlerInterceptor {
             }
         }
         if (pageInfo != null) {
-            modelMap.put(ResultConst.PAGE_INFO, pageInfo);
+            modelMap.put("PAGE_INFO", pageInfo);
         }
     }
 

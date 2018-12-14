@@ -3,13 +3,15 @@ archivesBaseName = "lit-support"
 dependencies {
     compile project(':lit-util')
 
-    compileOnly libs.servlet_api
-    compileOnly libs.spring_webmvc
-    compileOnly libs.spring_aspects
-    compileOnly libs.guava
-    compileOnly libs.mybatis
+    compileOnly servlet_api
+    compileOnly slf4j_api
+    compileOnly spring_jdbc
+    compileOnly spring_webmvc
+    compileOnly spring_aspects
+    compileOnly guava
+    compileOnly mybatis
 
-    testCompile libs.logback_classic
-    testCompile libs.jcl_over_slf4j
-    testCompile libs.mysql
+    testCompile logback_classic
+    testCompile jcl_over_slf4j
+    testCompile mysql
 }

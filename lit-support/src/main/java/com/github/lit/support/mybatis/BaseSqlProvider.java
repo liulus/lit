@@ -1,10 +1,10 @@
-package com.github.lit.support.mybatis.mapper;
+package com.github.lit.support.mybatis;
 
-import com.github.lit.support.mybatis.annotation.Condition;
-import com.github.lit.support.mybatis.builder.Logic;
-import com.github.lit.support.mybatis.builder.PropertyFunction;
-import com.github.lit.support.mybatis.builder.SerializedLambdaUtils;
-import com.github.lit.support.mybatis.builder.TableMataDate;
+import com.github.lit.support.common.Logic;
+import com.github.lit.support.common.TableMataDate;
+import com.github.lit.support.common.annotation.Condition;
+import com.github.lit.util.SerializedFunction;
+import com.github.lit.util.SerializedLambdaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.builder.annotation.ProviderContext;
 import org.apache.ibatis.jdbc.SQL;
@@ -41,7 +41,7 @@ public class BaseSqlProvider {
         sql.INSERT_INTO(mataDate.getTableName());
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
             // 忽略主键
-            if (Objects.equals(entry.getKey(), mataDate.getPkProperty())) {
+            if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())) {
                 continue;
             }
             PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(entityClass, entry.getKey());
@@ -67,7 +67,7 @@ public class BaseSqlProvider {
         sql.UPDATE(mataDate.getTableName());
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
             // 忽略主键
-            if (Objects.equals(entry.getKey(), mataDate.getPkProperty())) {
+            if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())) {
                 continue;
             }
             PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(entityClass, entry.getKey());
@@ -79,7 +79,7 @@ public class BaseSqlProvider {
                 sql.SET(getEquals(entry.getValue(), entry.getKey()));
             }
         }
-        sql.WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+        sql.WHERE(getEquals(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
         log.info("\n" + sql.toString());
         return sql.toString();
     }
@@ -89,7 +89,7 @@ public class BaseSqlProvider {
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
 
         SQL sql = new SQL().DELETE_FROM(mataDate.getTableName())
-                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+                .WHERE(getEquals(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
         log.info(sql.toString());
         return sql.toString();
     }
@@ -100,14 +100,14 @@ public class BaseSqlProvider {
 
         SQL sql = new SQL().SELECT(mataDate.getBaseColumns())
                 .FROM(mataDate.getTableName())
-                .WHERE(getEquals(mataDate.getPkColumn(), mataDate.getPkProperty()));
+                .WHERE(getEquals(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
         log.info("\n" + sql.toString());
         return sql
                 .toString();
     }
 
     public String selectByProperty(ProviderContext context, Map<String, Object> params) {
-        PropertyFunction propertyFunction = (PropertyFunction) params.get("property");
+        SerializedFunction propertyFunction = (SerializedFunction) params.get("property");
         String property = SerializedLambdaUtils.getProperty(propertyFunction);
         Class<?> entityClass = getEntityClass(context);
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
@@ -152,7 +152,7 @@ public class BaseSqlProvider {
                 } else if (logic == Logic.NULL || logic == Logic.NOT_NULL) {
                     sql.WHERE(column + logic.getCode());
                 } else {
-                    sql.WHERE(column + logic.getCode() + getTokenParam(mappedProperty));
+                    sql.WHERE(column + logic.getCode() + getTokenParam(field.getName()));
                 }
             }
         }

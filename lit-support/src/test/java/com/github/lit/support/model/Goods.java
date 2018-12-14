@@ -1,5 +1,6 @@
 package com.github.lit.support.model;
 
+import com.github.lit.support.common.annotation.Table;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.Date;
  * version $Id: Goods.java, v 0.1 Exp $
  */
 @Data
+@Table(name = "sign_product")
 public class Goods implements Serializable {
 
     private static final long serialVersionUID = -6305173237589282633L;
@@ -21,7 +23,9 @@ public class Goods implements Serializable {
 
     private String fullName;
 
-    private Double price;
+    private Date beginTime;
+
+    private Date endTime;
 
     private Date createdAt;
 

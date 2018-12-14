@@ -1,8 +1,8 @@
 archivesBaseName = "lit-mybatis-spring-boot-starter"
 
 dependencies {
-    compile libs.mybatis
-    compile libs.mybatis_spring
-    compile libs.mybatis_spring_boot_autoconfigure
-    compile libs.spring_jdbc
+    compile mybatis
+    compile mybatis_spring
+    compile mybatis_spring_boot_autoconfigure
+    compile spring_jdbc
 }

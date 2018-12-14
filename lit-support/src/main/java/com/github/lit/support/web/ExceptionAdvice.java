@@ -15,7 +15,6 @@ import org.springframework.web.method.HandlerMethod;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import static com.github.lit.constant.ResultConst.*;
 
 /**
  * User : liulu
@@ -33,14 +32,14 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     public String exception(HandlerMethod handlerMethod, Model model, Exception ex) {
-        model.addAttribute(SUCCESS, false);
+        model.addAttribute("success", false);
 
         BizException bizException = findBizException(ex);
         if (bizException != null) {
             if (StringUtils.hasText(bizException.getCode())) {
-                model.addAttribute(CODE, bizException.getCode());
+                model.addAttribute("code", bizException.getCode());
             }
-            model.addAttribute(MESSAGE, bizException.getMessage());
+            model.addAttribute("message", bizException.getMessage());
 
             StackTraceElement traceElement = ex.getStackTrace()[0];
             log.warn("\n biz exception --> class: [{}], method: [{}], line: [{}], code: [{}],  message: [{}]",
@@ -52,9 +51,9 @@ public class ExceptionAdvice {
                 return viewName.value();
             }
         } else {
-            model.addAttribute(CODE, "9999");
-            model.addAttribute(MESSAGE, errorMsg);
-            model.addAttribute(ERROR, ex.getMessage());
+            model.addAttribute("code", "9999");
+            model.addAttribute("message", errorMsg);
+            model.addAttribute("error", ex.getMessage());
             log.error("unchecked exception", ex);
         }
 

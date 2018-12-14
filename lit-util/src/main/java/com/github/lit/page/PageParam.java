@@ -12,9 +12,11 @@ import java.io.Serializable;
  */
 @Setter
 @NoArgsConstructor
-public class Page implements Serializable {
+public class PageParam implements Serializable {
 
     private static final long serialVersionUID = -2502137541842239335L;
+
+    private static final int MAX_PAGE_SIZE = 200;
 
     /**
      * 每页记录数
@@ -33,12 +35,12 @@ public class Page implements Serializable {
     protected boolean count = true;
 
 
-    public Page(int pageSize, int pageNum) {
+    public PageParam(int pageSize, int pageNum) {
         this.pageSize = pageSize;
         this.pageNum = pageNum;
     }
 
-    public Page(int pageSize, int pageNum, boolean count) {
+    public PageParam(int pageSize, int pageNum, boolean count) {
         this.pageSize = pageSize;
         this.pageNum = pageNum;
         this.count = count;
@@ -49,11 +51,11 @@ public class Page implements Serializable {
     }
 
     public int getPageSize() {
-        return pageSize < 1 ? 20 : pageSize;
+        return Math.min(MAX_PAGE_SIZE, Math.max(1, pageSize));
     }
 
     public int getPageNum() {
-        return pageNum < 1 ? 1 : pageNum;
+        return Math.max(1, pageNum);
     }
 
 }

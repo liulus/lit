@@ -1,6 +1,6 @@
-package com.github.lit.support.mybatis.plugin;
+package com.github.lit.support.mybatis;
 
-import com.github.lit.support.mybatis.builder.TableMataDate;
+import com.github.lit.support.common.TableMataDate;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;

@@ -2,9 +2,9 @@ archivesBaseName = "lit-code"
 
 dependencies {
     compile project(':lit-util')
-    compile libs.velocity
-    compile libs.gson
+    compile velocity
+    compile gson
 
-    testCompile libs.mysql
+    testCompile mysql
 
 }

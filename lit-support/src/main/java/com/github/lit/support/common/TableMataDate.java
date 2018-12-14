@@ -1,22 +1,19 @@
-package com.github.lit.support.mybatis.builder;
+package com.github.lit.support.common;
 
-import com.github.lit.support.mybatis.annotation.Column;
-import com.github.lit.support.mybatis.annotation.Id;
-import com.github.lit.support.mybatis.annotation.Table;
-import com.github.lit.support.mybatis.annotation.Transient;
 import com.github.lit.util.NameUtils;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 
 /**
  * @author liulu
@@ -24,9 +21,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * date : 7/24/18 11:31
  */
 @Getter
-public class TableMataDate {
+public class TableMataDate implements Serializable {
 
-    private static final Map<Class<?>, TableMataDate> TABLE_CACHE = new ConcurrentHashMap<>(64);
+    private static final int DEFAULT_CACHE_LIMIT = 128;
+
+    @SuppressWarnings("serial")
+    private static final Map<Class<?>, TableMataDate> TABLE_CACHE =
+            new LinkedHashMap<Class<?>, TableMataDate>(DEFAULT_CACHE_LIMIT, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<Class<?>, TableMataDate> eldest) {
+                    return size() > DEFAULT_CACHE_LIMIT;
+                }
+            };
+    private static final long serialVersionUID = 7433386817779746930L;
 
     /**
      * 表名
@@ -36,12 +43,12 @@ public class TableMataDate {
     /**
      * 主键属性名
      */
-    private String pkProperty;
+    private String keyProperty;
 
     /**
      * 主键对应的列名
      */
-    private String pkColumn;
+    private String keyColumn;
 
     /**
      * 属性名和字段名映射关系的 map
@@ -61,13 +68,9 @@ public class TableMataDate {
 
 
     public static TableMataDate forClass(Class<?> entityClass) {
-        TableMataDate tableMataDate = TABLE_CACHE.get(entityClass);
-        if (tableMataDate == null) {
-            tableMataDate = new TableMataDate(entityClass);
-            TABLE_CACHE.put(entityClass, tableMataDate);
+        synchronized (TABLE_CACHE) {
+            return TABLE_CACHE.computeIfAbsent(entityClass, TableMataDate::new);
         }
-
-        return tableMataDate;
     }
 
     public String getBaseColumns() {
@@ -90,13 +93,13 @@ public class TableMataDate {
     /**
      * 根据注解初始化表信息，
      *
-     * @param clazz 实体类的 class
+     * @param eClass 实体类的 class
      */
-    private void initTableInfo(Class<?> clazz) {
-        tableName = clazz.isAnnotationPresent(Table.class) ? clazz.getAnnotation(Table.class).name()
-                : NameUtils.getUnderLineName(clazz.getSimpleName());
+    private void initTableInfo(Class<?> eClass) {
+        tableName = eClass.isAnnotationPresent(Table.class) ? eClass.getAnnotation(Table.class).name()
+                : NameUtils.getUnderLineName(eClass.getSimpleName());
 
-        Field[] fields = clazz.getDeclaredFields();
+        Field[] fields = eClass.getDeclaredFields();
         for (Field field : fields) {
 
             // 过滤静态字段和有 @Transient 注解的字段
@@ -108,20 +111,22 @@ public class TableMataDate {
 
             String property = field.getName();
             Column column = field.getAnnotation(Column.class);
-            String columnName = column != null ? column.name().toLowerCase() : NameUtils.getUnderLineName(property);
+            String columnName = column != null ? column.name() : NameUtils.getUnderLineName(property);
 
             // 主键信息 : 有 @Id 注解的字段，没有默认是 类名+Id
-            if (field.isAnnotationPresent(Id.class) || (property.equalsIgnoreCase("id") && pkProperty == null)) {
-                pkProperty = property;
-                pkColumn = columnName;
+            if (field.isAnnotationPresent(Id.class) || (property.equalsIgnoreCase("id") && keyProperty == null)) {
+                this.keyProperty = property;
+                this.keyColumn = columnName;
             }
             // 将字段对应的列放到 map 中
-            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(clazz, property);
+            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(eClass, property);
             if (descriptor != null && descriptor.getReadMethod() != null && descriptor.getWriteMethod() != null) {
                 fieldColumnMap.put(property, columnName);
                 fieldTypeMap.put(property, field.getType());
             }
         }
+        fieldColumnMap = Collections.unmodifiableMap(fieldColumnMap);
+        fieldTypeMap = Collections.unmodifiableMap(fieldTypeMap);
     }
 
 }

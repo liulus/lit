@@ -1,4 +1,6 @@
 archivesBaseName = "lit-util"
+
 dependencies {
 
+    compileOnly spring_beans
 }

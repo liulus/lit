@@ -1,6 +1,6 @@
-package com.github.lit.support.mybatis.annotation;
+package com.github.lit.support.common.annotation;
 
-import com.github.lit.support.mybatis.builder.Logic;
+import com.github.lit.support.common.Logic;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

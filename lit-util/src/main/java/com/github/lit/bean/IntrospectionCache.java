@@ -24,7 +24,7 @@ public class IntrospectionCache {
      * Needs to be a WeakHashMap with WeakReferences as values to allow
      * for proper garbage collection in case of multiple class loaders.
      */
-    private static final Map<Class<?>, Object> classCache = Collections.synchronizedMap(new WeakHashMap<Class<?>, Object>());
+    private static final Map<Class<?>, Object> classCache = Collections.synchronizedMap(new WeakHashMap<>());
 
     /**
      * 类的属性信息，key为属性名

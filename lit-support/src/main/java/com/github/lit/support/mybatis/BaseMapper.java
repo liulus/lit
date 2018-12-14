@@ -1,6 +1,6 @@
-package com.github.lit.support.mybatis.mapper;
+package com.github.lit.support.mybatis;
 
-import com.github.lit.support.mybatis.builder.PropertyFunction;
+import com.github.lit.util.SerializedFunction;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -58,7 +58,7 @@ public interface BaseMapper<Entity> {
      * @return Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectByProperty")
-    <R> Entity selectByProperty(@Param("property") PropertyFunction<Entity, R> function, @Param("value") Object value);
+    <R> Entity selectByProperty(@Param("property") SerializedFunction<Entity, R> function, @Param("value") Object value);
 
     /**
      * 根据属性查询记录列表
@@ -69,7 +69,7 @@ public interface BaseMapper<Entity> {
      * @return Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectByProperty")
-    <R> List<Entity> selectListByProperty(@Param("property") PropertyFunction<Entity, R> function, @Param("value") Object value);
+    <R> List<Entity> selectListByProperty(@Param("property") SerializedFunction<Entity, R> function, @Param("value") Object value);
 
     /**
      * 根据查询条件查询记录

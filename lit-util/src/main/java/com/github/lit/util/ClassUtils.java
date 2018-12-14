@@ -1,6 +1,7 @@
 package com.github.lit.util;
 
 import com.github.lit.exception.SysException;
+import org.springframework.util.TypeUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -12,8 +13,9 @@ import java.util.*;
 
 /**
  * 反射工具类
- * User : liulu
- * Date : 2016-10-2 9:48
+ * @author liulu
+ * date 2016-10-2 9:48
+ * @see org.springframework.util.ClassUtils
  */
 public class ClassUtils {
 
@@ -61,13 +63,13 @@ public class ClassUtils {
      * Map with primitive wrapper type as key and corresponding primitive
      * type as value, for example: Integer.class -> int.class.
      */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<Class<?>, Class<?>>(8);
+    private static final Map<Class<?>, Class<?>> primitiveWrapperTypeMap = new IdentityHashMap<>(8);
 
     /**
      * Map with primitive type as key and corresponding wrapper
      * type as value, for example: int.class -> Integer.class.
      */
-    private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<Class<?>, Class<?>>(8);
+    private static final Map<Class<?>, Class<?>> primitiveTypeToWrapperMap = new IdentityHashMap<>(8);
 
     /**
      * Map with primitive type name as key and corresponding primitive
@@ -367,6 +369,36 @@ public class ClassUtils {
 
     public static boolean isSimpleValueType(Class<?> clazz) {
         return isPrimitiveOrWrapper(clazz) || clazz.isEnum() || CharSequence.class.isAssignableFrom(clazz) || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) || URI.class == clazz || URL.class == clazz || Locale.class == clazz || Class.class == clazz;
+    }
+
+    /**
+     * Check if the right-hand side type may be assigned to the left-hand side
+     * type, assuming setting by reflection. Considers primitive wrapper
+     * classes as assignable to the corresponding primitive types.
+     * @param lhsType the target type
+     * @param rhsType the value type that should be assigned to the target type
+     * @return if the target type is assignable from the value type
+     * @see TypeUtils#isAssignable
+     */
+    public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
+        Assert.notNull(lhsType, "Left-hand side type must not be null");
+        Assert.notNull(rhsType, "Right-hand side type must not be null");
+        if (lhsType.isAssignableFrom(rhsType)) {
+            return true;
+        }
+        if (lhsType.isPrimitive()) {
+            Class<?> resolvedPrimitive = primitiveWrapperTypeMap.get(rhsType);
+            if (lhsType == resolvedPrimitive) {
+                return true;
+            }
+        }
+        else {
+            Class<?> resolvedWrapper = primitiveTypeToWrapperMap.get(rhsType);
+            if (resolvedWrapper != null && lhsType.isAssignableFrom(resolvedWrapper)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

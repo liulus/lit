@@ -1,4 +1,4 @@
-package com.github.lit.support.mybatis.builder;
+package com.github.lit.support.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

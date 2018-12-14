@@ -1,6 +1,5 @@
 package com.github.lit.jdbc.enums;
 
-import com.github.lit.enums.IEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,7 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum JoinType implements IEnum {
+public enum JoinType {
 
     RIGHT("RIGHT", "RIGHT"),
 

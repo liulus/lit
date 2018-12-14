@@ -1,6 +1,6 @@
 package com.github.lit.test.model;
 
-import com.github.lit.page.Page;
+import com.github.lit.page.PageParam;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Data
 @Builder
-public class GoodsVo extends Page implements Serializable {
+public class GoodsVo extends PageParam implements Serializable {
 
     private static final long serialVersionUID = -6502691308871630951L;
 

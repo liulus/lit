@@ -1,43 +1,44 @@
 ext {
-    slf4jVersion = '1.7.21'
-    logbackVersion = '1.1.7'
-    jacksonVersion = '2.8.3'
-    druidVersion = '1.0.29'
-    mybatisVersion = '3.4.6'
-    mybatisSpringVersion = '1.3.2'
-    springVersion = '4.3.14.RELEASE'
-    springBootVersion = '1.5.10.RELEASE'
 
-
-    libs = [
-            guava                            : "com.google.guava:guava:20.0",
-            gson                             : "com.google.code.gson:gson:2.8.2",
-            junit                            : "junit:junit:4.12",
-            lombok                           : "org.projectlombok:lombok:1.16.14",
-            slf4j_api                        : "org.slf4j:slf4j-api:${slf4jVersion}",
-            jcl_over_slf4j                   : "org.slf4j:jcl-over-slf4j:${slf4jVersion}",
-            logback_classic                  : "ch.qos.logback:logback-classic:${logbackVersion}",
-            jsqlparser                       : "com.github.jsqlparser:jsqlparser:0.9.6",
-            c3p0                             : "c3p0:c3p0:0.9.1.2",
-            druid                            : "com.alibaba:druid:${druidVersion}",
-            mysql                            : "mysql:mysql-connector-java:5.1.38",
-            oracle                           : "com.oracle:ojdbc6:11.2.0.3",
-            velocity                         : "org.apache.velocity:velocity:1.7",
-            servlet_api                      : "javax.servlet:javax.servlet-api:3.1.0",
-            mybatis                          : "org.mybatis:mybatis:${mybatisVersion}",
-            mybatis_spring                   : "org.mybatis:mybatis-spring:${mybatisSpringVersion}",
-            mybatis_spring_boot_autoconfigure: "org.mybatis.spring.boot:mybatis-spring-boot-autoconfigure:${mybatisSpringVersion}",
-            spring_context                   : "org.springframework:spring-context:${springVersion}",
-            spring_context_support           : "org.springframework:spring-context-support:${springVersion}",
-            spring_jdbc                      : "org.springframework:spring-jdbc:${springVersion}",
-            spring_tx                        : "org.springframework:spring-tx:${springVersion}",
-            spring_orm                       : "org.springframework:spring-orm:${springVersion}",
-            spring_aop                       : "org.springframework:spring-aop:${springVersion}",
-            spring_aspects                   : "org.springframework:spring-aspects:${springVersion}",
-            spring_webmvc                    : "org.springframework:spring-webmvc:${springVersion}",
-            spring_test                      : "org.springframework:spring-test:${springVersion}",
-            spring_boot_autoconfigure        : "org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}",
+    version = [
+            slf4j         : '1.7.21',
+            logback       : '1.1.7',
+            jackson       : '2.8.3',
+            druid         : '1.1.12',
+            mybatis       : '3.4.6',
+            mybatis_spring: '1.3.2',
+            spring        : '4.3.20.RELEASE',
+            spring_boot   : '1.5.10.RELEASE',
     ]
+
+    // dependencies
+    guava = "com.google.guava:guava:20.0"
+    gson = "com.google.code.gson:gson:2.8.2"
+    junit = "junit:junit:4.12"
+    lombok = "org.projectlombok:lombok:1.16.14"
+    slf4j_api = "org.slf4j:slf4j-api:${version.slf4j}"
+    jcl_over_slf4j = "org.slf4j:jcl-over-slf4j:${version.slf4j}"
+    logback_classic = "ch.qos.logback:logback-classic:${version.logback}"
+    jsqlparser = "com.github.jsqlparser:jsqlparser:0.9.6"
+    c3p0 = "c3p0:c3p0:0.9.1.2"
+    druid = "com.alibaba:druid:${version.druid}"
+    mysql = "mysql:mysql-connector-java:5.1.38"
+    oracle = "com.oracle:ojdbc6:11.2.0.3"
+    velocity = "org.apache.velocity:velocity:1.7"
+    servlet_api = "javax.servlet:javax.servlet-api:3.1.0"
+    mybatis = "org.mybatis:mybatis:${version.mybatis}"
+    mybatis_spring = "org.mybatis:mybatis-spring:${version.mybatis_spring}"
+    mybatis_spring_boot_autoconfigure = "org.mybatis.spring.boot:mybatis-spring-boot-autoconfigure:${version.mybatis_spring}"
+    spring_context = "org.springframework:spring-context:${version.spring}"
+    spring_context_support = "org.springframework:spring-context-support:${version.spring}"
+    spring_jdbc = "org.springframework:spring-jdbc:${version.spring}"
+    spring_beans = "org.springframework:spring-beans:${version.spring}"
+    spring_tx = "org.springframework:spring-tx:${version.spring}"
+    spring_aspects = "org.springframework:spring-aspects:${version.spring}"
+    spring_webmvc = "org.springframework:spring-webmvc:${version.spring}"
+    spring_test = "org.springframework:spring-test:${version.spring}"
+    spring_boot_autoconfigure = "org.springframework.boot:spring-boot-autoconfigure:${version.spring_boot}"
+
 }
 
 allprojects {
@@ -49,19 +50,13 @@ allprojects {
 
     repositories {
         mavenLocal()
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
-    }
-
-    configurations {
-        compile.exclude module: 'commons-logging'
-        compileOnly.exclude module: 'commons-logging'
+        maven { url 'https://maven.aliyun.com/repository/public' }
     }
 
     dependencies {
-        compileOnly libs.lombok
-        compileOnly libs.slf4j_api
+        compileOnly lombok
 
-        testCompile libs.junit
+        testCompile junit
     }
 
     tasks.withType(JavaCompile) {

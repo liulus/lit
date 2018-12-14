@@ -1,5 +1,5 @@
 archivesBaseName = "lit-web-spring-boot-starter"
 
 dependencies {
-    compile libs.spring_webmvc
+    compile spring_webmvc
 }

@@ -5,8 +5,7 @@ package com.github.lit.util;
  * User : liulu
  * Date : 2016-10-4 16:05
  */
-@SuppressWarnings("Duplicates")
-public class NameUtils {
+public abstract class NameUtils {
 
     /**
      * 下划线分割命名转换为驼峰命名

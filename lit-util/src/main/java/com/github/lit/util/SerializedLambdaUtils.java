@@ -1,6 +1,4 @@
-package com.github.lit.support.mybatis.builder;
-
-import com.github.lit.util.NameUtils;
+package com.github.lit.util;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
@@ -12,7 +10,7 @@ import java.lang.reflect.Method;
  */
 public abstract class SerializedLambdaUtils {
 
-    public static  String getProperty(PropertyFunction propertyFunction) {
+    public static String getProperty(SerializedFunction propertyFunction) {
         String getMethod = getSerializedLambda(propertyFunction).getImplMethodName();
 
         if (getMethod.startsWith("get")) {
@@ -24,7 +22,13 @@ public abstract class SerializedLambdaUtils {
         return NameUtils.getFirstLowerName(getMethod);
     }
 
-    public static SerializedLambda getSerializedLambda(PropertyFunction propertyFunction) {
+    @SuppressWarnings("unchecked")
+    public static <T, R> Class<T> getLambdaClass(SerializedFunction<T, R> propertyFunction) {
+        SerializedLambda serializedLambda = getSerializedLambda(propertyFunction);
+        return (Class<T>) ClassUtils.forName(serializedLambda.getImplClass());
+    }
+
+    public static SerializedLambda getSerializedLambda(SerializedFunction propertyFunction) {
         try {
             Method writeReplace = propertyFunction.getClass().getDeclaredMethod("writeReplace");
             writeReplace.setAccessible(Boolean.TRUE);
