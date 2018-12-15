@@ -1,8 +1,8 @@
 package com.github.lit.support.model;
 
-import com.github.lit.support.common.annotation.Table;
 import lombok.Data;
 
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 

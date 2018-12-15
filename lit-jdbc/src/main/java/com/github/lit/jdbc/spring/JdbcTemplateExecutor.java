@@ -2,7 +2,6 @@ package com.github.lit.jdbc.spring;
 
 import com.github.lit.jdbc.AbstractStatementExecutor;
 import com.github.lit.jdbc.model.StatementContext;
-import com.github.lit.util.ClassUtils;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +11,7 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.util.ClassUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

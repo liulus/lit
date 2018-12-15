@@ -1,7 +1,6 @@
 archivesBaseName = "lit-support"
 
 dependencies {
-    compile project(':lit-util')
 
     compileOnly servlet_api
     compileOnly slf4j_api
@@ -11,7 +10,11 @@ dependencies {
     compileOnly guava
     compileOnly mybatis
 
+    testCompile spring_test
     testCompile logback_classic
     testCompile jcl_over_slf4j
+    testCompile(mariaDB4j) {
+        exclude group: 'org.springframework'
+    }
     testCompile mysql
 }

@@ -1,10 +1,12 @@
 package com.github.lit.jdbc.statement.update;
 
-import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
 import com.github.lit.jdbc.statement.where.WhereExpression;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.ReflectionUtils;
 
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,8 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
 
     //    @Override
     public Update initEntity(Object entity, boolean isIgnoreNull) {
-        Object key = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkProperty());
+        PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(entity.getClass(), tableInfo.getPkProperty());
+        Object key = ReflectionUtils.invokeMethod(pd.getReadMethod(), entity);
         if (key == null) {
             throw new NullPointerException("primary key value must not be null for update!");
         }
@@ -63,7 +66,8 @@ public class UpdateImpl extends AbstractCondition<Update, WhereExpression<Update
                 continue;
             }
 
-            Object obj = BeanUtils.invokeReaderMethod(entity, entry.getKey());
+            PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(entity.getClass(), entry.getKey());
+            Object obj = ReflectionUtils.invokeMethod(descriptor.getReadMethod(), entity);
             if (!isIgnoreNull || obj != null && !(obj instanceof String && ((String) obj).isEmpty())) {
                 columns.add(entry.getValue());
                 if (obj == null) {

@@ -1,7 +1,7 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.util.SerializedFunction;
-import com.github.lit.util.SerializedLambdaUtils;
+import com.github.lit.support.util.SerializedFunction;
+import com.github.lit.support.util.SerializedLambdaUtils;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

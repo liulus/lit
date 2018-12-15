@@ -75,5 +75,5 @@ public @interface Table {
      * annotations and constraints entailed by primary key mappings.
      * <p> Defaults to no additional constraints.
      */
-    UniqueConstraint[] uniqueConstraints() default {};
+//    UniqueConstraint[] uniqueConstraints() default {};
 }

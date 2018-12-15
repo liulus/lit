@@ -1,14 +1,14 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.page.PageList;
-import com.github.lit.page.PageParam;
-import com.github.lit.support.common.DbName;
+import com.github.lit.support.common.Database;
 import com.github.lit.support.common.Logic;
 import com.github.lit.support.common.TableMataDate;
 import com.github.lit.support.common.annotation.Condition;
+import com.github.lit.support.common.page.PageList;
+import com.github.lit.support.common.page.PageParam;
 import com.github.lit.support.jdbc.dialect.Dialect;
-import com.github.lit.util.SerializedFunction;
-import com.github.lit.util.SerializedLambdaUtils;
+import com.github.lit.support.util.SerializedFunction;
+import com.github.lit.support.util.SerializedLambdaUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +16,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
@@ -39,7 +41,7 @@ import java.util.Objects;
 public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Setter
-    private DbName dbName;
+    private Database database;
 
     @Getter
     @Setter
@@ -148,13 +150,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     public <E> E selectById(Class<E> eClass, Long id) {
         TableMataDate mataDate = TableMataDate.forClass(eClass);
 
-        String sql = SQL.init().SELECT(mataDate.getBaseColumns())
+        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
                 .FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " = ?")
-                .toString();
+                .WHERE(mataDate.getKeyColumn() + " = :id");
 
-        return jdbcOperations.getJdbcOperations()
-                .queryForObject(sql, new Object[]{id}, AnnotationRowMapper.newInstance(eClass));
+        return selectForObject(sql, Collections.singletonMap("id", id), eClass);
     }
 
     @Override
@@ -174,12 +174,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         TableMataDate mataDate = TableMataDate.forClass(eClass);
         String column = mataDate.getFieldColumnMap().get(property);
 
-        String sql = SQL.init().SELECT(mataDate.getBaseColumns())
+        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
                 .FROM(mataDate.getTableName())
-                .WHERE(column + " = ?")
-                .toString();
-        return jdbcOperations.getJdbcOperations()
-                .queryForObject(sql, new Object[]{value}, AnnotationRowMapper.newInstance(eClass));
+                .WHERE(column + " = :id");
+
+        return selectForObject(sql, Collections.singletonMap("id", value), eClass);
     }
 
     @Override
@@ -224,11 +223,15 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Override
     public <E> List<E> selectForList(SQL sql, Object args, Class<E> requiredType) {
+        //noinspection unchecked
+        SqlParameterSource parameterSource = args instanceof Map
+                ? new MapSqlParameterSource((Map<String, ?>) args)
+                : new BeanPropertySqlParameterSource(args);
+
         if (BeanUtils.isSimpleValueType(requiredType)) {
-            return jdbcOperations.queryForList(sql.toString(), new BeanPropertySqlParameterSource(args), requiredType);
+            return jdbcOperations.queryForList(sql.toString(), parameterSource, requiredType);
         }
-        return jdbcOperations.query(sql.toString(),
-                new BeanPropertySqlParameterSource(args), AnnotationRowMapper.newInstance(requiredType));
+        return jdbcOperations.query(sql.toString(), parameterSource, AnnotationRowMapper.newInstance(requiredType));
     }
 
     @Override
@@ -254,7 +257,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
                 return new PageList<>(args.getPageSize(), args.getPageNum(), 0);
             }
         }
-        Dialect dialect = Dialect.valueOf(getDbName());
+        Dialect dialect = Dialect.valueOf(getDatabase());
         if (dialect == null) {
             return new PageList<>(args.getPageSize(), args.getPageNum(), 0);
         }
@@ -320,12 +323,12 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     }
 
 
-    public DbName getDbName() {
-        if (StringUtils.isEmpty(dbName)) {
-            dbName = jdbcOperations.getJdbcOperations().execute(
-                    (ConnectionCallback<DbName>) con -> DbName.valueOf(con.getMetaData().getDatabaseProductName().toUpperCase())
+    public Database getDatabase() {
+        if (StringUtils.isEmpty(database)) {
+            database = jdbcOperations.getJdbcOperations().execute(
+                    (ConnectionCallback<Database>) con -> Database.valueOf(con.getMetaData().getDatabaseProductName().toUpperCase())
             );
         }
-        return dbName;
+        return database;
     }
 }

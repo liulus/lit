@@ -1,6 +1,6 @@
 package com.github.lit.support.mybatis;
 
-import com.github.lit.util.SerializedFunction;
+import com.github.lit.support.util.SerializedFunction;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

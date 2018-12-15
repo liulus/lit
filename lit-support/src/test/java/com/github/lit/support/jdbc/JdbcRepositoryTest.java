@@ -1,13 +1,18 @@
 package com.github.lit.support.jdbc;
 
+import com.github.lit.support.configure.SpringTestConfigure;
 import com.github.lit.support.model.Goods;
 import com.github.lit.support.model.GoodsCondition;
-import org.junit.Before;
+import com.github.lit.support.model.SignProduct;
+import org.junit.Assert;
 import org.junit.Test;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.SingleConnectionDataSource;
+import org.junit.runner.RunWith;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,29 +21,104 @@ import java.util.List;
  * @version v1.0
  * date 2018-12-11 21:37
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = SpringTestConfigure.class)
+@Sql(scripts = "/sql/init_schema.sql")
 public class JdbcRepositoryTest {
 
+    @Resource
     private JdbcRepository jdbcRepository;
 
-    @Before
-    public void before () {
+    @Test
+    public void insert() {
+        SignProduct signProduct = new SignProduct();
+        signProduct.setCode("826478");
+        signProduct.setFullName("签约产品一号");
+        signProduct.setInventory(826);
+        jdbcRepository.insert(signProduct);
 
-        SingleConnectionDataSource dataSource = new SingleConnectionDataSource();
-        dataSource.setUrl("jdbc:mysql://10.10.100.56:3306/qianniu3_dev_20180912");
-        dataSource.setUsername("root");
-        dataSource.setPassword("123456");
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        Assert.assertTrue(signProduct.getId() >= 1);
+    }
 
-        NamedParameterJdbcOperations jdbcOperations = new NamedParameterJdbcTemplate(dataSource);
+    @Test(expected = DataIntegrityViolationException.class)
+    public void update() {
+        String upCode = "new_code";
+        String upName = "new_full_name";
 
-        jdbcRepository = new JdbcRepositoryImpl(jdbcOperations);
+        SignProduct old = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNotNull(old);
+        Assert.assertNotEquals(old.getCode(), upCode);
+        Assert.assertNotEquals(old.getFullName(), upName);
+
+        SignProduct upProduct = new SignProduct();
+        upProduct.setId(old.getId());
+        upProduct.setCode(upCode);
+        upProduct.setFullName(upName);
+        jdbcRepository.update(upProduct);
+
+    }
+
+    @Test
+    public void updateSelective() {
+        String upCode = "new_code";
+        String upName = "new_full_name";
+
+        SignProduct old = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNotNull(old);
+        Assert.assertNotEquals(old.getCode(), upCode);
+        Assert.assertNotEquals(old.getFullName(), upName);
+
+        SignProduct upProduct = new SignProduct();
+        upProduct.setId(old.getId());
+        upProduct.setCode(upCode);
+        upProduct.setFullName(upName);
+        jdbcRepository.updateSelective(upProduct);
+
+        SignProduct newProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNotNull(newProduct);
+        Assert.assertEquals(newProduct.getCode(), upCode);
+        Assert.assertEquals(newProduct.getFullName(), upName);
+    }
+
+    @Test
+    public void delete() {
+        SignProduct deleteProduct = new SignProduct();
+        deleteProduct.setId(1L);
+        int deleted = jdbcRepository.delete(deleteProduct);
+        Assert.assertTrue(deleted >= 1);
+
+        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNull(signProduct);
+    }
+
+    @Test
+    public void deleteById() {
+        int deleted = jdbcRepository.deleteById(SignProduct.class, 1L);
+        Assert.assertTrue(deleted >= 1);
+
+        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNull(signProduct);
     }
 
 
     @Test
-    public void test1() {
-        Goods goods = jdbcRepository.selectById(Goods.class, 20L);
-        System.out.println(goods);
+    public void selectById() {
+        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        Assert.assertNotNull(signProduct);
+        Assert.assertEquals("893341", signProduct.getCode());
+    }
+
+    @Test
+    public void selectAll() {
+        List<SignProduct> signProducts = jdbcRepository.selectAll(SignProduct.class);
+        Assert.assertEquals(4, signProducts.size());
+    }
+
+    @Test
+    public void selectByProperty() {
+        SignProduct signProduct = jdbcRepository.selectByProperty(SignProduct::getCode, "893341");
+
+        Assert.assertNotNull(signProduct);
     }
 
     @Test

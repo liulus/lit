@@ -1,6 +1,6 @@
 package com.github.lit.jdbc.generator;
 
-import com.github.lit.util.UUIDUtils;
+import com.github.lit.support.util.UUIDUtils;
 
 /**
  * User : liulu

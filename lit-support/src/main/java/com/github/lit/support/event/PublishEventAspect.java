@@ -1,7 +1,6 @@
 package com.github.lit.support.event;
 
-import com.github.lit.bean.BeanUtils;
-import com.github.lit.util.ClassUtils;
+import com.github.lit.support.util.ClassUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +10,10 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
+import org.springframework.util.ReflectionUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -87,7 +88,8 @@ public class PublishEventAspect {
         if (returnValue == null) {
             return;
         }
-        BeanUtils.invokeWriteMethod(eventObj, returnProperty, returnValue);
+        PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(eventObj.getClass(), returnProperty);
+        ReflectionUtils.invokeMethod(pd.getWriteMethod(), eventObj, returnValue);
     }
 
 
@@ -118,11 +120,11 @@ public class PublishEventAspect {
             int nameIndex = getParameterNameIndex(parameterNames, descriptor.getName());
             // 名称一致, 是子类或相同
             if (nameIndex >= 0 && propertyType.isAssignableFrom(parameterTypes[nameIndex])) {
-                ClassUtils.invokeMethod(descriptor.getWriteMethod(), eventObj, args[nameIndex]);
+                ReflectionUtils.invokeMethod(descriptor.getWriteMethod(), eventObj, args[nameIndex]);
             } else if (!ClassUtils.isPrimitiveOrWrapper(propertyType)) {
                 int typeIndex = getParameterTypeIndex(parameterTypes, propertyType);
                 if (typeIndex >= 0) {
-                    ClassUtils.invokeMethod(descriptor.getWriteMethod(), eventObj, args[typeIndex]);
+                    ReflectionUtils.invokeMethod(descriptor.getWriteMethod(), eventObj, args[typeIndex]);
                 }
             }
         }

@@ -1,9 +1,12 @@
 package com.github.lit.jdbc.statement.delete;
 
-import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
 import com.github.lit.jdbc.statement.where.WhereExpression;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.ReflectionUtils;
+
+import java.beans.PropertyDescriptor;
 
 /**
  * User : liulu
@@ -21,8 +24,8 @@ public class DeleteImpl extends AbstractCondition<Delete, WhereExpression<Delete
 
 //    @Override
     public DeleteImpl initEntity(Object entity) {
-
-        Object keyValue = BeanUtils.invokeReaderMethod(entity, tableInfo.getPkProperty());
+        PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(entity.getClass(), tableInfo.getPkProperty());
+        Object keyValue = ReflectionUtils.invokeMethod(pd.getReadMethod(), entity);
         if (keyValue != null && (!(keyValue instanceof String) || !((String) keyValue).isEmpty())) {
             this.where(tableInfo.getPkProperty()).equalsTo(keyValue);
         } else {

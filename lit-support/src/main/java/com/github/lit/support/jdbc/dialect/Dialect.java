@@ -1,6 +1,6 @@
 package com.github.lit.support.jdbc.dialect;
 
-import com.github.lit.support.common.DbName;
+import com.github.lit.support.common.Database;
 
 /**
  * User : liulu
@@ -10,8 +10,8 @@ import com.github.lit.support.common.DbName;
 public abstract class Dialect {
 
 
-    public static Dialect valueOf(DbName dbName) {
-        switch (dbName) {
+    public static Dialect valueOf(Database database) {
+        switch (database) {
             case DB2:
                 return DB2Dialect.getInstance();
             case MYSQL:

@@ -1,6 +1,6 @@
 package com.github.lit.support.web;
 
-import com.github.lit.exception.BizException;
+import com.github.lit.support.common.exception.BizException;
 import com.github.lit.support.util.WebUtils;
 import com.github.lit.support.web.annotation.ViewName;
 import lombok.extern.slf4j.Slf4j;

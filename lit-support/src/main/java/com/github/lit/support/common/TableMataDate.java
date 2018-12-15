@@ -1,6 +1,6 @@
 package com.github.lit.support.common;
 
-import com.github.lit.util.NameUtils;
+import com.github.lit.support.util.NameUtils;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;

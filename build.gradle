@@ -1,8 +1,8 @@
 ext {
 
     version = [
-            slf4j         : '1.7.21',
-            logback       : '1.1.7',
+            slf4j         : '1.7.25',
+            logback       : '1.2.3',
             jackson       : '2.8.3',
             druid         : '1.1.12',
             mybatis       : '3.4.6',
@@ -23,6 +23,7 @@ ext {
     c3p0 = "c3p0:c3p0:0.9.1.2"
     druid = "com.alibaba:druid:${version.druid}"
     mysql = "mysql:mysql-connector-java:5.1.38"
+    mariaDB4j = "ch.vorburger.mariaDB4j:mariaDB4j:2.2.3"
     oracle = "com.oracle:ojdbc6:11.2.0.3"
     velocity = "org.apache.velocity:velocity:1.7"
     servlet_api = "javax.servlet:javax.servlet-api:3.1.0"

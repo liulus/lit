@@ -1,7 +1,7 @@
 archivesBaseName = "lit-code"
 
 dependencies {
-    compile project(':lit-util')
+    compile project(':lit-support')
     compile velocity
     compile gson
 

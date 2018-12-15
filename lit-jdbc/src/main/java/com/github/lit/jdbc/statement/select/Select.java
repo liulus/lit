@@ -2,7 +2,7 @@ package com.github.lit.jdbc.statement.select;
 
 import com.github.lit.jdbc.enums.JoinType;
 import com.github.lit.jdbc.statement.where.Condition;
-import com.github.lit.page.PageParam;
+import com.github.lit.support.common.page.PageParam;
 
 import java.util.List;
 

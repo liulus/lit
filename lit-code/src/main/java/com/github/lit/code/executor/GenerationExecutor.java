@@ -5,7 +5,7 @@ import com.github.lit.code.context.Table;
 import com.github.lit.code.context.Task;
 import com.github.lit.code.plugin.PluginExecutor;
 import com.github.lit.code.util.FileUtils;
-import com.github.lit.util.ClassUtils;
+import com.github.lit.support.util.ClassUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.context.Context;

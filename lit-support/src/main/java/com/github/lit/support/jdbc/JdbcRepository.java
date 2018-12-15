@@ -1,7 +1,7 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.page.PageParam;
-import com.github.lit.util.SerializedFunction;
+import com.github.lit.support.common.page.PageParam;
+import com.github.lit.support.util.SerializedFunction;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

@@ -1,9 +1,6 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.support.common.annotation.Column;
-import com.github.lit.support.common.annotation.Transient;
-import com.github.lit.util.ClassUtils;
-import com.github.lit.util.NameUtils;
+import com.github.lit.support.util.NameUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.*;
 import org.springframework.dao.DataRetrievalFailureException;
@@ -12,6 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 
+import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
@@ -132,7 +131,7 @@ public class AnnotationRowMapper<T> implements RowMapper<T> {
     @Override
     public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
         Assert.state(this.mappedClass != null, "Mapped class was not specified");
-        T mappedObject = ClassUtils.newInstance(mappedClass);
+        T mappedObject = BeanUtils.instantiateClass(mappedClass);
         BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(mappedObject);
 
         ResultSetMetaData rsmd = rs.getMetaData();

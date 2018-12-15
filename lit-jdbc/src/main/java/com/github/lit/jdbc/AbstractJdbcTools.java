@@ -11,8 +11,8 @@ import com.github.lit.jdbc.statement.insert.InsertImpl;
 import com.github.lit.jdbc.statement.select.Select;
 import com.github.lit.jdbc.statement.update.Update;
 import com.github.lit.jdbc.statement.update.UpdateImpl;
-import com.github.lit.util.Assert;
 import lombok.Setter;
+import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.io.Serializable;

@@ -1,15 +1,15 @@
 package com.github.lit.jdbc.statement;
 
-import com.github.lit.exception.SysException;
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
-import com.github.lit.util.Assert;
-import com.github.lit.util.ClassUtils;
-import com.github.lit.util.NameUtils;
+import com.github.lit.support.common.exception.SysException;
+import com.github.lit.support.util.ClassUtils;
+import com.github.lit.support.util.NameUtils;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.sf.jsqlparser.schema.Table;
+import org.springframework.util.Assert;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
@@ -50,7 +50,7 @@ public abstract class AbstractStatement implements Statement {
 
 
     protected String getColumn(String property) {
-        Assert.notEmpty(property, "property must not be empty!");
+        Assert.hasText(property, "property must not be empty!");
         String column = tableInfo.getFieldColumnMap().get(property);
         return column == null || column.isEmpty() ? property : column;
     }

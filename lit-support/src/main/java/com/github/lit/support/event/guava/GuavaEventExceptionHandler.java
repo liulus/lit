@@ -1,6 +1,6 @@
 package com.github.lit.support.event.guava;
 
-import com.github.lit.exception.BizException;
+import com.github.lit.support.common.exception.BizException;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.SubscriberExceptionContext;
 import com.google.common.eventbus.SubscriberExceptionHandler;

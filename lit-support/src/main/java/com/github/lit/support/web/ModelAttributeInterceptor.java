@@ -1,7 +1,7 @@
 package com.github.lit.support.web;
 
-import com.github.lit.page.PageInfo;
-import com.github.lit.page.PageList;
+import com.github.lit.support.common.page.PageInfo;
+import com.github.lit.support.common.page.PageList;
 import com.github.lit.support.util.SpelUtils;
 import com.github.lit.support.web.annotation.ViewName;
 import org.springframework.ui.ModelMap;

@@ -1,14 +1,16 @@
 package com.github.lit.jdbc.statement.insert;
 
-import com.github.lit.bean.BeanUtils;
 import com.github.lit.jdbc.enums.GenerationType;
 import com.github.lit.jdbc.generator.EmptyKeyGenerator;
 import com.github.lit.jdbc.generator.KeyGenerator;
 import com.github.lit.jdbc.generator.SequenceGenerator;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.statement.AbstractStatement;
-import com.github.lit.util.ClassUtils;
+import com.github.lit.support.util.ClassUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.util.ReflectionUtils;
 
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,8 @@ public class InsertImpl extends AbstractStatement implements Insert {
         Map<String, String> fieldColumnMap = tableInfo.getFieldColumnMap();
 
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            Object value = BeanUtils.invokeReaderMethod(entity, entry.getKey());
+            PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(entity.getClass(), entry.getKey());
+            Object value = ReflectionUtils.invokeMethod(pd.getReadMethod(), entity);
             if (value != null) {
                 columns.add(entry.getValue());
                 expressions.add("?");
@@ -105,8 +108,8 @@ public class InsertImpl extends AbstractStatement implements Insert {
         Object id = context.isGenerateKeyByDb() ? obj : idValue;
 
         if (entity != null) {
-            BeanUtils.invokeWriteMethod(entity, tableInfo.getPkProperty(), id);
-            entity = null;
+            PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(entity.getClass(), tableInfo.getPkProperty());
+            ReflectionUtils.invokeMethod(pd.getWriteMethod(), entity, id);
         }
 
         return id;

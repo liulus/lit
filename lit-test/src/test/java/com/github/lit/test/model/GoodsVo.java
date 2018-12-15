@@ -1,6 +1,6 @@
 package com.github.lit.test.model;
 
-import com.github.lit.page.PageParam;
+import com.github.lit.support.common.page.PageParam;
 import lombok.Builder;
 import lombok.Data;
 
