@@ -49,7 +49,7 @@ public class ModelAttributeInterceptor implements HandlerInterceptor {
         PageInfo pageInfo = null;
         for (Object obj : modelMap.values()) {
             if (obj instanceof PageList) {
-                pageInfo = ((PageList) obj).getPageInfo();
+//                pageInfo = ((PageList) obj).getPageInfo();
                 break;
             }
         }

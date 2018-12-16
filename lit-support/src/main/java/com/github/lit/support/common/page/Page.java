@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,9 +15,7 @@ import java.util.Map;
  * date 2018-12-15 13:41
  */
 @ToString
-public class PageResult<T> implements Serializable {
-
-    private static final long serialVersionUID = 1110752537451926789L;
+public class Page<T>  {
 
     @Getter
     @Setter

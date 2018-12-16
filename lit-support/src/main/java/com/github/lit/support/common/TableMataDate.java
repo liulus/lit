@@ -1,6 +1,8 @@
 package com.github.lit.support.common;
 
 import com.github.lit.support.util.NameUtils;
+import com.github.lit.support.util.SerializedFunction;
+import com.github.lit.support.util.SerializedLambdaUtils;
 import lombok.Getter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
@@ -34,6 +36,8 @@ public class TableMataDate implements Serializable {
                 }
             };
     private static final long serialVersionUID = 7433386817779746930L;
+
+    private Class<?> entityClass;
 
     /**
      * 表名
@@ -96,8 +100,9 @@ public class TableMataDate implements Serializable {
      * @param eClass 实体类的 class
      */
     private void initTableInfo(Class<?> eClass) {
-        tableName = eClass.isAnnotationPresent(Table.class) ? eClass.getAnnotation(Table.class).name()
-                : NameUtils.getUnderLineName(eClass.getSimpleName());
+        entityClass = eClass;
+        Table tableAnnotation = eClass.getAnnotation(Table.class);
+        tableName = tableAnnotation != null ? tableAnnotation.name() : NameUtils.getUnderLineName(eClass.getSimpleName());
 
         Field[] fields = eClass.getDeclaredFields();
         for (Field field : fields) {
@@ -128,5 +133,19 @@ public class TableMataDate implements Serializable {
         fieldColumnMap = Collections.unmodifiableMap(fieldColumnMap);
         fieldTypeMap = Collections.unmodifiableMap(fieldTypeMap);
     }
+
+
+
+    public <E, R> String getColumn(SerializedFunction<E, R> function) {
+        Class<E> lambdaClass = SerializedLambdaUtils.getLambdaClass(function);
+        // 如果不是实体class的父类
+        if (!lambdaClass.isAssignableFrom(entityClass)) {
+            throw new IllegalArgumentException("illegal argument");
+        }
+        String property = SerializedLambdaUtils.getProperty(function);
+        return fieldColumnMap.get(property);
+    }
+
+
 
 }

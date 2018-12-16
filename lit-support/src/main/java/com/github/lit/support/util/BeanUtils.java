@@ -17,7 +17,7 @@ import java.util.function.BiConsumer;
  * @see org.springframework.beans.BeanUtils
  * date 2018-12-06 22:18
  */
-public abstract class BeanUtils2 {
+public abstract class BeanUtils {
 
     /**
      * 判断classpath下是否存在spring-beans依赖
@@ -68,7 +68,7 @@ public abstract class BeanUtils2 {
                                 writeMethod.invoke(target, value);
                             }
                         } catch (Exception ex) {
-                            throw new RuntimeException(
+                            throw new IllegalArgumentException(
                                     "Could not copy property '" + targetPd.getName() + "' from source to target", ex);
                         }
                     }
@@ -108,7 +108,7 @@ public abstract class BeanUtils2 {
         List<T> resultList;
         if (sList instanceof PageList) {
             PageList sourcePage = (PageList) sList;
-            resultList = new PageList<>(sourcePage.getPageInfo(), sourcePage.size());
+            resultList = new PageList<>(/*sourcePage.getPageInfo(), */sourcePage.size());
         } else {
             resultList = new ArrayList<>(sList.size());
         }

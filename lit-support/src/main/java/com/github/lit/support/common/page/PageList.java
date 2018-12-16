@@ -61,4 +61,14 @@ public class PageList<E> extends ArrayList<E> {
         this.pageInfo = new PageInfo(pageSize, pageNum, totalRecord);
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

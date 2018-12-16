@@ -4,6 +4,7 @@ import com.github.lit.support.common.page.PageParam;
 import com.github.lit.support.util.SerializedFunction;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,6 +17,8 @@ public interface JdbcRepository {
 
     <E> int insert(E entity);
 
+    <E> int batchInsert(Collection<E> eList);
+
     <E> int update(E entity);
 
     <E> int updateSelective(E entity);
@@ -24,7 +27,11 @@ public interface JdbcRepository {
 
     <E> int deleteById(Class<E> eClass, Long id);
 
+    <E> int deleteByIds(Class<E> eClass, Collection<Long> ids);
+
     <E> E selectById(Class<E> eClass, Long id);
+
+    <E> List<E> selectByIds(Class<E> eClass, Collection<Long> ids);
 
     <E> List<E> selectAll(Class<E> eClass);
 

@@ -27,10 +27,8 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author liulu
@@ -56,11 +54,42 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         Assert.notNull(entity, "insert with entity can not be null");
         Class<?> entityClass = entity.getClass();
         TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        SQL sql = getInsertSQL(entity, mataDate);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        int insert = jdbcOperations.update(sql.toString(), new BeanPropertySqlParameterSource(entity), keyHolder);
+        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entityClass, mataDate.getKeyProperty());
+        ReflectionUtils.invokeMethod(keyPs.getWriteMethod(), entity, keyHolder.getKey().longValue());
+        return insert;
+    }
+
+    @Override
+    public <E> int batchInsert(Collection<E> eList) {
+        if (CollectionUtils.isEmpty(eList)) {
+            return 0;
+        }
+        E entity = eList.iterator().next();
+        TableMataDate mataDate = TableMataDate.forClass(entity.getClass());
+        SQL sql = getInsertSQL(entity, mataDate);
+        BeanPropertySqlParameterSource[] parameterSources = eList.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .collect(Collectors.toList())
+                .toArray(new BeanPropertySqlParameterSource[eList.size()]);
+        int[] updateResult = jdbcOperations.batchUpdate(sql.toString(), parameterSources);
+
+        int row = 0;
+        for (int res : updateResult) {
+            row += res;
+        }
+        return row;
+    }
+
+    private <E> SQL getInsertSQL(E entity, TableMataDate mataDate) {
+        Class<?> eClass = entity.getClass();
         Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
         SQL sql = SQL.init().INSERT_INTO(mataDate.getTableName());
         for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
             // 忽略主键
-            PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(entityClass, entry.getKey());
+            PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(eClass, entry.getKey());
             if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())
                     || ps == null || ps.getReadMethod() == null) {
                 continue;
@@ -70,11 +99,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
                 sql.VALUES(entry.getValue(), getNamedParam(entry.getKey()));
             }
         }
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        int insert = jdbcOperations.update(sql.toString(), new BeanPropertySqlParameterSource(entity), keyHolder);
-        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entityClass, mataDate.getKeyProperty());
-        ReflectionUtils.invokeMethod(keyPs.getWriteMethod(), entity, keyHolder.getKey().longValue());
-        return insert;
+        return sql;
     }
 
     @Override
@@ -147,6 +172,18 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     }
 
     @Override
+    public <E> int deleteByIds(Class<E> eClass, Collection<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return 0;
+        }
+        TableMataDate mataDate = TableMataDate.forClass(eClass);
+        String sql = SQL.init().DELETE_FROM(mataDate.getTableName())
+                .WHERE(mataDate.getKeyColumn() + " in (:ids)")
+                .toString();
+        return jdbcOperations.update(sql, Collections.singletonMap("ids", ids));
+    }
+
+    @Override
     public <E> E selectById(Class<E> eClass, Long id) {
         TableMataDate mataDate = TableMataDate.forClass(eClass);
 
@@ -155,6 +192,20 @@ public class JdbcRepositoryImpl implements JdbcRepository {
                 .WHERE(mataDate.getKeyColumn() + " = :id");
 
         return selectForObject(sql, Collections.singletonMap("id", id), eClass);
+    }
+
+    @Override
+    public <E> List<E> selectByIds(Class<E> eClass, Collection<Long> ids) {
+        if (CollectionUtils.isEmpty(ids)) {
+            return Collections.emptyList();
+        }
+        TableMataDate mataDate = TableMataDate.forClass(eClass);
+
+        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
+                .FROM(mataDate.getTableName())
+                .WHERE(mataDate.getKeyColumn() + " in (:ids)");
+
+        return selectForList(sql, Collections.singletonMap("ids", ids), eClass);
     }
 
     @Override
@@ -223,6 +274,9 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Override
     public <E> List<E> selectForList(SQL sql, Object args, Class<E> requiredType) {
+        if (args == null) {
+            args = Collections.emptyMap();
+        }
         //noinspection unchecked
         SqlParameterSource parameterSource = args instanceof Map
                 ? new MapSqlParameterSource((Map<String, ?>) args)

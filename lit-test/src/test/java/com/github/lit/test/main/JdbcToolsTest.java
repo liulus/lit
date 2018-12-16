@@ -2,7 +2,6 @@ package com.github.lit.test.main;
 
 import com.github.lit.jdbc.JdbcTools;
 import com.github.lit.jdbc.statement.select.Select;
-import com.github.lit.support.common.page.PageInfo;
 import com.github.lit.support.common.page.PageList;
 import com.github.lit.test.base.SpringBaseTest;
 import com.github.lit.test.model.Goods;
@@ -228,7 +227,6 @@ public class JdbcToolsTest extends SpringBaseTest {
 
         // 获取分页信息
         PageList<Goods> goodsPage = ((PageList<Goods>) pageList1);
-        PageInfo pageInfo = goodsPage.getPageInfo();
 
 
         // 返回分页查询结果列表, 但是 不会查询 count, 只查询分页结果
