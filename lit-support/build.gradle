@@ -9,7 +9,6 @@ dependencies {
     compileOnly spring_jdbc
     compileOnly spring_webmvc
     compileOnly spring_aspects
-    compileOnly spring_data_jdbc
     compileOnly guava
     compileOnly mybatis
 

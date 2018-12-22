@@ -4,4 +4,5 @@ dependencies {
     compile project(':lit-support')
     compile persistence_api
     compile spring_jdbc
+    compile spring_boot_autoconfigure
 }

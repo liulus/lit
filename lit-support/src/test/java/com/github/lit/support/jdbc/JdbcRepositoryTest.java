@@ -250,11 +250,9 @@ public class JdbcRepositoryTest {
     }
 
     @Test
-    public void select() {
-
-
-
-
+    public void countByProperty() {
+        int count = jdbcRepository.countByProperty(SignProduct::getCode, "123123");
+        Assert.assertEquals(0, count);
     }
 
 

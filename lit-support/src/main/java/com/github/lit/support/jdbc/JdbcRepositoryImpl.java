@@ -286,6 +286,20 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         return result;
     }
 
+    @Override
+    public <E, R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value) {
+        Class<E> eClass = SerializedLambdaUtils.getLambdaClass(serializedFunction);
+        String property = SerializedLambdaUtils.getProperty(serializedFunction);
+
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+
+        SQL sql = SQL.init().SELECT("count(*)")
+                .FROM(metaDate.getTableName())
+                .WHERE(metaDate.getColumn(property) + " = :id");
+
+        return selectForObject(sql, Collections.singletonMap("id", value), int.class);
+    }
+
 
     private String getNamedParam(String property) {
         return ":" + property;
