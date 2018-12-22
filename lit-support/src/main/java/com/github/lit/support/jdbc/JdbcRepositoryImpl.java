@@ -28,7 +28,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,20 +46,19 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     private static final String OPEN_TOKEN = ":";
 
     @Setter
-    @Getter
     private Database database;
 
     @Getter
     @Setter
     private NamedParameterJdbcOperations jdbcOperations;
 
-    @PostConstruct
-    public void init() {
+    public Database getDatabase() {
         if (StringUtils.isEmpty(database)) {
             database = jdbcOperations.getJdbcOperations().execute(
                     (ConnectionCallback<Database>) con -> Database.valueOf(con.getMetaData().getDatabaseProductName().toUpperCase())
             );
         }
+        return database;
     }
 
     public JdbcRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
@@ -275,7 +273,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
                 return Page.emptyPage();
             }
         }
-        Dialect dialect = Dialect.valueOf(database);
+        Dialect dialect = Dialect.valueOf(getDatabase());
         if (dialect == null) {
             return Page.emptyPage();
         }

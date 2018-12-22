@@ -2,14 +2,11 @@ package com.github.lit.support.configure;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
-import com.github.lit.support.jdbc.JdbcRepository;
-import com.github.lit.support.jdbc.JdbcRepositoryImpl;
+import com.github.lit.support.jdbc.EnableJdbcSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,6 +19,7 @@ import javax.sql.DataSource;
  * date 2018-12-14 21:04
  */
 @Configuration
+@EnableJdbcSupport
 public class SpringTestConfigure {
 
 
@@ -51,14 +49,14 @@ public class SpringTestConfigure {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean
-    public NamedParameterJdbcOperations namedParameterJdbcOperations(DataSource dataSource) {
-        return new NamedParameterJdbcTemplate(dataSource);
-    }
+//    @Bean
+//    public NamedParameterJdbcOperations namedParameterJdbcOperations(DataSource dataSource) {
+//        return new NamedParameterJdbcTemplate(dataSource);
+//    }
 
-    @Bean
-    public JdbcRepository jdbcRepository(NamedParameterJdbcOperations jdbcOperations) {
-        return new JdbcRepositoryImpl(jdbcOperations);
-    }
+//    @Bean
+//    public JdbcRepository jdbcRepository(NamedParameterJdbcOperations jdbcOperations) {
+//        return new JdbcRepositoryImpl(jdbcOperations);
+//    }
 
 }
