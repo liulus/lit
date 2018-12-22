@@ -1,4 +1,4 @@
-package com.github.lit.support.common.exception;
+package com.github.lit.support.exception;
 
 import lombok.Getter;
 import lombok.Setter;

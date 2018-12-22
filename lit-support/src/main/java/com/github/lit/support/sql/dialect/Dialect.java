@@ -1,6 +1,6 @@
-package com.github.lit.support.jdbc.dialect;
+package com.github.lit.support.sql.dialect;
 
-import com.github.lit.support.common.Database;
+import com.github.lit.support.sql.Database;
 
 /**
  * User : liulu

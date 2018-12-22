@@ -1,4 +1,4 @@
-package com.github.lit.support.common;
+package com.github.lit.support.sql;
 
 import com.github.lit.support.util.NameUtils;
 import com.github.lit.support.util.SerializedFunction;
@@ -23,15 +23,15 @@ import java.util.*;
  * date : 7/24/18 11:31
  */
 @Getter
-public class TableMataDate implements Serializable {
+public class TableMetaDate implements Serializable {
 
     private static final int DEFAULT_CACHE_LIMIT = 128;
 
     @SuppressWarnings("serial")
-    private static final Map<Class<?>, TableMataDate> TABLE_CACHE =
-            new LinkedHashMap<Class<?>, TableMataDate>(DEFAULT_CACHE_LIMIT, 0.75f, true) {
+    private static final Map<Class<?>, TableMetaDate> TABLE_CACHE =
+            new LinkedHashMap<Class<?>, TableMetaDate>(DEFAULT_CACHE_LIMIT, 0.75f, true) {
                 @Override
-                protected boolean removeEldestEntry(Map.Entry<Class<?>, TableMataDate> eldest) {
+                protected boolean removeEldestEntry(Map.Entry<Class<?>, TableMetaDate> eldest) {
                     return size() > DEFAULT_CACHE_LIMIT;
                 }
             };
@@ -64,20 +64,20 @@ public class TableMataDate implements Serializable {
      */
     private Map<String, Class<?>> fieldTypeMap;
 
-    private TableMataDate(Class<?> clazz) {
+    private TableMetaDate(Class<?> clazz) {
         fieldColumnMap = new HashMap<>();
         fieldTypeMap = new HashMap<>();
         initTableInfo(clazz);
     }
 
 
-    public static TableMataDate forClass(Class<?> entityClass) {
+    public static TableMetaDate forClass(Class<?> entityClass) {
         synchronized (TABLE_CACHE) {
-            return TABLE_CACHE.computeIfAbsent(entityClass, TableMataDate::new);
+            return TABLE_CACHE.computeIfAbsent(entityClass, TableMetaDate::new);
         }
     }
 
-    public String getBaseColumns() {
+    public String getAllColumns() {
         Collection<String> columns = fieldColumnMap.values();
         if (CollectionUtils.isEmpty(columns)) {
             return "";
@@ -135,7 +135,6 @@ public class TableMataDate implements Serializable {
     }
 
 
-
     public <E, R> String getColumn(SerializedFunction<E, R> function) {
         Class<E> lambdaClass = SerializedLambdaUtils.getLambdaClass(function);
         // 如果不是实体class的父类
@@ -146,6 +145,18 @@ public class TableMataDate implements Serializable {
         return fieldColumnMap.get(property);
     }
 
+    public String getColumn(String field) {
+        String column = fieldColumnMap.get(field);
+        return column == null || column.isEmpty() ? field : column;
+    }
+
+    public Boolean containsField(String field) {
+        return fieldColumnMap.containsKey(field);
+    }
+
+    public Boolean containsColumn(String column) {
+        return fieldColumnMap.containsValue(column);
+    }
 
 
 }

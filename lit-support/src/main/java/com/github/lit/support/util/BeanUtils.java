@@ -1,6 +1,6 @@
 package com.github.lit.support.util;
 
-import com.github.lit.support.common.page.PageList;
+import com.github.lit.support.page.PageList;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;

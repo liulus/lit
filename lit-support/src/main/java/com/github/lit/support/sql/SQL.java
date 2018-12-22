@@ -1,4 +1,4 @@
-package com.github.lit.support.jdbc;
+package com.github.lit.support.sql;
 
 /**
  * @author mybaitis

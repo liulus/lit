@@ -1,4 +1,4 @@
-package com.github.lit.support.common;
+package com.github.lit.support.sql;
 
 /**
  * @author liulu

@@ -1,7 +1,7 @@
 package com.github.lit.support.model;
 
-import com.github.lit.support.common.Logic;
-import com.github.lit.support.common.annotation.Condition;
+import com.github.lit.support.annotation.Condition;
+import com.github.lit.support.sql.Logic;
 import lombok.Data;
 
 import java.io.Serializable;

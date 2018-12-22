@@ -1,7 +1,7 @@
 package com.github.lit.support.event.guava;
 
-import com.github.lit.support.common.exception.BizException;
 import com.github.lit.support.event.EventPublisher;
+import com.github.lit.support.exception.BizException;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import lombok.Getter;

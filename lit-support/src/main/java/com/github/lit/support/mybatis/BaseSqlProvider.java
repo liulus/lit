@@ -1,8 +1,8 @@
 package com.github.lit.support.mybatis;
 
-import com.github.lit.support.common.Logic;
-import com.github.lit.support.common.TableMataDate;
-import com.github.lit.support.common.annotation.Condition;
+import com.github.lit.support.annotation.Condition;
+import com.github.lit.support.sql.Logic;
+import com.github.lit.support.sql.TableMetaDate;
 import com.github.lit.support.util.SerializedFunction;
 import com.github.lit.support.util.SerializedLambdaUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class BaseSqlProvider {
     public <Entity> String insert(Entity entity) {
         Assert.notNull(entity, "entity must not null");
         Class<?> entityClass = entity.getClass();
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
         Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
 
         SQL sql = new SQL();
@@ -60,7 +60,7 @@ public class BaseSqlProvider {
     public <Entity> String update(Entity entity) {
         Assert.notNull(entity, "entity must not null");
         Class<?> entityClass = entity.getClass();
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
         Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
 
         SQL sql = new SQL();
@@ -86,7 +86,7 @@ public class BaseSqlProvider {
 
     public String delete(ProviderContext context) {
         Class<?> entityClass = getEntityClass(context);
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
 
         SQL sql = new SQL().DELETE_FROM(mataDate.getTableName())
                 .WHERE(getEquals(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
@@ -96,9 +96,9 @@ public class BaseSqlProvider {
 
     public String selectById(ProviderContext context) {
         Class<?> entityClass = getEntityClass(context);
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
 
-        SQL sql = new SQL().SELECT(mataDate.getBaseColumns())
+        SQL sql = new SQL().SELECT(mataDate.getAllColumns())
                 .FROM(mataDate.getTableName())
                 .WHERE(getEquals(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
         log.info("\n" + sql.toString());
@@ -110,11 +110,11 @@ public class BaseSqlProvider {
         SerializedFunction propertyFunction = (SerializedFunction) params.get("property");
         String property = SerializedLambdaUtils.getProperty(propertyFunction);
         Class<?> entityClass = getEntityClass(context);
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
         String column = mataDate.getFieldColumnMap().get(property);
 
 
-        SQL sql = new SQL().SELECT(mataDate.getBaseColumns())
+        SQL sql = new SQL().SELECT(mataDate.getAllColumns())
                 .FROM(mataDate.getTableName())
                 .WHERE(getEquals(column, "value"));
         log.info("\n" + sql.toString());
@@ -125,10 +125,10 @@ public class BaseSqlProvider {
 
     public String selectByCondition(ProviderContext context, Object condition) {
         Class<?> entityClass = getEntityClass(context);
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
+        TableMetaDate mataDate = TableMetaDate.forClass(entityClass);
         Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
 
-        SQL sql = new SQL().SELECT(mataDate.getBaseColumns()).FROM(mataDate.getTableName());
+        SQL sql = new SQL().SELECT(mataDate.getAllColumns()).FROM(mataDate.getTableName());
         Field[] fields = condition.getClass().getDeclaredFields();
         for (Field field : fields) {
             Condition logicCondition = field.getAnnotation(Condition.class);

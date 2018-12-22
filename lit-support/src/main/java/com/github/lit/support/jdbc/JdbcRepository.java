@@ -1,6 +1,9 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.support.common.page.PageParam;
+import com.github.lit.support.page.OrderBy;
+import com.github.lit.support.page.Page;
+import com.github.lit.support.page.Pageable;
+import com.github.lit.support.sql.SQL;
 import com.github.lit.support.util.SerializedFunction;
 import org.springframework.stereotype.Repository;
 
@@ -47,11 +50,11 @@ public interface JdbcRepository {
 
     <E> List<E> selectForList(SQL sql, Object args, Class<E> requiredType);
 
-    <E, C extends PageParam> List<E> selectPageList(Class<E> eClass, C condition);
+    <E, C extends Pageable> Page<E> selectPageList(Class<E> eClass, C condition);
 
-    <E, C extends PageParam> List<E> selectPageListWithOrder(Class<E> eClass, C condition, OrderBy orderBy);
+//    <E, C extends Pageable> List<E> selectPageListWithOrder(Class<E> eClass, C condition, OrderBy orderBy);
 
-    <E> List<E> selectForPageList(SQL sql, PageParam args, Class<E> requiredType);
+    <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType);
 
 
 }

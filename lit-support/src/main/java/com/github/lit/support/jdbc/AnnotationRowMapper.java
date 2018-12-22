@@ -28,6 +28,7 @@ public class AnnotationRowMapper<T> extends BeanPropertyRowMapper<T> {
         initialize(mappedClass);
     }
 
+    @SuppressWarnings({"ConstantConditions", "unchecked"})
     @Override
     protected void initialize(Class<T> mappedClass) {
         super.initialize(mappedClass);
@@ -37,9 +38,7 @@ public class AnnotationRowMapper<T> extends BeanPropertyRowMapper<T> {
         Field mappedProperties = ReflectionUtils.findField(this.getClass(), "mappedProperties");
         ReflectionUtils.makeAccessible(mappedProperties);
 
-        //noinspection unchecked
         Map<String, PropertyDescriptor> mappedFieldsMap = (Map) ReflectionUtils.getField(mappedFields, this);
-        //noinspection unchecked
         Set<String> mappedPropertiesSet = (Set<String>) ReflectionUtils.getField(mappedProperties, this);
 
         ReflectionUtils.doWithFields(mappedClass, field -> {

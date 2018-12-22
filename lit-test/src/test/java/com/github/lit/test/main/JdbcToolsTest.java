@@ -2,7 +2,7 @@ package com.github.lit.test.main;
 
 import com.github.lit.jdbc.JdbcTools;
 import com.github.lit.jdbc.statement.select.Select;
-import com.github.lit.support.common.page.PageList;
+import com.github.lit.support.page.PageList;
 import com.github.lit.test.base.SpringBaseTest;
 import com.github.lit.test.model.Goods;
 import com.github.lit.test.model.GoodsVo;

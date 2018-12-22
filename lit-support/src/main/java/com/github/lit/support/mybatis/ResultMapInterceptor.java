@@ -1,6 +1,6 @@
 package com.github.lit.support.mybatis;
 
-import com.github.lit.support.common.TableMataDate;
+import com.github.lit.support.sql.TableMetaDate;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
@@ -47,7 +47,7 @@ public class ResultMapInterceptor implements Interceptor {
         if (ClassUtils.isAssignable(mapType, Collection.class)) {
             return invocation.proceed();
         }
-        TableMataDate mataDate = TableMataDate.forClass(mapType);
+        TableMetaDate mataDate = TableMetaDate.forClass(mapType);
         Map<String, Class<?>> fieldTypeMap = mataDate.getFieldTypeMap();
         //
         List<ResultMapping> resultMappings = new ArrayList<>(fieldTypeMap.size());

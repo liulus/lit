@@ -1,12 +1,14 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.support.common.Database;
-import com.github.lit.support.common.Logic;
-import com.github.lit.support.common.TableMataDate;
-import com.github.lit.support.common.annotation.Condition;
-import com.github.lit.support.common.page.PageList;
-import com.github.lit.support.common.page.PageParam;
-import com.github.lit.support.jdbc.dialect.Dialect;
+import com.github.lit.support.page.OrderBy;
+import com.github.lit.support.page.Page;
+import com.github.lit.support.page.PageInfo;
+import com.github.lit.support.page.Pageable;
+import com.github.lit.support.sql.Database;
+import com.github.lit.support.sql.SQL;
+import com.github.lit.support.sql.SQLUtils;
+import com.github.lit.support.sql.TableMetaDate;
+import com.github.lit.support.sql.dialect.Dialect;
 import com.github.lit.support.util.SerializedFunction;
 import com.github.lit.support.util.SerializedLambdaUtils;
 import lombok.Getter;
@@ -26,8 +28,12 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -38,12 +44,24 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class JdbcRepositoryImpl implements JdbcRepository {
 
+    private static final String OPEN_TOKEN = ":";
+
     @Setter
+    @Getter
     private Database database;
 
     @Getter
     @Setter
     private NamedParameterJdbcOperations jdbcOperations;
+
+    @PostConstruct
+    public void init() {
+        if (StringUtils.isEmpty(database)) {
+            database = jdbcOperations.getJdbcOperations().execute(
+                    (ConnectionCallback<Database>) con -> Database.valueOf(con.getMetaData().getDatabaseProductName().toUpperCase())
+            );
+        }
+    }
 
     public JdbcRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -53,11 +71,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     public <E> int insert(E entity) {
         Assert.notNull(entity, "insert with entity can not be null");
         Class<?> entityClass = entity.getClass();
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
-        SQL sql = getInsertSQL(entity, mataDate);
+        TableMetaDate metaDate = TableMetaDate.forClass(entityClass);
+        SQL sql = SQLUtils.insertSQL(entity, this::getNamedParam);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int insert = jdbcOperations.update(sql.toString(), new BeanPropertySqlParameterSource(entity), keyHolder);
-        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entityClass, mataDate.getKeyProperty());
+        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entityClass, metaDate.getKeyProperty());
         ReflectionUtils.invokeMethod(keyPs.getWriteMethod(), entity, keyHolder.getKey().longValue());
         return insert;
     }
@@ -68,8 +86,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
             return 0;
         }
         E entity = eList.iterator().next();
-        TableMataDate mataDate = TableMataDate.forClass(entity.getClass());
-        SQL sql = getInsertSQL(entity, mataDate);
+        SQL sql = SQLUtils.insertSQL(entity, this::getNamedParam);
         BeanPropertySqlParameterSource[] parameterSources = eList.stream()
                 .map(BeanPropertySqlParameterSource::new)
                 .collect(Collectors.toList())
@@ -83,92 +100,39 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         return row;
     }
 
-    private <E> SQL getInsertSQL(E entity, TableMataDate mataDate) {
-        Class<?> eClass = entity.getClass();
-        Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
-        SQL sql = SQL.init().INSERT_INTO(mataDate.getTableName());
-        for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            // 忽略主键
-            PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(eClass, entry.getKey());
-            if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())
-                    || ps == null || ps.getReadMethod() == null) {
-                continue;
-            }
-            Object value = ReflectionUtils.invokeMethod(ps.getReadMethod(), entity);
-            if (!StringUtils.isEmpty(value)) {
-                sql.VALUES(entry.getValue(), getNamedParam(entry.getKey()));
-            }
-        }
-        return sql;
-    }
 
     @Override
     public <E> int update(E entity) {
-        Assert.notNull(entity, "update with entity can not be null");
-        Class<?> entityClass = entity.getClass();
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
-        Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
-
-        SQL sql = SQL.init().UPDATE(mataDate.getTableName());
-        for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            // 忽略主键
-            if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())) {
-                continue;
-            }
-            sql.SET(getEqCondition(entry.getValue(), entry.getKey()));
-        }
-        sql.WHERE(getEqCondition(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
-
+        SQL sql = SQLUtils.updateSQL(entity, false, this::getNamedParam);
         return jdbcOperations.update(sql.toString(), new BeanPropertySqlParameterSource(entity));
     }
 
     @Override
     public <E> int updateSelective(E entity) {
-        Assert.notNull(entity, "update with entity can not be null");
-        Class<?> entityClass = entity.getClass();
-        TableMataDate mataDate = TableMataDate.forClass(entityClass);
-        Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
-
-        SQL sql = SQL.init().UPDATE(mataDate.getTableName());
-        for (Map.Entry<String, String> entry : fieldColumnMap.entrySet()) {
-            // 忽略主键
-            PropertyDescriptor ps = BeanUtils.getPropertyDescriptor(entityClass, entry.getKey());
-            if (Objects.equals(entry.getKey(), mataDate.getKeyProperty())
-                    || ps == null || ps.getReadMethod() == null) {
-                continue;
-            }
-            Object value = ReflectionUtils.invokeMethod(ps.getReadMethod(), entity);
-            if (value != null) {
-                sql.SET(getEqCondition(entry.getValue(), entry.getKey()));
-            }
-        }
-        sql.WHERE(getEqCondition(mataDate.getKeyColumn(), mataDate.getKeyProperty()));
-
+        SQL sql = SQLUtils.updateSQL(entity, true, this::getNamedParam);
         return jdbcOperations.update(sql.toString(), new BeanPropertySqlParameterSource(entity));
     }
 
     @Override
     public <E> int delete(E entity) {
         Assert.notNull(entity, "delete with entity can not be null");
-        TableMataDate mataDate = TableMataDate.forClass(entity.getClass());
-        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entity.getClass(), mataDate.getKeyProperty());
+        TableMetaDate metaDate = TableMetaDate.forClass(entity.getClass());
+        PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entity.getClass(), metaDate.getKeyProperty());
         Assert.notNull(keyPs, "can not find key property from " + entity.getClass().getName());
         Object keyValue = ReflectionUtils.invokeMethod(keyPs.getReadMethod(), entity);
         Assert.notNull(keyValue, "key value can not be null");
-        String sql = SQL.init().DELETE_FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " = ?")
-                .toString();
-        return jdbcOperations.getJdbcOperations().update(sql, keyValue);
+
+        SQL sql = SQLUtils.deleteSQL(entity.getClass(), this::getNamedParam);
+
+        return jdbcOperations.update(sql.toString(), Collections.singletonMap(metaDate.getKeyProperty(), keyValue));
     }
 
     @Override
     public <E> int deleteById(Class<E> eClass, Long id) {
         Assert.notNull(id, "id can not be null");
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        String sql = SQL.init().DELETE_FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " = ?")
-                .toString();
-        return jdbcOperations.getJdbcOperations().update(sql, id);
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+        SQL sql = SQLUtils.deleteSQL(eClass, this::getNamedParam);
+        return jdbcOperations.update(sql.toString(), Collections.singletonMap(metaDate.getKeyProperty(), id));
     }
 
     @Override
@@ -176,20 +140,20 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         if (CollectionUtils.isEmpty(ids)) {
             return 0;
         }
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        String sql = SQL.init().DELETE_FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " in (:ids)")
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+        String sql = SQL.init().DELETE_FROM(metaDate.getTableName())
+                .WHERE(metaDate.getKeyColumn() + " in (:ids)")
                 .toString();
         return jdbcOperations.update(sql, Collections.singletonMap("ids", ids));
     }
 
     @Override
     public <E> E selectById(Class<E> eClass, Long id) {
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
 
-        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
-                .FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " = :id");
+        SQL sql = SQL.init().SELECT(metaDate.getAllColumns())
+                .FROM(metaDate.getTableName())
+                .WHERE(metaDate.getKeyColumn() + " = :id");
 
         return selectForObject(sql, Collections.singletonMap("id", id), eClass);
     }
@@ -199,20 +163,20 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         if (CollectionUtils.isEmpty(ids)) {
             return Collections.emptyList();
         }
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
 
-        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
-                .FROM(mataDate.getTableName())
-                .WHERE(mataDate.getKeyColumn() + " in (:ids)");
+        SQL sql = SQL.init().SELECT(metaDate.getAllColumns())
+                .FROM(metaDate.getTableName())
+                .WHERE(metaDate.getKeyColumn() + " in (:ids)");
 
         return selectForList(sql, Collections.singletonMap("ids", ids), eClass);
     }
 
     @Override
     public <E> List<E> selectAll(Class<E> eClass) {
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        String sql = SQL.init().SELECT(mataDate.getBaseColumns())
-                .FROM(mataDate.getTableName())
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+        String sql = SQL.init().SELECT(metaDate.getAllColumns())
+                .FROM(metaDate.getTableName())
                 .toString();
         return jdbcOperations.query(sql, Collections.emptyMap(), AnnotationRowMapper.newInstance(eClass));
     }
@@ -222,11 +186,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         Class<E> eClass = SerializedLambdaUtils.getLambdaClass(serializedFunction);
         String property = SerializedLambdaUtils.getProperty(serializedFunction);
 
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        String column = mataDate.getFieldColumnMap().get(property);
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+        String column = metaDate.getFieldColumnMap().get(property);
 
-        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns())
-                .FROM(mataDate.getTableName())
+        SQL sql = SQL.init().SELECT(metaDate.getAllColumns())
+                .FROM(metaDate.getTableName())
                 .WHERE(column + " = :id");
 
         return selectForObject(sql, Collections.singletonMap("id", value), eClass);
@@ -237,15 +201,14 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         Class<E> eClass = SerializedLambdaUtils.getLambdaClass(serializedFunction);
         String property = SerializedLambdaUtils.getProperty(serializedFunction);
 
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        String column = mataDate.getFieldColumnMap().get(property);
+        TableMetaDate metaDate = TableMetaDate.forClass(eClass);
+        String column = metaDate.getFieldColumnMap().get(property);
 
-        String sql = SQL.init().SELECT(mataDate.getBaseColumns())
-                .FROM(mataDate.getTableName())
-                .WHERE(column + " = ?")
+        String sql = SQL.init().SELECT(metaDate.getAllColumns())
+                .FROM(metaDate.getTableName())
+                .WHERE(column + " = :id")
                 .toString();
-        return jdbcOperations.getJdbcOperations()
-                .query(sql, new Object[]{value}, AnnotationRowMapper.newInstance(eClass));
+        return jdbcOperations.query(sql, Collections.singletonMap("id", value), AnnotationRowMapper.newInstance(eClass));
     }
 
     @Override
@@ -267,7 +230,8 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Override
     public <E, C> List<E> selectListWithOrder(Class<E> eClass, C condition, OrderBy orderBy) {
-        SQL sql = buildSelectSQL(eClass, condition, orderBy);
+
+        SQL sql = SQLUtils.selectSQL(eClass, condition, orderBy, this::getNamedParam, SQLUtils::jdbcIn);
         return jdbcOperations.query(sql.toString(),
                 new BeanPropertySqlParameterSource(condition), AnnotationRowMapper.newInstance(eClass));
     }
@@ -289,100 +253,44 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     }
 
     @Override
-    public <E, C extends PageParam> List<E> selectPageList(Class<E> eClass, C condition) {
-        SQL sql = buildSelectSQL(eClass, condition, null);
+    public <E, C extends Pageable> Page<E> selectPageList(Class<E> eClass, C condition) {
+
+        SQL sql = SQLUtils.selectSQL(eClass, condition, condition.getOrderBy(), this::getNamedParam, SQLUtils::jdbcIn);
         return selectForPageList(sql, condition, eClass);
     }
 
-    @Override
-    public <E, C extends PageParam> List<E> selectPageListWithOrder(Class<E> eClass, C condition, OrderBy orderBy) {
-        SQL sql = buildSelectSQL(eClass, condition, orderBy);
-        return selectForPageList(sql, condition, eClass);
-    }
+//    @Override
+//    public <E, C extends Pageable> List<E> selectPageListWithOrder(Class<E> eClass, C condition, OrderBy orderBy) {
+//        SQL sql = buildSelectSQL(eClass, condition, orderBy);
+//        return selectForPageList(sql, condition, eClass);
+//    }
 
     @Override
-    public <E> List<E> selectForPageList(SQL sql, PageParam args, Class<E> requiredType) {
-        int count = 0;
+    public <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType) {
+        Integer count = 0;
         if (args.isCount()) {
             String countSql = sql.countSql();
-            count = jdbcOperations
-                    .queryForObject(countSql, new BeanPropertySqlParameterSource(args), int.class);
+            count = jdbcOperations.queryForObject(countSql, new BeanPropertySqlParameterSource(args), int.class);
             if (count <= 0) {
-                return new PageList<>(args.getPageSize(), args.getPageNum(), 0);
+                return Page.emptyPage();
             }
         }
-        Dialect dialect = Dialect.valueOf(getDatabase());
+        Dialect dialect = Dialect.valueOf(database);
         if (dialect == null) {
-            return new PageList<>(args.getPageSize(), args.getPageNum(), 0);
+            return Page.emptyPage();
         }
         String pageSql = dialect.getPageSql(sql.toString(), args.getPageSize(), args.getPageNum());
         List<E> rsList = jdbcOperations.query(pageSql,
                 new BeanPropertySqlParameterSource(args), AnnotationRowMapper.newInstance(requiredType));
-        return new PageList<>(rsList, args.getPageSize(), args.getPageNum(), count);
+        Page<E> result = new Page<>();
+        result.setContent(rsList);
+        result.setPageInfo(new PageInfo(args.getPageSize(), args.getPageNum(), count));
+        return result;
     }
 
-
-    private <E, C> SQL buildSelectSQL(Class<E> eClass, C condition, OrderBy orderBy) {
-        TableMataDate mataDate = TableMataDate.forClass(eClass);
-        Map<String, String> fieldColumnMap = mataDate.getFieldColumnMap();
-
-        SQL sql = SQL.init().SELECT(mataDate.getBaseColumns()).FROM(mataDate.getTableName());
-        ReflectionUtils.doWithFields(condition.getClass(), field -> {
-            Condition logicCondition = field.getAnnotation(Condition.class);
-            String mappedProperty = logicCondition == null || StringUtils.isEmpty(logicCondition.property())
-                    ? field.getName() : logicCondition.property();
-            PropertyDescriptor entityPd = BeanUtils.getPropertyDescriptor(eClass, mappedProperty);
-            if (entityPd == null || entityPd.getReadMethod() == null) {
-                return;
-            }
-            PropertyDescriptor pd = BeanUtils.getPropertyDescriptor(condition.getClass(), field.getName());
-            if (pd == null || pd.getReadMethod() == null) {
-                return;
-            }
-            Object value = ReflectionUtils.invokeMethod(pd.getReadMethod(), condition);
-            if (StringUtils.isEmpty(value)) {
-                return;
-            }
-            String column = fieldColumnMap.get(mappedProperty);
-            String whereCondition = getWhereCondition(logicCondition, column, field.getName());
-            sql.WHERE(whereCondition);
-        });
-        if (orderBy != null) {
-            for (Map.Entry<String, String> entry : orderBy.getOrderByMap().entrySet()) {
-                sql.ORDER_BY(fieldColumnMap.get(entry.getKey()) + entry.getValue());
-            }
-        }
-        return sql;
-    }
-
-    private String getWhereCondition(Condition logicCondition, String column, String fieldName) {
-        Logic logic = logicCondition == null ? Logic.EQ : logicCondition.logic();
-
-        if (logic == Logic.NULL || logic == Logic.NOT_NULL) {
-            return column + logic.getCode();
-        }
-        if (logic == Logic.IN || logic == Logic.NOT_IN) {
-            return column + logic.getCode() + "(" + getNamedParam(fieldName) + ")";
-        }
-        return column + logic.getCode() + getNamedParam(fieldName);
-    }
-
-
-    private String getEqCondition(String column, String property) {
-        return column + " = :" + property;
-    }
 
     private String getNamedParam(String property) {
         return ":" + property;
     }
 
-
-    public Database getDatabase() {
-        if (StringUtils.isEmpty(database)) {
-            database = jdbcOperations.getJdbcOperations().execute(
-                    (ConnectionCallback<Database>) con -> Database.valueOf(con.getMetaData().getDatabaseProductName().toUpperCase())
-            );
-        }
-        return database;
-    }
 }

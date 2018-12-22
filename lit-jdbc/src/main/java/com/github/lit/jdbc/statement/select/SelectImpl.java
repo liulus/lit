@@ -5,8 +5,8 @@ import com.github.lit.jdbc.enums.Logic;
 import com.github.lit.jdbc.model.StatementContext;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.statement.where.AbstractCondition;
-import com.github.lit.support.common.page.PageList;
-import com.github.lit.support.common.page.PageParam;
+import com.github.lit.support.page.PageList;
+import com.github.lit.support.page.PageRequest;
 import net.sf.jsqlparser.expression.*;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -461,7 +461,7 @@ public class SelectImpl<T> extends AbstractCondition<Select<T>, SelectExpression
     }
 
     @Override
-    public Select<T> page(PageParam pager) {
+    public Select<T> page(PageRequest pager) {
         return page(pager.getPageNum(), pager.getPageSize(), pager.isCount());
     }
 

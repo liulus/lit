@@ -1,4 +1,4 @@
-package com.github.lit.support.common.page;
+package com.github.lit.support.page;
 
 import lombok.Getter;
 import lombok.Setter;

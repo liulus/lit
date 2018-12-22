@@ -2,11 +2,13 @@ archivesBaseName = "lit-support"
 
 dependencies {
 
+    compileOnly persistence_api
     compileOnly servlet_api
     compileOnly slf4j_api
     compileOnly spring_jdbc
     compileOnly spring_webmvc
     compileOnly spring_aspects
+    compileOnly spring_data_jdbc
     compileOnly guava
     compileOnly mybatis
 

@@ -1,6 +1,6 @@
 package com.github.lit.support.util;
 
-import com.github.lit.support.common.exception.SysException;
+import com.github.lit.support.exception.SysException;
 import org.springframework.util.TypeUtils;
 
 import java.lang.reflect.Array;

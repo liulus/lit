@@ -1,4 +1,4 @@
-package com.github.lit.support.jdbc.dialect;
+package com.github.lit.support.sql.dialect;
 
 /**
  * User : liulu

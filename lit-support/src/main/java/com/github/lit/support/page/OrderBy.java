@@ -1,4 +1,4 @@
-package com.github.lit.support.jdbc;
+package com.github.lit.support.page;
 
 import com.github.lit.support.util.SerializedFunction;
 import com.github.lit.support.util.SerializedLambdaUtils;
@@ -23,9 +23,19 @@ public class OrderBy {
         return new OrderBy();
     }
 
+    public OrderBy asc(String column) {
+        orderByMap.put(column, ORDER_ASC);
+        return this;
+    }
+
     public <T, R> OrderBy asc(SerializedFunction<T, R> serializedFunction) {
         String property = SerializedLambdaUtils.getProperty(serializedFunction);
         orderByMap.put(property, ORDER_ASC);
+        return this;
+    }
+
+    public OrderBy desc(String column) {
+        orderByMap.put(column, ORDER_DESC);
         return this;
     }
 
@@ -35,11 +45,20 @@ public class OrderBy {
         return this;
     }
 
-    Map<String, String> getOrderByMap() {
+    public Map<String, String> getOrderByMap() {
         return Collections.unmodifiableMap(orderByMap);
     }
 
 
-
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, String> entry : orderByMap.entrySet()) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(entry.getKey()).append(entry.getValue());
+        }
+        return sb.toString();
+    }
 }

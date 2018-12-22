@@ -2,7 +2,7 @@ package com.github.lit.jdbc.statement.select;
 
 import com.github.lit.jdbc.enums.JoinType;
 import com.github.lit.jdbc.statement.where.Condition;
-import com.github.lit.support.common.page.PageParam;
+import com.github.lit.support.page.PageRequest;
 
 import java.util.List;
 
@@ -183,7 +183,7 @@ public interface Select<T> extends Condition<Select<T>, SelectExpression<T>> {
      */
     <E> List<E> list(Class<E> clazz);
 
-    Select<T> page(PageParam pager);
+    Select<T> page(PageRequest pager);
 
     Select<T> page(int pageNum, int pageSize);
 

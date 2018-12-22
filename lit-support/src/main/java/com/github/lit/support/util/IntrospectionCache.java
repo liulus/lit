@@ -1,6 +1,6 @@
 package com.github.lit.support.util;
 
-import com.github.lit.support.common.exception.SysException;
+import com.github.lit.support.exception.SysException;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

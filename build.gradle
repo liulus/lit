@@ -27,6 +27,7 @@ ext {
     oracle = "com.oracle:ojdbc6:11.2.0.3"
     velocity = "org.apache.velocity:velocity:1.7"
     servlet_api = "javax.servlet:javax.servlet-api:3.1.0"
+    persistence_api = "javax.persistence:persistence-api:1.0"
     mybatis = "org.mybatis:mybatis:${version.mybatis}"
     mybatis_spring = "org.mybatis:mybatis-spring:${version.mybatis_spring}"
     mybatis_spring_boot_autoconfigure = "org.mybatis.spring.boot:mybatis-spring-boot-autoconfigure:${version.mybatis_spring}"
@@ -39,6 +40,7 @@ ext {
     spring_webmvc = "org.springframework:spring-webmvc:${version.spring}"
     spring_test = "org.springframework:spring-test:${version.spring}"
     spring_boot_autoconfigure = "org.springframework.boot:spring-boot-autoconfigure:${version.spring_boot}"
+    spring_data_jdbc = "org.springframework.data:spring-data-jdbc:1.0.3.RELEASE"
 
 }
 

@@ -3,7 +3,7 @@ package com.github.lit.jdbc.statement;
 import com.github.lit.jdbc.StatementExecutor;
 import com.github.lit.jdbc.model.TableInfo;
 import com.github.lit.jdbc.page.StatementPageHandler;
-import com.github.lit.support.common.exception.SysException;
+import com.github.lit.support.exception.SysException;
 import com.github.lit.support.util.ClassUtils;
 import com.github.lit.support.util.NameUtils;
 import lombok.NoArgsConstructor;

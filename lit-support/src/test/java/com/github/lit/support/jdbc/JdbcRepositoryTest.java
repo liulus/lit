@@ -1,10 +1,13 @@
 package com.github.lit.support.jdbc;
 
-import com.github.lit.support.common.TableMataDate;
-import com.github.lit.support.common.page.PageList;
 import com.github.lit.support.configure.SpringTestConfigure;
 import com.github.lit.support.model.ProductCondition;
 import com.github.lit.support.model.SignProduct;
+import com.github.lit.support.page.OrderBy;
+import com.github.lit.support.page.Page;
+import com.github.lit.support.page.PageInfo;
+import com.github.lit.support.sql.SQL;
+import com.github.lit.support.sql.TableMetaDate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -149,7 +152,7 @@ public class JdbcRepositoryTest {
     @Test
     public void selectAll() {
         List<SignProduct> signProducts = jdbcRepository.selectAll(SignProduct.class);
-        TableMataDate mataDate = TableMataDate.forClass(SignProduct.class);
+        TableMetaDate mataDate = TableMetaDate.forClass(SignProduct.class);
         SQL sql = SQL.init().SELECT("count(*)").FROM(mataDate.getTableName());
         int count = jdbcRepository.selectForObject(sql, null, int.class);
         Assert.assertEquals(count, signProducts.size());
@@ -170,7 +173,7 @@ public class JdbcRepositoryTest {
 
     @Test
     public void selectForObject() {
-        TableMataDate mataDate = TableMataDate.forClass(SignProduct.class);
+        TableMetaDate mataDate = TableMetaDate.forClass(SignProduct.class);
         SQL sql = SQL.init().SELECT("count(*)")
                 .FROM(mataDate.getTableName())
                 .WHERE("code = :code");
@@ -218,7 +221,7 @@ public class JdbcRepositoryTest {
 
     @Test
     public void selectForList() {
-        TableMataDate mataDate = TableMataDate.forClass(SignProduct.class);
+        TableMetaDate mataDate = TableMetaDate.forClass(SignProduct.class);
         SQL sql = SQL.init().SELECT(mataDate.getColumn(SignProduct::getCode))
                 .FROM(mataDate.getTableName())
                 .ORDER_BY(mataDate.getColumn(SignProduct::getCode) + " desc");
@@ -236,8 +239,21 @@ public class JdbcRepositoryTest {
     @Test
     public void selectPageList() {
         ProductCondition condition = new ProductCondition();
-        List<SignProduct> signProducts = jdbcRepository.selectPageList(SignProduct.class, condition);
-        Assert.assertTrue(signProducts instanceof PageList);
+        condition.setPageSize(2);
+        Page<SignProduct> signProducts = jdbcRepository.selectPageList(SignProduct.class, condition);
+        PageInfo pageInfo = signProducts.getPageInfo();
+        Assert.assertEquals(2, pageInfo.getPageSize());
+        Assert.assertEquals(condition.getPageNum(), pageInfo.getPageNum());
+        Assert.assertTrue(pageInfo.getTotalRecord() >= 2);
+        Assert.assertEquals(2, signProducts.getContent().size());
+
+    }
+
+    @Test
+    public void select() {
+
+
+
 
     }
 
