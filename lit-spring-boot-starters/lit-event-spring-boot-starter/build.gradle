@@ -1,6 +1,0 @@
-archivesBaseName = "lit-event-spring-boot-starter"
-
-dependencies {
-    compile guava
-    compile spring_aspects
-}

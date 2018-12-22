@@ -1,9 +1,7 @@
 package com.github.lit.support.web;
 
-import com.github.lit.support.page.PageInfo;
-import com.github.lit.support.page.PageList;
+import com.github.lit.support.annotation.ViewName;
 import com.github.lit.support.util.SpelUtils;
-import com.github.lit.support.web.annotation.ViewName;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -43,18 +41,6 @@ public class ModelAttributeInterceptor implements HandlerInterceptor {
                 String name = viewName.spel() ? SpelUtils.getExpressionValue(viewName.value(), modelMap) : viewName.value();
                 modelAndView.setViewName(name);
             }
-        }
-
-        // 处理分页信息
-        PageInfo pageInfo = null;
-        for (Object obj : modelMap.values()) {
-            if (obj instanceof PageList) {
-//                pageInfo = ((PageList) obj).getPageInfo();
-                break;
-            }
-        }
-        if (pageInfo != null) {
-            modelMap.put("PAGE_INFO", pageInfo);
         }
     }
 

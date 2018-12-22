@@ -62,7 +62,7 @@ public class MapperTest {
         condition.setFullName("2312312");
         condition.setPrice(12.3);
 
-        goodsMapper.selectByCondition(condition);
+        goodsMapper.selectList(condition);
 
     }
 

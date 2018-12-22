@@ -10,7 +10,7 @@ import java.util.List;
  * @version : v1.0
  * date : 7/24/18 09:54
  */
-public interface BaseMapper<Entity> {
+public interface BaseMapper<E> {
 
     /**
      * 新增一条记录
@@ -20,7 +20,7 @@ public interface BaseMapper<Entity> {
      */
     @InsertProvider(type = BaseSqlProvider.class, method = "insert")
     @Options(useGeneratedKeys = true, keyColumn = "id")
-    int insert(Entity entity);
+    int insert(E entity);
 
     /**
      * 更新一条记录
@@ -29,7 +29,7 @@ public interface BaseMapper<Entity> {
      * @return 受影响记录
      */
     @UpdateProvider(type = BaseSqlProvider.class, method = "update")
-    int update(Entity entity);
+    int update(E entity);
 
     /**
      * 删除一条记录
@@ -47,7 +47,7 @@ public interface BaseMapper<Entity> {
      * @return Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectById")
-    Entity selectById(Long id);
+    E selectById(Long id);
 
     /**
      * 根据属性查询一条记录
@@ -58,7 +58,7 @@ public interface BaseMapper<Entity> {
      * @return Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectByProperty")
-    <R> Entity selectByProperty(@Param("property") SerializedFunction<Entity, R> function, @Param("value") Object value);
+    <R> E selectByProperty(@Param("property") SerializedFunction<E, R> function, @Param("value") Object value);
 
     /**
      * 根据属性查询记录列表
@@ -69,7 +69,7 @@ public interface BaseMapper<Entity> {
      * @return Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectByProperty")
-    <R> List<Entity> selectListByProperty(@Param("property") SerializedFunction<Entity, R> function, @Param("value") Object value);
+    <R> List<E> selectListByProperty(@Param("property") SerializedFunction<E, R> function, @Param("value") Object value);
 
     /**
      * 根据查询条件查询记录
@@ -78,8 +78,8 @@ public interface BaseMapper<Entity> {
      * @param <Condition> Condition
      * @return List Entity
      */
-    @SelectProvider(type = BaseSqlProvider.class, method = "selectByCondition")
-    <Condition> List<Entity> selectByCondition(Condition condition);
+    @SelectProvider(type = BaseSqlProvider.class, method = "selectList")
+    <Condition> List<E> selectList(Condition condition);
 
 
 }

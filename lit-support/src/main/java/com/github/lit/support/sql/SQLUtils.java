@@ -143,5 +143,9 @@ public abstract class SQLUtils {
         return "( :" + property + ")";
     }
 
+    public static String mybatisTokenParam(String param) {
+        return "${" + param + "}";
+    }
+
 
 }

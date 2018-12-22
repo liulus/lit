@@ -1,0 +1,7 @@
+archivesBaseName = "lit-starter-jdbc"
+
+dependencies {
+    compile project(':lit-support')
+    compile persistence_api
+    compile spring_jdbc
+}

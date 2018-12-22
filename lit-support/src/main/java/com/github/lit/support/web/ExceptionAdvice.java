@@ -1,8 +1,8 @@
 package com.github.lit.support.web;
 
+import com.github.lit.support.annotation.ViewName;
 import com.github.lit.support.exception.BizException;
 import com.github.lit.support.util.WebUtils;
-import com.github.lit.support.web.annotation.ViewName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
