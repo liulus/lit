@@ -12,6 +12,10 @@ public class BizException extends LitException {
         super();
     }
 
+    public BizException(ExceptionDefinition exceptionDefinition) {
+        super(exceptionDefinition);
+    }
+
     public BizException(String message) {
         super(message);
     }

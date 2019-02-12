@@ -18,6 +18,11 @@ class LitException extends RuntimeException {
         super();
     }
 
+    LitException(ExceptionDefinition exceptionDefinition) {
+        super(exceptionDefinition.getMessage());
+        this.code = exceptionDefinition.getCode();
+    }
+
     LitException(String message) {
         super(message);
     }

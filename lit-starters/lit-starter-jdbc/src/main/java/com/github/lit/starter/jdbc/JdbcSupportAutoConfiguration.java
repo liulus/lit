@@ -1,3 +1,5 @@
+package com.github.lit.starter.jdbc;
+
 import com.github.lit.support.jdbc.EnableJdbcSupport;
 import org.springframework.context.annotation.Configuration;
 

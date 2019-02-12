@@ -67,7 +67,7 @@ public class BaseSqlProvider {
     public String selectByCondition(ProviderContext context, Object condition) {
         Class<?> entityClass = getEntityClass(context);
         return SQLUtils
-                .selectSQL(entityClass, condition, null, SQLUtils::mybatisTokenParam, SQLUtils::mybadisIn)
+                .selectSQL(entityClass, condition, null, SQLUtils::mybatisTokenParam, SQLUtils::mybatisIn)
                 .toString();
     }
 

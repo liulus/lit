@@ -127,7 +127,7 @@ public abstract class SQLUtils {
         return column + Logic.EQ.getCode() + namedParam.apply(param);
     }
 
-    public static String mybadisIn(String property, int size) {
+    public static String mybatisIn(String property, int size) {
         MessageFormat messageFormat = new MessageFormat("#'{'" + property + "[{0}]}");
         StringBuilder sb = new StringBuilder(" (");
         for (int i = 0; i < size; i++) {

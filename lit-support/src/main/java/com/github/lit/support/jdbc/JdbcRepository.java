@@ -56,6 +56,8 @@ public interface JdbcRepository {
 
     <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType);
 
+    <E> int countAll(Class<E> eClass);
+
     <E, R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value);
 
 

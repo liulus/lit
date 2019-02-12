@@ -11,6 +11,10 @@ public class SysException extends LitException  {
         super();
     }
 
+    public SysException(ExceptionDefinition exceptionDefinition) {
+        super(exceptionDefinition);
+    }
+
     public SysException(String message) {
         super(message);
     }
