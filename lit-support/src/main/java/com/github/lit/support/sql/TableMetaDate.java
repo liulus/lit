@@ -1,11 +1,7 @@
 package com.github.lit.support.sql;
 
-import com.github.lit.support.util.NameUtils;
-import com.github.lit.support.util.SerializedFunction;
-import com.github.lit.support.util.SerializedLambdaUtils;
+import com.github.lit.support.util.*;
 import lombok.Getter;
-import org.springframework.beans.BeanUtils;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -25,6 +21,8 @@ import java.util.*;
 @Getter
 public class TableMetaDate implements Serializable {
 
+    private static final long serialVersionUID = 7433386817779746930L;
+
     private static final int DEFAULT_CACHE_LIMIT = 128;
 
     @SuppressWarnings("serial")
@@ -35,7 +33,6 @@ public class TableMetaDate implements Serializable {
                     return size() > DEFAULT_CACHE_LIMIT;
                 }
             };
-    private static final long serialVersionUID = 7433386817779746930L;
 
     private Class<?> entityClass;
 
@@ -79,7 +76,7 @@ public class TableMetaDate implements Serializable {
 
     public String getAllColumns() {
         Collection<String> columns = fieldColumnMap.values();
-        if (CollectionUtils.isEmpty(columns)) {
+        if (columns.isEmpty()) {
             return "";
         }
         Iterator<String> iterator = columns.iterator();
@@ -110,7 +107,7 @@ public class TableMetaDate implements Serializable {
             // 过滤静态字段和有 @Transient 注解的字段
             if (Modifier.isStatic(field.getModifiers()) ||
                     field.isAnnotationPresent(Transient.class) ||
-                    !BeanUtils.isSimpleValueType(field.getType())) {
+                    !ClassUtils.isSimpleProperty(field.getType())) {
                 continue;
             }
 

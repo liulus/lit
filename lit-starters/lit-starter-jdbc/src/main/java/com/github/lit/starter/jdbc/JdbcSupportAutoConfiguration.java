@@ -1,7 +1,9 @@
 package com.github.lit.starter.jdbc;
 
 import com.github.lit.support.jdbc.EnableJdbcSupport;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 
 /**
  * @author liulu
@@ -10,5 +12,8 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableJdbcSupport
+@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 public class JdbcSupportAutoConfiguration {
+
+
 }

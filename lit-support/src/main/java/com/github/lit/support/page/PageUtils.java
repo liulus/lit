@@ -13,6 +13,10 @@ import java.util.function.BiConsumer;
 public abstract class PageUtils {
 
 
+    public static  <S, T> Page<T> convert(Page<S> sPage, Class<T> tClass) {
+        return convert(sPage, tClass, null);
+    }
+
     public static  <S, T> Page<T> convert(Page<S> sPage, Class<T> tClass, BiConsumer<S, T> consumer) {
         Page<T> result = new Page<>();
         result.setPageInfo(sPage.getPageInfo());

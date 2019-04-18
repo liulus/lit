@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -25,7 +26,7 @@ public class SignProduct implements Serializable {
 
     private Integer inventory;
 
-    private Date gmtCreate;
+    private LocalDateTime gmtCreate;
 
     private Date gmtUpdate;
 

@@ -4,7 +4,6 @@ import com.github.lit.support.sql.Database;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,7 +17,6 @@ import java.util.Map;
  * @version v1.0
  * date 2018-12-22 13:02
  */
-@Configuration
 @Order
 public class JdbcSupportConfigure {
 

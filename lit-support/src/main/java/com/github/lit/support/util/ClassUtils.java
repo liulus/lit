@@ -9,6 +9,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 /**
@@ -367,8 +370,18 @@ public class ClassUtils {
         return (clazz.isPrimitive() || isPrimitiveWrapper(clazz));
     }
 
+    public static boolean isSimpleProperty(Class<?> clazz) {
+        return isSimpleValueType(clazz) || (clazz.isArray() && isSimpleValueType(clazz.getComponentType()));
+    }
+
     public static boolean isSimpleValueType(Class<?> clazz) {
-        return isPrimitiveOrWrapper(clazz) || clazz.isEnum() || CharSequence.class.isAssignableFrom(clazz) || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) || URI.class == clazz || URL.class == clazz || Locale.class == clazz || Class.class == clazz;
+        return isPrimitiveOrWrapper(clazz) || clazz.isEnum()
+                || CharSequence.class.isAssignableFrom(clazz)
+                || Number.class.isAssignableFrom(clazz)
+                || Date.class.isAssignableFrom(clazz)
+                || LocalDate.class == clazz || LocalTime.class == clazz || LocalDateTime.class == clazz
+                || URI.class == clazz || URL.class == clazz
+                || Locale.class == clazz || Class.class == clazz;
     }
 
     /**
