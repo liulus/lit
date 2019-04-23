@@ -15,13 +15,13 @@ import java.util.Map;
  * date 2018-12-15 13:41
  */
 @ToString
-public class Page<T> {
+public class PageResult<T> {
 
-    private static final Page EMPTY = new Page();
+    private static final PageResult EMPTY = new PageResult();
 
     @Getter
     @Setter
-    private List<T> content = Collections.emptyList();
+    private List<T> data = Collections.emptyList();
 
     @Getter
     @Setter
@@ -30,8 +30,8 @@ public class Page<T> {
     private Map<String, Object> additional;
 
     @SuppressWarnings("unchecked")
-    public static <E> Page<E> emptyPage() {
-        return (Page<E>) EMPTY;
+    public static <E> PageResult<E> emptyPage() {
+        return (PageResult<E>) EMPTY;
     }
 
 

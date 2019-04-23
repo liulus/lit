@@ -1,8 +1,8 @@
 package com.github.lit.support.jdbc;
 
 import com.github.lit.support.page.OrderBy;
-import com.github.lit.support.page.Page;
 import com.github.lit.support.page.PageInfo;
+import com.github.lit.support.page.PageResult;
 import com.github.lit.support.page.Pageable;
 import com.github.lit.support.sql.Database;
 import com.github.lit.support.sql.SQL;
@@ -251,7 +251,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     }
 
     @Override
-    public <E, C extends Pageable> Page<E> selectPageList(Class<E> eClass, C condition) {
+    public <E, C extends Pageable> PageResult<E> selectPageList(Class<E> eClass, C condition) {
 
         SQL sql = SQLUtils.selectSQL(eClass, condition, condition.getOrderBy(), this::getNamedParam, SQLUtils::jdbcIn);
         return selectForPageList(sql, condition, eClass);
@@ -264,24 +264,24 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 //    }
 
     @Override
-    public <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType) {
+    public <E> PageResult<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType) {
         Integer count = 0;
         if (args.isCount()) {
             String countSql = sql.countSql();
             count = jdbcOperations.queryForObject(countSql, new BeanPropertySqlParameterSource(args), int.class);
             if (count <= 0) {
-                return Page.emptyPage();
+                return PageResult.emptyPage();
             }
         }
         Dialect dialect = Dialect.valueOf(getDatabase());
         if (dialect == null) {
-            return Page.emptyPage();
+            return PageResult.emptyPage();
         }
         String pageSql = dialect.getPageSql(sql.toString(), args.getPageSize(), args.getPageNum());
         List<E> rsList = jdbcOperations.query(pageSql,
                 new BeanPropertySqlParameterSource(args), AnnotationRowMapper.newInstance(requiredType));
-        Page<E> result = new Page<>();
-        result.setContent(rsList);
+        PageResult<E> result = new PageResult<>();
+        result.setData(rsList);
         result.setPageInfo(new PageInfo(args.getPageSize(), args.getPageNum(), count));
         return result;
     }

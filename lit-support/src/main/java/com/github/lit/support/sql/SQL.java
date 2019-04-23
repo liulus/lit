@@ -17,4 +17,14 @@ public class SQL extends AbstractSQL<SQL> {
         return new SQL();
     }
 
+    public static SQL baseSelect(Class<?> cls) {
+        TableMetaDate metaDate = TableMetaDate.forClass(cls);
+        return SQL.init().SELECT(metaDate.getAllColumns()).FROM(metaDate.getTableName());
+    }
+
+    public static SQL count(Class<?> cls) {
+        TableMetaDate metaDate = TableMetaDate.forClass(cls);
+        return SQL.init().SELECT("count(*)").FROM(metaDate.getTableName());
+    }
+
 }
