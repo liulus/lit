@@ -1,7 +1,0 @@
-rootProject.name = 'lit'
-include 'lit-code'
-include 'lit-support'
-include 'lit-starters'
-include 'lit-starters:lit-starter-jdbc'
-findProject(':lit-starters:lit-starter-jdbc')?.name = 'lit-starter-jdbc'
-
