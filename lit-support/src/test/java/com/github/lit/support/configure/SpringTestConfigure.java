@@ -2,7 +2,7 @@ package com.github.lit.support.configure;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
-import com.github.lit.support.jdbc.EnableJdbcSupport;
+import com.github.lit.support.data.jdbc.EnableJdbcSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;

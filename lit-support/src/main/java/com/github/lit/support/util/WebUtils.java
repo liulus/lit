@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * Date : 2017/8/9 21:22
  * version $Id: WebUtils.java, v 0.1 Exp $
  */
-public class WebUtils {
+public abstract class WebUtils {
 
 
     private static ServletContext SERVLET_CONTEXT;

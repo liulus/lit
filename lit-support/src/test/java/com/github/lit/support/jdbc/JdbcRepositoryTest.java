@@ -1,13 +1,14 @@
 package com.github.lit.support.jdbc;
 
 import com.github.lit.support.configure.SpringTestConfigure;
+import com.github.lit.support.data.SQL;
+import com.github.lit.support.data.domain.OrderBy;
+import com.github.lit.support.data.domain.Page;
+import com.github.lit.support.data.domain.PageInfo;
+import com.github.lit.support.data.domain.TableMetaDate;
+import com.github.lit.support.data.jdbc.JdbcRepository;
 import com.github.lit.support.model.ProductCondition;
 import com.github.lit.support.model.SignProduct;
-import com.github.lit.support.page.OrderBy;
-import com.github.lit.support.page.PageInfo;
-import com.github.lit.support.page.PageResult;
-import com.github.lit.support.sql.SQL;
-import com.github.lit.support.sql.TableMetaDate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -240,11 +241,11 @@ public class JdbcRepositoryTest {
     public void selectPageList() {
         ProductCondition condition = new ProductCondition();
         condition.setPageSize(2);
-        PageResult<SignProduct> signProducts = jdbcRepository.selectPageList(SignProduct.class, condition);
+        Page<SignProduct> signProducts = jdbcRepository.selectPageList(SignProduct.class, condition);
         PageInfo pageInfo = signProducts.getPageInfo();
         Assert.assertEquals(2, pageInfo.getPageSize());
         Assert.assertEquals(condition.getPageNum(), pageInfo.getPageNum());
-        Assert.assertTrue(pageInfo.getTotalRecord() >= 2);
+        Assert.assertTrue(pageInfo.getTotal() >= 2);
         Assert.assertEquals(2, signProducts.getData().size());
 
     }

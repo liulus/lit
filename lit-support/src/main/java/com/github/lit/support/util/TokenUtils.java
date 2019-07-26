@@ -7,7 +7,7 @@ import java.util.Map;
  * Date : 2018/2/7 15:36
  * version $Id: ConstantUtils.java, v 0.1 Exp $
  */
-public class TokenUtils {
+public abstract class TokenUtils {
 
     private static final String OPEN_TOKEN = "${";
 

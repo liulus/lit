@@ -10,9 +10,11 @@ import lombok.Setter;
  */
 class LitException extends RuntimeException {
 
+    private static final long serialVersionUID = -7052223373308595812L;
+
     @Getter
     @Setter
-    String code;
+    private String code;
 
     LitException() {
         super();
@@ -38,6 +40,7 @@ class LitException extends RuntimeException {
 
     LitException(String code, String message, Throwable cause) {
         super(message, cause);
+        this.code = code;
     }
 
     LitException(Throwable cause) {

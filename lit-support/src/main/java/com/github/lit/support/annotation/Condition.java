@@ -1,6 +1,6 @@
 package com.github.lit.support.annotation;
 
-import com.github.lit.support.sql.Logic;
+import com.github.lit.support.data.Logic;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

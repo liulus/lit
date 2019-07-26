@@ -11,7 +11,7 @@ import java.util.Properties;
  * Date : 2017-1-9 21:24
  * version $Id: PropertyUtils.java, v 0.1 Exp $
  */
-public class PropertyUtils {
+public abstract class PropertyUtils {
     /**
      * 属性文件后缀
      */

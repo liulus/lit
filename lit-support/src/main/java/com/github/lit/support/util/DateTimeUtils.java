@@ -9,7 +9,7 @@ import java.util.Date;
  * Date : 2018/3/15 16:55
  * version $Id: DateTimeUtils.java, v 0.1 Exp $
  */
-public class DateTimeUtils {
+public abstract class DateTimeUtils {
 
     private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

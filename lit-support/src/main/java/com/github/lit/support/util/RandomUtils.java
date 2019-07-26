@@ -5,7 +5,7 @@ package com.github.lit.support.util;
  * Date : 2018/3/15 16:56
  * version $Id: RandomUtils.java, v 0.1 Exp $
  */
-public class RandomUtils {
+public abstract class RandomUtils {
 
     private static final char[] LOWER_CASE = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 

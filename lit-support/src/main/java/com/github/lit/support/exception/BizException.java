@@ -7,6 +7,7 @@ package com.github.lit.support.exception;
  */
 public class BizException extends LitException {
 
+    private static final long serialVersionUID = 5060380635604270427L;
 
     public BizException() {
         super();

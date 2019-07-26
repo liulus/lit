@@ -42,7 +42,7 @@ public class MapperTest {
     @Test
     public void test2() {
         try {
-            goodsMapper.delete(1L);
+            goodsMapper.deleteById(1L);
         } catch (Exception e) {
 //            e.printStackTrace();
         }

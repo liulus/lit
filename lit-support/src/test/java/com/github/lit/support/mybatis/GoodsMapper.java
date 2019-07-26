@@ -1,5 +1,6 @@
 package com.github.lit.support.mybatis;
 
+import com.github.lit.support.data.mybatis.BaseMapper;
 import com.github.lit.support.model.Goods;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.builder.annotation.ProviderContext;

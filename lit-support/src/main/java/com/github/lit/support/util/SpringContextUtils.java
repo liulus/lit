@@ -15,7 +15,7 @@ import java.util.Map;
  * version $Id: ApplicationContextUtils.java, v 0.1 Exp $
  */
 @Component
-public class SpringContextUtils implements ApplicationContextAware {
+public abstract class SpringContextUtils implements ApplicationContextAware {
 
     private SpringContextUtils(){}
 

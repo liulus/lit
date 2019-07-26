@@ -20,7 +20,7 @@ import java.util.*;
  * date 2016-10-2 9:48
  * @see org.springframework.util.ClassUtils
  */
-public class ClassUtils {
+public abstract class ClassUtils {
 
     /**
      * Suffix for array class names: "[]"
@@ -254,7 +254,7 @@ public class ClassUtils {
 
 
     public static Class<?> forName(String name, ClassLoader classLoader) {
-        Assert.notNull(name, "Name must not be null");
+        Objects.requireNonNull(name, "Name must not be null");
 
         Class<?> clazz = resolvePrimitiveClassName(name);
         if (clazz == null) {
@@ -353,7 +353,7 @@ public class ClassUtils {
      * @return whether the given class is a primitive wrapper class
      */
     public static boolean isPrimitiveWrapper(Class<?> clazz) {
-        Assert.notNull(clazz, "Class must not be null");
+        Objects.requireNonNull(clazz, "Class must not be null");
         return primitiveWrapperTypeMap.containsKey(clazz);
     }
 
@@ -366,7 +366,7 @@ public class ClassUtils {
      * @return whether the given class is a primitive or primitive wrapper class
      */
     public static boolean isPrimitiveOrWrapper(Class<?> clazz) {
-        Assert.notNull(clazz, "Class must not be null");
+        Objects.requireNonNull(clazz, "Class must not be null");
         return (clazz.isPrimitive() || isPrimitiveWrapper(clazz));
     }
 
@@ -394,8 +394,8 @@ public class ClassUtils {
      * @see TypeUtils#isAssignable
      */
     public static boolean isAssignable(Class<?> lhsType, Class<?> rhsType) {
-        Assert.notNull(lhsType, "Left-hand side type must not be null");
-        Assert.notNull(rhsType, "Right-hand side type must not be null");
+        Objects.requireNonNull(lhsType, "Left-hand side type must not be null");
+        Objects.requireNonNull(rhsType, "Right-hand side type must not be null");
         if (lhsType.isAssignableFrom(rhsType)) {
             return true;
         }
@@ -420,7 +420,7 @@ public class ClassUtils {
      * @return the corresponding fully qualified class name
      */
     public static String convertResourcePathToClassName(String resourcePath) {
-        Assert.notNull(resourcePath, "Resource path must not be null");
+        Objects.requireNonNull(resourcePath, "Resource path must not be null");
         return resourcePath.replace(PATH_SEPARATOR, PACKAGE_SEPARATOR);
     }
 
