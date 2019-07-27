@@ -2,9 +2,9 @@ package com.github.lit.support.jdbc;
 
 import com.github.lit.support.configure.SpringTestConfigure;
 import com.github.lit.support.data.SQL;
-import com.github.lit.support.data.domain.OrderBy;
 import com.github.lit.support.data.domain.Page;
 import com.github.lit.support.data.domain.PageInfo;
+import com.github.lit.support.data.domain.Sort;
 import com.github.lit.support.data.domain.TableMetaDate;
 import com.github.lit.support.data.jdbc.JdbcRepository;
 import com.github.lit.support.model.ProductCondition;
@@ -204,7 +204,7 @@ public class JdbcRepositoryTest {
     public void selectListWithOrder() {
 
         ProductCondition condition = new ProductCondition();
-        OrderBy orderBy = OrderBy.init().asc(SignProduct::getCode).desc(SignProduct::getGmtCreate);
+        Sort orderBy = Sort.init().asc(SignProduct::getCode).desc(SignProduct::getGmtCreate);
         List<SignProduct> signProducts = jdbcRepository.selectListWithOrder(SignProduct.class, condition, orderBy);
 
         SignProduct last = null;

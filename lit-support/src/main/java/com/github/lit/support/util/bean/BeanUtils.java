@@ -5,10 +5,7 @@ import com.github.lit.support.util.ClassUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -23,6 +20,22 @@ public abstract class BeanUtils {
      * 判断classpath下是否存在spring-beans依赖
      */
     private static final boolean SPRING_PRESENT = ClassUtils.isPresent("org.springframework.beans.BeanUtils");
+
+    public static <E> Map<String, Object> beanToMap(E bean) {
+        Objects.requireNonNull(bean, "to map bean can not be null!");
+        PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(bean.getClass());
+
+        Map<String, Object> result = new LinkedHashMap<>(propertyDescriptors.length);
+
+        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+            if (propertyDescriptor.getReadMethod() != null) {
+                Object value = ClassUtils.invokeMethod(propertyDescriptor.getReadMethod(), bean);
+                result.put(propertyDescriptor.getName(), value);
+            }
+        }
+        return result;
+    }
+
 
     public static <S, T> T convert(S source, T target) {
         return convert(source, target, "");

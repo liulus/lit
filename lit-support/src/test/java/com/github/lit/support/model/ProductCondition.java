@@ -1,9 +1,10 @@
 package com.github.lit.support.model;
 
-import com.github.lit.support.annotation.Condition;
+import com.github.lit.support.data.Condition;
 import com.github.lit.support.data.Logic;
 import com.github.lit.support.data.domain.PageRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * date 2018-12-15 11:08
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 public class ProductCondition extends PageRequest {
 
     private static final long serialVersionUID = 6026171247313182830L;

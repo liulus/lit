@@ -1,5 +1,9 @@
 package com.github.lit.support.data.domain;
 
+import com.github.lit.support.util.lamabda.SerializedFunction;
+import com.github.lit.support.util.lamabda.SerializedLambdaUtils;
+
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -16,42 +20,52 @@ public class Sort {
     private static final String ORDER_ASC = " ASC";
     private static final String ORDER_DESC = " DESC";
 
-    private Map<String, String> orderByMap = new LinkedHashMap<>();
+    private static final String DEFAULT_MESSAGE = "sort properties must not null!";
 
-    private String[] lastProperties;
-    private boolean direction = false;
+    private Map<String, String> orderByMap = new LinkedHashMap<>();
 
     public static Sort init() {
         return new Sort();
     }
 
-    public static Sort initBy(String... properties) {
-        return init().by(properties);
-    }
-
-    public Sort by(String... properties) {
-        Objects.requireNonNull(properties, "sort properties must not null!");
-        lastProperties = properties;
-        direction = true;
-        return this;
-    }
-
-    public Sort asc() {
-        return addOrder(ORDER_ASC);
-    }
-
-    public Sort desc() {
-        return addOrder(ORDER_DESC);
-    }
-
-    private Sort addOrder(String orderDesc) {
-        if (direction) {
-            for (String property : lastProperties) {
-                orderByMap.put(property, orderDesc);
-            }
+    public Sort asc(String... properties) {
+        Objects.requireNonNull(properties, DEFAULT_MESSAGE);
+        for (String property : properties) {
+            orderByMap.put(property, ORDER_ASC);
         }
-        direction = false;
         return this;
+    }
+
+    public Sort desc(String... properties) {
+        Objects.requireNonNull(properties, DEFAULT_MESSAGE);
+        for (String property : properties) {
+            orderByMap.put(property, ORDER_DESC);
+        }
+        return this;
+    }
+
+    @SafeVarargs
+    public final <T, R> Sort asc(SerializedFunction<T, R>... serializedFunctions) {
+        return addSort(ORDER_ASC, serializedFunctions);
+    }
+
+    @SafeVarargs
+    public final <T, R> Sort desc(SerializedFunction<T, R>... serializedFunctions) {
+        return addSort(ORDER_DESC, serializedFunctions);
+    }
+
+    @SafeVarargs
+    private final <T, R> Sort addSort(String direction, SerializedFunction<T, R>... serializedFunctions) {
+        Objects.requireNonNull(serializedFunctions, DEFAULT_MESSAGE);
+        for (SerializedFunction<T, R> serializedFunction : serializedFunctions) {
+            String property = SerializedLambdaUtils.getProperty(serializedFunction);
+            orderByMap.put(property, direction);
+        }
+        return this;
+    }
+
+    public Map<String, String> getOrderByMap() {
+        return Collections.unmodifiableMap(orderByMap);
     }
 
     @Override

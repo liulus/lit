@@ -1,6 +1,5 @@
 package com.github.lit.support.data;
 
-import com.github.lit.support.annotation.Condition;
 import com.github.lit.support.data.domain.Sort;
 import com.github.lit.support.data.domain.TableMetaDate;
 import com.github.lit.support.util.bean.BeanUtils;
@@ -126,7 +125,10 @@ public abstract class SQLUtils {
             }
         });
         if (sort != null) {
-            sql.ORDER_BY(sort.toString());
+            for (Map.Entry<String, String> entry : sort.getOrderByMap().entrySet()) {
+                String column = metaDate.getColumn(entry.getKey());
+                sql.ORDER_BY(column + entry.getValue());
+            }
         }
         return sql;
     }

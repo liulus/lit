@@ -17,7 +17,7 @@ public class PageRequest implements Pageable, Serializable {
 
     private static final int MAX_PAGE_SIZE = 200;
 
-    private Sort sort;
+    private transient Sort sort;
 
     /**
      * 每页记录数

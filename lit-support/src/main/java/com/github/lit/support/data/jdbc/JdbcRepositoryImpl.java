@@ -10,9 +10,13 @@ import com.github.lit.support.util.lamabda.SerializedLambdaUtils;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
@@ -28,6 +32,7 @@ import java.util.*;
  * @version v1.0
  * date 2018-12-10 14:28
  */
+@Slf4j
 @NoArgsConstructor
 public class JdbcRepositoryImpl implements JdbcRepository {
 
@@ -62,9 +67,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         Objects.requireNonNull(entity, "insert with entity can not be null");
         Class<?> entityClass = entity.getClass();
         TableMetaDate metaDate = TableMetaDate.forClass(entityClass);
-        SQL sql = SQLUtils.insertSQL(entity, SQL.Type.JDBC);
+        String sql = SQLUtils.insertSQL(entity, SQL.Type.JDBC).toString();
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        int insert = jdbcOperations.update(sql.toString(), getSqlParameterSource(entity), keyHolder);
+        SqlParameterSource sqlParameterSource = getSqlParameterSource(entity);
+        logSqlAndParams(sql, sqlParameterSource);
+        int insert = jdbcOperations.update(sql, sqlParameterSource, keyHolder);
         PropertyDescriptor keyPs = BeanUtils.getPropertyDescriptor(entityClass, metaDate.getKeyProperty());
         // set key property
         if (keyPs != null) {
@@ -102,8 +109,10 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Override
     public <E> int updateSelective(E entity) {
-        SQL sql = SQLUtils.updateSQL(entity, true, SQL.Type.JDBC);
-        return jdbcOperations.update(sql.toString(), getSqlParameterSource(entity));
+        String sql = SQLUtils.updateSQL(entity, true, SQL.Type.JDBC).toString();
+        SqlParameterSource sqlParameterSource = getSqlParameterSource(entity);
+        logSqlAndParams(sql, sqlParameterSource);
+        return jdbcOperations.update(sql, sqlParameterSource);
     }
 
     @Override
@@ -115,17 +124,20 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         Object keyValue = ReflectionUtils.invokeMethod(keyPs.getReadMethod(), entity);
         Assert.notNull(keyValue, "key value can not be null");
 
-        SQL sql = SQLUtils.deleteSQL(entity.getClass(), SQL.Type.JDBC);
-
-        return jdbcOperations.update(sql.toString(), Collections.singletonMap(metaDate.getKeyProperty(), keyValue));
+        String sql = SQLUtils.deleteSQL(entity.getClass(), SQL.Type.JDBC).toString();
+        SqlParameterSource sqlParam = getSqlParameterSource(Collections.singletonMap(metaDate.getKeyProperty(), keyValue));
+        logSqlAndParams(sql, sqlParam);
+        return jdbcOperations.update(sql, sqlParam);
     }
 
     @Override
     public <E> int deleteById(Class<E> eClass, Long id) {
         Assert.notNull(id, "id can not be null");
         TableMetaDate metaDate = TableMetaDate.forClass(eClass);
-        SQL sql = SQLUtils.deleteSQL(eClass, SQL.Type.JDBC);
-        return jdbcOperations.update(sql.toString(), Collections.singletonMap(metaDate.getKeyProperty(), id));
+        String sql = SQLUtils.deleteSQL(eClass, SQL.Type.JDBC).toString();
+        SqlParameterSource sqlParam = getSqlParameterSource(Collections.singletonMap(metaDate.getKeyProperty(), id));
+        logSqlAndParams(sql, sqlParam);
+        return jdbcOperations.update(sql, sqlParam);
     }
 
     @Override
@@ -137,7 +149,9 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         String sql = SQL.init().DELETE_FROM(metaDate.getTableName())
                 .WHERE(metaDate.getKeyColumn() + PARAM_IN)
                 .toString();
-        return jdbcOperations.update(sql, Collections.singletonMap(PARAM, ids));
+        SqlParameterSource sqlParam = getSqlParameterSource(Collections.singletonMap(PARAM, ids));
+        logSqlAndParams(sql, sqlParam);
+        return jdbcOperations.update(sql, sqlParam);
     }
 
     @Override
@@ -171,6 +185,7 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         String sql = SQL.init().SELECT(metaDate.getBaseColumns())
                 .FROM(metaDate.getTableName())
                 .toString();
+        logSqlAndParams(sql, null);
         return jdbcOperations.query(sql, Collections.emptyMap(), AnnotationRowMapper.newInstance(eClass));
     }
 
@@ -184,9 +199,10 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     @Override
     public <E, R> List<E> selectListByProperty(SerializedFunction<E, R> serializedFunction, Object value) {
         Class<E> eClass = SerializedLambdaUtils.getLambdaClass(serializedFunction);
-        SQL sql = getSelectByPropertySql(serializedFunction, eClass);
-        return jdbcOperations
-                .query(sql.toString(), Collections.singletonMap(PARAM, value), AnnotationRowMapper.newInstance(eClass));
+        String sql = getSelectByPropertySql(serializedFunction, eClass).toString();
+        SqlParameterSource sqlParams = getSqlParameterSource(Collections.singletonMap(PARAM, value));
+        logSqlAndParams(sql, sqlParams);
+        return jdbcOperations.query(sql, sqlParams, AnnotationRowMapper.newInstance(eClass));
     }
 
     private <E, R> SQL getSelectByPropertySql(SerializedFunction<E, R> serializedFunction, Class<E> eClass) {
@@ -207,9 +223,10 @@ public class JdbcRepositoryImpl implements JdbcRepository {
 
     @Override
     public <E, C> List<E> selectListWithOrder(Class<E> eClass, C condition, Sort sort) {
-        SQL sql = SQLUtils.selectSQL(eClass, condition, sort, SQL.Type.JDBC);
-        return jdbcOperations
-                .query(sql.toString(), getSqlParameterSource(condition), AnnotationRowMapper.newInstance(eClass));
+        String sql = SQLUtils.selectSQL(eClass, condition, sort, SQL.Type.JDBC).toString();
+        SqlParameterSource sqlParams = getSqlParameterSource(condition);
+        logSqlAndParams(sql, sqlParams);
+        return jdbcOperations.query(sql, sqlParams, AnnotationRowMapper.newInstance(eClass));
     }
 
     @Override
@@ -236,30 +253,33 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         if (args == null) {
             args = Collections.emptyMap();
         }
+        String sqlStr = sql.toString();
         SqlParameterSource parameterSource = getSqlParameterSource(args);
-
+        logSqlAndParams(sqlStr, parameterSource);
         if (ClassUtils.isSimpleValueType(requiredType)) {
-            return jdbcOperations.queryForList(sql.toString(), parameterSource, requiredType);
+            return jdbcOperations.queryForList(sqlStr, parameterSource, requiredType);
         }
-        return jdbcOperations.query(sql.toString(), parameterSource, AnnotationRowMapper.newInstance(requiredType));
+        return jdbcOperations.query(sqlStr, parameterSource, AnnotationRowMapper.newInstance(requiredType));
     }
 
     @Override
     public <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType) {
         Integer count = 0;
+        SqlParameterSource sqlParameterSource = getSqlParameterSource(args);
         if (args.isCount()) {
             String countSql = sql.countSql();
-            count = jdbcOperations.queryForObject(countSql, getSqlParameterSource(args), int.class);
+            logSqlAndParams(countSql, sqlParameterSource);
+            count = jdbcOperations.queryForObject(countSql, sqlParameterSource, int.class);
             if (count == null || count <= 0) {
                 return Page.emptyPage();
             }
         }
         String pageSql = SQLUtils.getPageSql(getDbName(), sql.toString(), args.getPageSize(), args.getPageNum());
-        List<E> rsList = jdbcOperations
-                .query(pageSql, getSqlParameterSource(args), AnnotationRowMapper.newInstance(requiredType));
+        logSqlAndParams(pageSql, sqlParameterSource);
+        List<E> rs = jdbcOperations.query(pageSql, sqlParameterSource, AnnotationRowMapper.newInstance(requiredType));
 
         PageInfo pageInfo = new PageInfo(args.getPageSize(), args.getPageNum(), count);
-        return new Page<>(rsList, pageInfo);
+        return new Page<>(rs, pageInfo);
     }
 
     @Override
@@ -285,15 +305,27 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     }
 
 
-    private <E> SqlParameterSource getSqlParameterSource(E e) {
-        if (e == null) {
+    private void logSqlAndParams(String sql, SqlParameterSource params) {
+        if (params == null || params.getParameterNames() == null) {
+            log.info("\n sql: {} \n params: ", sql);
+            return;
+        }
+        StringBuilder paramLog = new StringBuilder();
+        for (String parameterName : params.getParameterNames()) {
+            Object value = params.getValue(parameterName);
+            if (!StringUtils.isEmpty(value)) {
+                paramLog.append(parameterName).append("=").append(value).append(", ");
+            }
+        }
+        log.info("\n sql: {} \n params: {}", sql, paramLog);
+    }
+
+    private <E> SqlParameterSource getSqlParameterSource(E params) {
+        if (params == null) {
             return new EmptySqlParameterSource();
         }
-        if (e instanceof Map) {
-            //noinspection unchecked
-            return new MapSqlParameterSource((Map<String, ?>) e);
-        }
-        return new BeanPropertySqlParameterSource(e);
+        Map<String, Object> paramMap = params instanceof Map ? (Map) params : BeanUtils.beanToMap(params);
+        return new MapSqlParameterSource(paramMap);
     }
 
 }
