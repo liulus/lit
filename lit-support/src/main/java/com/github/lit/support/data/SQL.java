@@ -10,7 +10,7 @@ import com.github.lit.support.data.domain.TableMetaDate;
  */
 public class SQL extends AbstractSQL<SQL> {
 
-    public static enum Type {
+    public enum Type {
         JDBC,
         MYBATIS,
         ;

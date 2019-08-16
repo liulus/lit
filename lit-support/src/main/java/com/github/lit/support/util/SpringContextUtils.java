@@ -4,7 +4,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.Map;
  * Date : 2017-2-21 18:22
  * version $Id: ApplicationContextUtils.java, v 0.1 Exp $
  */
-@Component
 public abstract class SpringContextUtils implements ApplicationContextAware {
 
     private SpringContextUtils(){}
