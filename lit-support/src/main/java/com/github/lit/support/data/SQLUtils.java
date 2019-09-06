@@ -11,6 +11,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author liulu
@@ -51,7 +52,7 @@ public abstract class SQLUtils {
                 continue;
             }
             Object value = ReflectionUtils.invokeMethod(ps.getReadMethod(), entity);
-            if (!StringUtils.isEmpty(value)) {
+            if (value != null) {
                 sql.VALUES(entry.getValue(), getTokenParam(entry.getKey(), sqlType));
             }
         }
@@ -99,9 +100,12 @@ public abstract class SQLUtils {
         SQL sql = SQL.init().SELECT(metaDate.getBaseColumns()).FROM(metaDate.getTableName());
         ReflectionUtils.doWithFields(condition.getClass(), field -> {
             Condition logicCondition = field.getAnnotation(Condition.class);
+            String property = Optional.ofNullable(logicCondition)
+                    .map(Condition::property)
+                    .filter(s -> !s.isEmpty())
+                    .orElse(field.getName());
+            String mappedColumn = metaDate.getColumn(property);
 
-            String mappedColumn = logicCondition == null || StringUtils.isEmpty(logicCondition.property())
-                    ? metaDate.getColumn(field.getName()) : metaDate.getColumn(logicCondition.property());
             if (!metaDate.containsColumn(mappedColumn)) {
                 return;
             }
@@ -109,19 +113,10 @@ public abstract class SQLUtils {
             if (pd == null || pd.getReadMethod() == null) {
                 return;
             }
-            Logic logic = logicCondition == null ? Logic.EQ : logicCondition.logic();
             Object value = ReflectionUtils.invokeMethod(pd.getReadMethod(), condition);
-            if (StringUtils.isEmpty(value)) {
-                if (logic == Logic.NULL || logic == Logic.NOT_NULL) {
-                    sql.WHERE(mappedColumn + logic.getCode());
-                }
-                return;
-            }
-            if ((logic == Logic.IN || logic == Logic.NOT_IN) && value instanceof Collection) {
-                int size = ((Collection) value).size();
-                sql.WHERE(mappedColumn + logic.getCode() + getIn(field.getName(), size, sqlType));
-            } else {
-                sql.WHERE(mappedColumn + logic.getCode() + getTokenParam(field.getName(), sqlType));
+            String sqlCondition = getCondition(field.getName(), logicCondition, value, sqlType);
+            if (StringUtils.hasText(sqlCondition)) {
+                sql.WHERE(mappedColumn + sqlCondition);
             }
         });
         if (sort != null) {
@@ -131,6 +126,25 @@ public abstract class SQLUtils {
             }
         }
         return sql;
+    }
+
+    private static String getCondition(String fieldName, Condition logicCondition, Object value, SQL.Type sqlType) {
+        Logic logic = Optional.ofNullable(logicCondition).map(Condition::logic).orElse(Logic.EQ);
+        boolean ignoreEmpty = Optional.ofNullable(logicCondition).map(Condition::ignoreEmpty).orElse(true);
+        if (logic == Logic.NULL || logic == Logic.NOT_NULL) {
+            return logic.getCode();
+        }
+        if (value == null || ("".equals(value) && ignoreEmpty)) {
+            return "";
+        }
+        if (value.getClass().isArray()) {
+            throw new UnsupportedOperationException("unsupported operation for array params:" + fieldName);
+        }
+        if (value instanceof Collection && (logic == Logic.IN || logic == Logic.NOT_IN)) {
+            int size = ((Collection) value).size();
+            return logic.getCode() + getIn(fieldName, size, sqlType);
+        }
+        return logic.getCode() + getTokenParam(fieldName, sqlType);
     }
 
 
