@@ -1,7 +1,12 @@
 package com.github.lit.support.data.mybatis;
 
 import com.github.lit.support.util.lamabda.SerializedFunction;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.InsertProvider;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.UpdateProvider;
 
 import java.util.List;
 
@@ -75,11 +80,11 @@ public interface BaseMapper<E> {
      * 根据查询条件查询记录
      *
      * @param condition   condition
-     * @param <Condition> Condition
+     * @param <C> Condition
      * @return List Entity
      */
     @SelectProvider(type = BaseSqlProvider.class, method = "selectList")
-    <Condition> List<E> selectList(Condition condition);
+    <C> List<E> selectList(C condition);
 
 
 }
