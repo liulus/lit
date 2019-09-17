@@ -7,6 +7,8 @@ package com.github.lit.support.util;
  */
 public abstract class NameUtils {
 
+    private NameUtils() {}
+
     /**
      * 下划线分割命名转换为驼峰命名
      *

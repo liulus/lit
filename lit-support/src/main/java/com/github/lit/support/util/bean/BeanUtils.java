@@ -5,7 +5,13 @@ import com.github.lit.support.util.ClassUtils;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -15,6 +21,8 @@ import java.util.function.BiConsumer;
  * date 2018-12-06 22:18
  */
 public abstract class BeanUtils {
+
+    private BeanUtils() {}
 
     /**
      * 判断classpath下是否存在spring-beans依赖

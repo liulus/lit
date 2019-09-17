@@ -13,6 +13,8 @@ public abstract class TokenUtils {
 
     private static final String CLOSE_TOKEN = "}";
 
+    private TokenUtils() {}
+
 
     public static String parseToken(Map<String, String> context, String text) {
         return parseToken(context, text, OPEN_TOKEN, CLOSE_TOKEN);
