@@ -2,7 +2,10 @@ package com.github.lit.support.configure;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
-import com.github.lit.support.data.jdbc.EnableJdbcSupport;
+import ch.vorburger.mariadb4j.DBConfiguration;
+import ch.vorburger.mariadb4j.DBConfigurationBuilder;
+import com.github.lit.support.data.jdbc.JdbcRepository;
+import com.github.lit.support.data.jdbc.JdbcRepositoryImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -19,7 +22,6 @@ import javax.sql.DataSource;
  * date 2018-12-14 21:04
  */
 @Configuration
-@EnableJdbcSupport
 public class SpringTestConfigure {
 
 
@@ -27,7 +29,12 @@ public class SpringTestConfigure {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE + 1)
     public DB initDb() throws ManagedProcessException {
-        DB db = DB.newEmbeddedDB(3306);
+        DBConfiguration configuration = DBConfigurationBuilder.newBuilder()
+                .setPort(3306)
+                .addArg("--character-set-server=utf8mb4")
+                .addArg("--collation-server=utf8mb4_unicode_ci")
+                .build();
+        DB db = DB.newEmbeddedDB(configuration);
         db.start();
         return db;
     }
@@ -42,6 +49,11 @@ public class SpringTestConfigure {
         dataSource.setPassword("");
 
         return dataSource;
+    }
+
+    @Bean
+    public JdbcRepository jdbcRepository(DataSource dataSource) {
+        return new JdbcRepositoryImpl(dataSource);
     }
 
     @Bean

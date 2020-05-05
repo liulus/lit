@@ -13,10 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.*;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
@@ -24,6 +21,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
 import java.util.*;
 
@@ -56,6 +54,10 @@ public class JdbcRepositoryImpl implements JdbcRepository {
                     .execute((ConnectionCallback<String>) con -> con.getMetaData().getDatabaseProductName());
         }
         return dbName;
+    }
+
+    public JdbcRepositoryImpl(DataSource dataSource) {
+        this.jdbcOperations = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public JdbcRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {

@@ -21,9 +21,6 @@ import java.util.Set;
  */
 public class AnnotationRowMapper<T> extends BeanPropertyRowMapper<T> {
 
-    public AnnotationRowMapper() {
-    }
-
     public AnnotationRowMapper(Class<T> mappedClass) {
         initialize(mappedClass);
     }
