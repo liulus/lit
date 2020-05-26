@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=JdbcSupportAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.lit.starter.jdbc.JdbcSupportAutoConfiguration

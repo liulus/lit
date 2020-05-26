@@ -13,9 +13,7 @@ import java.util.Map;
  * Date : 2017-2-21 18:22
  * version $Id: ApplicationContextUtils.java, v 0.1 Exp $
  */
-public abstract class SpringContextUtils implements ApplicationContextAware {
-
-    private SpringContextUtils(){}
+public class SpringContextUtils implements ApplicationContextAware {
 
     private static ApplicationContext context;
 

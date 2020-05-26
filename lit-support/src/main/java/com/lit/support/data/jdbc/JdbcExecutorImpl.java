@@ -2,7 +2,11 @@ package com.lit.support.data.jdbc;
 
 import com.lit.support.data.SQL;
 import com.lit.support.data.SQLUtils;
-import com.lit.support.data.domain.*;
+import com.lit.support.data.domain.Page;
+import com.lit.support.data.domain.PageInfo;
+import com.lit.support.data.domain.Pageable;
+import com.lit.support.data.domain.Sort;
+import com.lit.support.data.domain.TableMetaDate;
 import com.lit.support.util.ClassUtils;
 import com.lit.support.util.bean.BeanUtils;
 import com.lit.support.util.lamabda.SerializedFunction;
@@ -13,7 +17,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.namedparam.*;
+import org.springframework.jdbc.core.namedparam.EmptySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.util.Assert;
@@ -23,7 +31,11 @@ import org.springframework.util.StringUtils;
 
 import javax.sql.DataSource;
 import java.beans.PropertyDescriptor;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author liulu
@@ -32,7 +44,7 @@ import java.util.*;
  */
 @Slf4j
 @NoArgsConstructor
-public class JdbcRepositoryImpl implements JdbcRepository {
+public class JdbcExecutorImpl implements JdbcExecutor {
 
     private static final String PARAM = "param";
 
@@ -43,8 +55,8 @@ public class JdbcRepositoryImpl implements JdbcRepository {
     @Setter
     private String dbName;
 
-    @Getter
     @Setter
+    @Getter
     private NamedParameterJdbcOperations jdbcOperations;
 
 
@@ -56,11 +68,11 @@ public class JdbcRepositoryImpl implements JdbcRepository {
         return dbName;
     }
 
-    public JdbcRepositoryImpl(DataSource dataSource) {
+    public JdbcExecutorImpl(DataSource dataSource) {
         this.jdbcOperations = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public JdbcRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
+    public JdbcExecutorImpl(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
     }
 

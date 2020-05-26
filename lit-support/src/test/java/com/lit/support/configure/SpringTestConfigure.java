@@ -4,8 +4,8 @@ import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import ch.vorburger.mariadb4j.DBConfiguration;
 import ch.vorburger.mariadb4j.DBConfigurationBuilder;
-import com.lit.support.data.jdbc.JdbcRepository;
-import com.lit.support.data.jdbc.JdbcRepositoryImpl;
+import com.lit.support.data.jdbc.JdbcExecutor;
+import com.lit.support.data.jdbc.JdbcExecutorImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -52,8 +52,8 @@ public class SpringTestConfigure {
     }
 
     @Bean
-    public JdbcRepository jdbcRepository(DataSource dataSource) {
-        return new JdbcRepositoryImpl(dataSource);
+    public JdbcExecutor jdbcRepository(DataSource dataSource) {
+        return new JdbcExecutorImpl(dataSource);
     }
 
     @Bean

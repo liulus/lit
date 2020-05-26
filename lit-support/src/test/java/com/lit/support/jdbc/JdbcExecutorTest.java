@@ -6,7 +6,7 @@ import com.lit.support.data.domain.Page;
 import com.lit.support.data.domain.PageInfo;
 import com.lit.support.data.domain.Sort;
 import com.lit.support.data.domain.TableMetaDate;
-import com.lit.support.data.jdbc.JdbcRepository;
+import com.lit.support.data.jdbc.JdbcExecutor;
 import com.lit.support.model.ProductCondition;
 import com.lit.support.model.SignProduct;
 import org.junit.Assert;
@@ -34,10 +34,10 @@ import java.util.stream.Stream;
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = SpringTestConfigure.class)
 @Sql(scripts = "/sql/init_schema.sql")
-public class JdbcRepositoryTest {
+public class JdbcExecutorTest {
 
     @Resource
-    private JdbcRepository jdbcRepository;
+    private JdbcExecutor jdbcExecutor;
 
     @Test
     public void insert() {
@@ -45,7 +45,7 @@ public class JdbcRepositoryTest {
         signProduct.setCode("826478");
         signProduct.setFullName("签约产品一号");
         signProduct.setInventory(826);
-        jdbcRepository.insert(signProduct);
+        jdbcExecutor.insert(signProduct);
 
         Assert.assertTrue(signProduct.getId() >= 1);
     }
@@ -59,7 +59,7 @@ public class JdbcRepositoryTest {
                     signProduct.setCode(s);
                     return signProduct;
                 }).collect(Collectors.toList());
-        int insert = jdbcRepository.batchInsert(productList);
+        int insert = jdbcExecutor.batchInsert(productList);
 
         Assert.assertEquals(productList.size(), insert);
     }
@@ -69,7 +69,7 @@ public class JdbcRepositoryTest {
         String upCode = "new_code";
         String upName = "new_full_name";
 
-        SignProduct old = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct old = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNotNull(old);
         Assert.assertNotEquals(old.getCode(), upCode);
         Assert.assertNotEquals(old.getFullName(), upName);
@@ -78,7 +78,7 @@ public class JdbcRepositoryTest {
         upProduct.setId(old.getId());
         upProduct.setCode(upCode);
         upProduct.setFullName(upName);
-        jdbcRepository.update(upProduct);
+        jdbcExecutor.update(upProduct);
 
     }
 
@@ -87,7 +87,7 @@ public class JdbcRepositoryTest {
         String upCode = "new_code";
         String upName = "new_full_name";
 
-        SignProduct old = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct old = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNotNull(old);
         Assert.assertNotEquals(old.getCode(), upCode);
         Assert.assertNotEquals(old.getFullName(), upName);
@@ -96,9 +96,9 @@ public class JdbcRepositoryTest {
         upProduct.setId(old.getId());
         upProduct.setCode(upCode);
         upProduct.setFullName(upName);
-        jdbcRepository.updateSelective(upProduct);
+        jdbcExecutor.updateSelective(upProduct);
 
-        SignProduct newProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct newProduct = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNotNull(newProduct);
         Assert.assertEquals(newProduct.getCode(), upCode);
         Assert.assertEquals(newProduct.getFullName(), upName);
@@ -108,67 +108,67 @@ public class JdbcRepositoryTest {
     public void delete() {
         SignProduct deleteProduct = new SignProduct();
         deleteProduct.setId(1L);
-        int deleted = jdbcRepository.delete(deleteProduct);
+        int deleted = jdbcExecutor.delete(deleteProduct);
         Assert.assertTrue(deleted >= 1);
 
-        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct signProduct = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNull(signProduct);
     }
 
     @Test
     public void deleteById() {
-        int deleted = jdbcRepository.deleteById(SignProduct.class, 1L);
+        int deleted = jdbcExecutor.deleteById(SignProduct.class, 1L);
         Assert.assertEquals(1, deleted);
 
-        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct signProduct = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNull(signProduct);
     }
 
     @Test
     public void deleteByIds() {
-        int deleted = jdbcRepository.deleteByIds(SignProduct.class, Arrays.asList(1L, 2L));
+        int deleted = jdbcExecutor.deleteByIds(SignProduct.class, Arrays.asList(1L, 2L));
         Assert.assertEquals(2, deleted);
 
-        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct signProduct = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNull(signProduct);
 
-        signProduct = jdbcRepository.selectById(SignProduct.class, 2L);
+        signProduct = jdbcExecutor.selectById(SignProduct.class, 2L);
         Assert.assertNull(signProduct);
     }
 
 
     @Test
     public void selectById() {
-        SignProduct signProduct = jdbcRepository.selectById(SignProduct.class, 1L);
+        SignProduct signProduct = jdbcExecutor.selectById(SignProduct.class, 1L);
         Assert.assertNotNull(signProduct);
     }
 
     @Test
     public void selectByIds() {
-        List<SignProduct> signProducts = jdbcRepository.selectByIds(SignProduct.class, Arrays.asList(1L, 2L));
+        List<SignProduct> signProducts = jdbcExecutor.selectByIds(SignProduct.class, Arrays.asList(1L, 2L));
         Assert.assertEquals(2, signProducts.size());
     }
 
 
     @Test
     public void selectAll() {
-        List<SignProduct> signProducts = jdbcRepository.selectAll(SignProduct.class);
+        List<SignProduct> signProducts = jdbcExecutor.selectAll(SignProduct.class);
         TableMetaDate mataDate = TableMetaDate.forClass(SignProduct.class);
         SQL sql = SQL.init().SELECT("count(*)").FROM(mataDate.getTableName());
-        int count = jdbcRepository.selectForObject(sql, null, int.class);
+        int count = jdbcExecutor.selectForObject(sql, null, int.class);
         Assert.assertEquals(count, signProducts.size());
     }
 
     @Test
     public void selectByProperty() {
-        SignProduct signProduct = jdbcRepository.selectByProperty(SignProduct::getCode, "893341");
+        SignProduct signProduct = jdbcExecutor.selectByProperty(SignProduct::getCode, "893341");
 
         Assert.assertNotNull(signProduct);
     }
 
     @Test
     public void selectListByProperty() {
-        List<SignProduct> signProducts = jdbcRepository.selectListByProperty(SignProduct::getCode, "893341");
+        List<SignProduct> signProducts = jdbcExecutor.selectListByProperty(SignProduct::getCode, "893341");
         Assert.assertEquals(1, signProducts.size());
     }
 
@@ -178,7 +178,7 @@ public class JdbcRepositoryTest {
         SQL sql = SQL.init().SELECT("count(*)")
                 .FROM(mataDate.getTableName())
                 .WHERE("code = :code");
-        int count = jdbcRepository.selectForObject(sql, Collections.singletonMap("code", "893341"), int.class);
+        int count = jdbcExecutor.selectForObject(sql, Collections.singletonMap("code", "893341"), int.class);
         Assert.assertEquals(1, count);
     }
 
@@ -189,11 +189,11 @@ public class JdbcRepositoryTest {
         List<String> codes = Arrays.asList("893341", "213324", "123456");
         condition.setCodes(codes);
 
-        List<SignProduct> signProducts = jdbcRepository.selectList(SignProduct.class, condition);
+        List<SignProduct> signProducts = jdbcExecutor.selectList(SignProduct.class, condition);
         signProducts.forEach(signProduct -> Assert.assertTrue(codes.contains(signProduct.getCode())));
 
         condition.setFullName("%测试%");
-        signProducts = jdbcRepository.selectList(SignProduct.class, condition);
+        signProducts = jdbcExecutor.selectList(SignProduct.class, condition);
         signProducts.forEach(signProduct -> {
             Assert.assertTrue(codes.contains(signProduct.getCode()));
             Assert.assertTrue(signProduct.getFullName(). contains("测试"));
@@ -205,7 +205,7 @@ public class JdbcRepositoryTest {
 
         ProductCondition condition = new ProductCondition();
         Sort orderBy = Sort.init().asc(SignProduct::getCode).desc(SignProduct::getGmtCreate);
-        List<SignProduct> signProducts = jdbcRepository.selectListWithOrder(SignProduct.class, condition, orderBy);
+        List<SignProduct> signProducts = jdbcExecutor.selectListWithOrder(SignProduct.class, condition, orderBy);
 
         SignProduct last = null;
         for (SignProduct signProduct : signProducts) {
@@ -227,7 +227,7 @@ public class JdbcRepositoryTest {
                 .FROM(mataDate.getTableName())
                 .ORDER_BY(mataDate.getColumn(SignProduct::getCode) + " desc");
 
-        List<String> codes = jdbcRepository.selectForList(sql, null, String.class);
+        List<String> codes = jdbcExecutor.selectForList(sql, null, String.class);
 
         String last = "";
         for (String code : codes) {
@@ -241,7 +241,7 @@ public class JdbcRepositoryTest {
     public void selectPageList() {
         ProductCondition condition = new ProductCondition();
         condition.setPageSize(2);
-        Page<SignProduct> signProducts = jdbcRepository.selectPageList(SignProduct.class, condition);
+        Page<SignProduct> signProducts = jdbcExecutor.selectPageList(SignProduct.class, condition);
         PageInfo pageInfo = signProducts.getPageInfo();
         Assert.assertEquals(2, pageInfo.getPageSize());
         Assert.assertEquals(condition.getPageNum(), pageInfo.getPageNum());
@@ -252,7 +252,7 @@ public class JdbcRepositoryTest {
 
     @Test
     public void countByProperty() {
-        int count = jdbcRepository.countByProperty(SignProduct::getCode, "123123");
+        int count = jdbcExecutor.countByProperty(SignProduct::getCode, "123123");
         Assert.assertEquals(0, count);
     }
 

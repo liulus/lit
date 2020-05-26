@@ -1,20 +1,26 @@
 package com.lit.starter.jdbc;
 
-import com.lit.support.data.jdbc.JdbcRepository;
-import com.lit.support.data.jdbc.JdbcRepositoryImpl;
-import org.springframework.beans.factory.annotation.Value;
+import com.lit.support.data.jdbc.JdbcExecutor;
+import com.lit.support.data.jdbc.JdbcExecutorImpl;
+import com.lit.support.util.SpringContextUtils;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.ApplicationContext;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author liulu
@@ -22,57 +28,69 @@ import java.util.Map;
  * date 2018-12-22 19:27
  */
 @Configuration
+@EnableConfigurationProperties
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 public class JdbcSupportAutoConfiguration {
 
-    @Value("${lit.support.jdbc.database:}")
-    private String database;
+    @Resource
+    private JdbcSupportProperties jdbcSupportProperties;
 
-    @Value("${lit.support.jdbc.dataSource:}")
-    private String dataSourceName;
-
-    @Value("${lit.support.jdbc.template:}")
-    private String templateName;
-
-    @ConditionalOnMissingBean(JdbcRepository.class)
     @Bean
-    public JdbcRepository jdbcRepository(ApplicationContext context) {
-        JdbcRepositoryImpl jdbcRepository = new JdbcRepositoryImpl();
-        if (StringUtils.hasText(database)) {
-            jdbcRepository.setDbName(database.toUpperCase());
-        }
-
-        Map<String, NamedParameterJdbcOperations> jdbcOperationsBeans
-                = context.getBeansOfType(NamedParameterJdbcOperations.class);
-        if (jdbcOperationsBeans == null || jdbcOperationsBeans.isEmpty()) {
-            Map<String, DataSource> dataSourceBeans = context.getBeansOfType(DataSource.class);
-            if (dataSourceBeans == null || dataSourceBeans.isEmpty()) {
-                throw new IllegalArgumentException("no DataSource or NamedParameterJdbcOperations bean find for jdbcRepository");
-            }
-            if (StringUtils.isEmpty(dataSourceName)) {
-                DataSource dataSource = dataSourceBeans.values().iterator().next();
-                jdbcRepository.setJdbcOperations(new NamedParameterJdbcTemplate(dataSource));
-                return jdbcRepository;
-            }
-            DataSource dataSource = dataSourceBeans.get(dataSourceName);
-            if (dataSource == null) {
-                throw new IllegalArgumentException("no DataSource bean named: " + dataSourceName);
-            }
-            jdbcRepository.setJdbcOperations(new NamedParameterJdbcTemplate(dataSource));
-            return jdbcRepository;
-        }
-
-        if (StringUtils.isEmpty(templateName)) {
-            jdbcRepository.setJdbcOperations(jdbcOperationsBeans.values().iterator().next());
-            return jdbcRepository;
-        }
-        NamedParameterJdbcOperations jdbcOperations = jdbcOperationsBeans.get(templateName);
-        if (jdbcOperations == null) {
-            throw new IllegalArgumentException("no NamedParameterJdbcOperations bean named: " + templateName);
-        }
-        jdbcRepository.setJdbcOperations(jdbcOperations);
-
-        return jdbcRepository;
+    @ConditionalOnMissingBean(SpringContextUtils.class)
+    public SpringContextUtils springContextUtils () {
+        return new SpringContextUtils();
     }
+
+    @Bean
+    @ConditionalOnMissingBean(NamedParameterJdbcOperations.class)
+    public NamedParameterJdbcOperations litNamedParameterJdbcOperations(Map<String, DataSource> dataSourceMap) {
+        if (CollectionUtils.isEmpty(dataSourceMap)) {
+            throw new IllegalArgumentException("no dataSource fund, please config a DataSource");
+        }
+        String dataSourceId = jdbcSupportProperties.getDataSource();
+        if (StringUtils.hasText(dataSourceId)) {
+            DataSource dataSource = Optional.of(dataSourceId)
+                    .map(dataSourceMap::get)
+                    .orElseThrow(() -> new IllegalArgumentException("no dataSource bean with name " + dataSourceId));
+            return new NamedParameterJdbcTemplate(dataSource);
+        }
+        if (dataSourceMap.size() == 1) {
+            return new NamedParameterJdbcTemplate(dataSourceMap.values().iterator().next());
+        }
+        throw new IllegalArgumentException("to many dataSource bean fund, please config one with lit.support.jdbc.data-source: [you dataSource bean id]");
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean(JdbcExecutor.class)
+    public JdbcExecutor jdbcRepository(Map<String, DataSource> dataSourceMap,
+                                       List<NamedParameterJdbcOperations> namedParameterJdbcOperations) {
+        if (CollectionUtils.isEmpty(namedParameterJdbcOperations)) {
+            throw new IllegalArgumentException("no NamedParameterJdbcOperations fund, please config at least one");
+        }
+        String dataSourceId = jdbcSupportProperties.getDataSource();
+        if (StringUtils.hasText(dataSourceId)) {
+            DataSource dataSource = Optional.of(dataSourceId)
+                    .map(dataSourceMap::get)
+                    .orElseThrow(() -> new IllegalArgumentException("no dataSource bean with name " + dataSourceId));
+            return buildJdbcRepository(dataSource, namedParameterJdbcOperations);
+        }
+        if (dataSourceMap.size() == 1) {
+            return buildJdbcRepository(dataSourceMap.values().iterator().next(), namedParameterJdbcOperations);
+        }
+        throw new IllegalArgumentException("to many dataSource bean fund, please config one with lit.support.jdbc.data-source: [you dataSource bean id]");
+    }
+
+
+    private JdbcExecutor buildJdbcRepository(DataSource dataSource, List<NamedParameterJdbcOperations> jdbcOperations) {
+        for (NamedParameterJdbcOperations namedParameterJdbcOperations : jdbcOperations) {
+            JdbcTemplate jdbcTemplate = (JdbcTemplate) namedParameterJdbcOperations.getJdbcOperations();
+            if (Objects.equals(jdbcTemplate.getDataSource(), dataSource)) {
+                return new JdbcExecutorImpl(namedParameterJdbcOperations);
+            }
+        }
+        throw new IllegalArgumentException("no JdbcTemplate find with dataSource " + dataSource.toString());
+    }
+
 
 }

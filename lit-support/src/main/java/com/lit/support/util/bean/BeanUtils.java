@@ -16,6 +16,8 @@ import java.util.function.BiConsumer;
  */
 public abstract class BeanUtils {
 
+    private BeanUtils() {}
+
     /**
      * 判断classpath下是否存在spring-beans依赖
      */
@@ -41,6 +43,10 @@ public abstract class BeanUtils {
         return convert(source, target, "");
     }
 
+    public static <S, T> T convert(Class<T> tClass, S source) {
+        T result = ClassUtils.newInstance(tClass);
+        return convert(source, result, "");
+    }
     /**
      * 参考spring属性拷贝, 拓展: 相同属性source的null值不会拷贝到target
      *

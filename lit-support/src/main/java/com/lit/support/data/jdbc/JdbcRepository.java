@@ -5,58 +5,52 @@ import com.lit.support.data.domain.Page;
 import com.lit.support.data.domain.Pageable;
 import com.lit.support.data.domain.Sort;
 import com.lit.support.util.lamabda.SerializedFunction;
-import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
  * @author liulu
- * @version v1.0
- * date 2018-12-09 23:03
+ * @version 1.0
+ * created_at 2020/5/5
  */
-@Repository
-public interface JdbcRepository {
+public interface JdbcRepository<E> {
 
-    <E> int insert(E entity);
+    int insert(E entity);
 
-    <E> int batchInsert(Collection<E> eList);
+    int batchInsert(Collection<E> eList);
 
-    <E> int update(E entity);
+    int update(E entity);
 
-    <E> int updateSelective(E entity);
+    int updateSelective(E entity);
 
-    <E> int delete(E entity);
+    int deleteById(Long id);
 
-    <E> int deleteById(Class<E> eClass, Long id);
+    int deleteByIds(Collection<Long> ids);
 
-    <E> int deleteByIds(Class<E> eClass, Collection<Long> ids);
+    E selectById(Long id);
 
-    <E> E selectById(Class<E> eClass, Long id);
+    List<E> selectByIds(Collection<Long> ids);
 
-    <E> List<E> selectByIds(Class<E> eClass, Collection<Long> ids);
+    List<E> selectAll();
 
-    <E> List<E> selectAll(Class<E> eClass);
+    <R> E selectByProperty(SerializedFunction<E, R> serializedFunction, Object value);
 
-    <E, R> E selectByProperty(SerializedFunction<E, R> serializedFunction, Object value);
+    <R> List<E> selectListByProperty(SerializedFunction<E, R> serializedFunction, Object value);
 
-    <E, R> List<E> selectListByProperty(SerializedFunction<E, R> serializedFunction, Object value);
+    <C> List<E> selectList(C condition);
 
-    <E, C> List<E> selectList(Class<E> eClass, C condition);
+    <C> List<E> selectListWithOrder(C condition, Sort sort);
 
-    <E, C> List<E> selectListWithOrder(Class<E> eClass, C condition, Sort sort);
+    <C extends Pageable> Page<E> selectPageList(C condition);
 
-    <E, C extends Pageable> Page<E> selectPageList(Class<E> eClass, C condition);
+    int countAll();
 
-    <E> E selectForObject(SQL sql, Object args, Class<E> requiredType);
+    <R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value);
 
-    <E> List<E> selectForList(SQL sql, Object args, Class<E> requiredType);
+    <T> T selectForObject(SQL sql, Object args, Class<T> requiredType);
 
-    <E> Page<E> selectForPageList(SQL sql, Pageable args, Class<E> requiredType);
+    <T> List<T> selectForList(SQL sql, Object args, Class<T> requiredType);
 
-    <E> int count(Class<E> eClass);
-
-    <E, R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value);
-
-
+    <T> Page<T> selectForPageList(SQL sql, Pageable args, Class<T> requiredType);
 }
