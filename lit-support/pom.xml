@@ -5,7 +5,7 @@
     <parent>
         <artifactId>lit-dependencies</artifactId>
         <groupId>com.github.liulus</groupId>
-        <version>2.5.0-SNAPSHOT</version>
+        <version>2.5.1-SNAPSHOT</version>
         <relativePath>../lit-dependencies/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

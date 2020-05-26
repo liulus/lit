@@ -28,7 +28,7 @@ import java.util.Optional;
  * date 2018-12-22 19:27
  */
 @Configuration
-@EnableConfigurationProperties
+@EnableConfigurationProperties(JdbcSupportProperties.class)
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 public class JdbcSupportAutoConfiguration {
 

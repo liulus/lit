@@ -1,6 +1,5 @@
 package com.lit.support.data.jdbc;
 
-import com.lit.support.data.SQL;
 import com.lit.support.data.domain.Page;
 import com.lit.support.data.domain.Pageable;
 import com.lit.support.data.domain.Sort;
@@ -48,9 +47,4 @@ public interface JdbcRepository<E> {
 
     <R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value);
 
-    <T> T selectForObject(SQL sql, Object args, Class<T> requiredType);
-
-    <T> List<T> selectForList(SQL sql, Object args, Class<T> requiredType);
-
-    <T> Page<T> selectForPageList(SQL sql, Pageable args, Class<T> requiredType);
 }

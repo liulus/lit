@@ -2,6 +2,7 @@ package com.lit.support.data.jdbc;
 
 import com.lit.support.data.LitRepository;
 import com.lit.support.data.SQL;
+import com.lit.support.data.SQLUtils;
 import com.lit.support.data.domain.Page;
 import com.lit.support.data.domain.Pageable;
 import com.lit.support.data.domain.Sort;
@@ -12,7 +13,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.List;
@@ -28,13 +28,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractJdbcRepository<E> implements JdbcRepository<E> {
 
-    public static final Map<String, JdbcExecutor> REPOSITORY_MAP = new ConcurrentHashMap<>(8);
+    private static final Map<String, JdbcExecutor> REPOSITORY_MAP = new ConcurrentHashMap<>(8);
 
     private String dataSourceId;
     protected Class<E> entityClass;
 
-    protected DataSource dataSource;
-    protected JdbcExecutor jdbcExecutor;
+    private DataSource dataSource;
+    private JdbcExecutor jdbcExecutor;
 
     public AbstractJdbcRepository() {
         ResolvableType type = ResolvableType.forType(getClass().getGenericSuperclass());
@@ -49,13 +49,23 @@ public abstract class AbstractJdbcRepository<E> implements JdbcRepository<E> {
         }
     }
 
-    @PostConstruct
-    public void init() {
+    public JdbcExecutor getJdbcExecutor() {
+        if (this.jdbcExecutor != null) {
+            return this.jdbcExecutor;
+        }
+        synchronized (this) {
+            if (this.jdbcExecutor == null) {
+                this.jdbcExecutor = initJdbcExecutor();
+            }
+        }
+        return this.jdbcExecutor;
+    }
+
+    public JdbcExecutor initJdbcExecutor() {
         initDataSource();
         JdbcExecutor cacheRepository = REPOSITORY_MAP.get(this.dataSourceId);
         if (cacheRepository != null) {
-            this.jdbcExecutor = cacheRepository;
-            return;
+            return cacheRepository;
         }
         Collection<JdbcExecutor> jdbcRepositories = SpringContextUtils.getBeansOfType(JdbcExecutor.class).values();
         for (JdbcExecutor repository : jdbcRepositories) {
@@ -63,14 +73,14 @@ public abstract class AbstractJdbcRepository<E> implements JdbcRepository<E> {
             JdbcTemplate jdbcTemplate = (JdbcTemplate) repositoryImpl.getJdbcOperations().getJdbcOperations();
             DataSource jdbcTemplateDataSource = jdbcTemplate.getDataSource();
             if (Objects.equals(this.dataSource, jdbcTemplateDataSource)) {
-                this.jdbcExecutor = repository;
                 REPOSITORY_MAP.put(this.dataSourceId, repository);
-                return;
+                return repository;
             }
         }
         //
-        this.jdbcExecutor = new JdbcExecutorImpl(this.dataSource);
-        REPOSITORY_MAP.put(this.dataSourceId, jdbcExecutor);
+        JdbcExecutorImpl executor = new JdbcExecutorImpl(this.dataSource);
+        REPOSITORY_MAP.put(this.dataSourceId, executor);
+        return executor;
     }
 
     private void initDataSource() {
@@ -90,102 +100,105 @@ public abstract class AbstractJdbcRepository<E> implements JdbcRepository<E> {
         if (dataSourceMap.size() == 1) {
             this.dataSourceId = dataSourceMap.keySet().iterator().next();
             this.dataSource = dataSourceMap.values().iterator().next();
+            return;
         }
         throw new IllegalArgumentException("to many dataSource bean fund, please config one with lit.support.jdbc.data-source: [you dataSource bean id]");
     }
 
     @Override
     public int insert(E entity) {
-        return jdbcExecutor.insert(entity);
+        return getJdbcExecutor().insert(entity);
     }
 
     @Override
     public int batchInsert(Collection<E> eList) {
-        return jdbcExecutor.batchInsert(eList);
+        return getJdbcExecutor().batchInsert(eList);
     }
 
     @Override
     public int update(E entity) {
-        return jdbcExecutor.update(entity);
+        return getJdbcExecutor().update(entity);
     }
 
     @Override
     public int updateSelective(E entity) {
-        return jdbcExecutor.updateSelective(entity);
+        return getJdbcExecutor().updateSelective(entity);
     }
 
     @Override
     public int deleteById(Long id) {
-        return jdbcExecutor.deleteById(entityClass, id);
+        return getJdbcExecutor().deleteById(entityClass, id);
     }
 
     @Override
     public int deleteByIds(Collection<Long> ids) {
-        return jdbcExecutor.deleteByIds(entityClass, ids);
+        return getJdbcExecutor().deleteByIds(entityClass, ids);
     }
 
     @Override
     public E selectById(Long id) {
-        return jdbcExecutor.selectById(entityClass, id);
+        return getJdbcExecutor().selectById(entityClass, id);
     }
 
     @Override
     public List<E> selectByIds(Collection<Long> ids) {
-        return jdbcExecutor.selectByIds(entityClass, ids);
+        return getJdbcExecutor().selectByIds(entityClass, ids);
     }
 
     @Override
     public List<E> selectAll() {
-        return jdbcExecutor.selectAll(entityClass);
+        return getJdbcExecutor().selectAll(entityClass);
     }
 
     @Override
     public <R> E selectByProperty(SerializedFunction<E, R> serializedFunction, Object value) {
-        return jdbcExecutor.selectByProperty(serializedFunction, value);
+        return getJdbcExecutor().selectByProperty(serializedFunction, value);
     }
 
     @Override
     public <R> List<E> selectListByProperty(SerializedFunction<E, R> serializedFunction, Object value) {
-        return jdbcExecutor.selectListByProperty(serializedFunction, value);
+        return getJdbcExecutor().selectListByProperty(serializedFunction, value);
     }
 
     @Override
     public <C> List<E> selectList(C condition) {
-        return jdbcExecutor.selectList(entityClass, condition);
+        return getJdbcExecutor().selectList(entityClass, condition);
     }
 
     @Override
     public <C> List<E> selectListWithOrder(C condition, Sort sort) {
-        return jdbcExecutor.selectListWithOrder(entityClass, condition, sort);
+        return getJdbcExecutor().selectListWithOrder(entityClass, condition, sort);
     }
 
     @Override
     public <C extends Pageable> Page<E> selectPageList(C condition) {
-        return jdbcExecutor.selectPageList(entityClass, condition);
+        SQL sql = buildPageSQL(condition);
+        return getJdbcExecutor().selectForPageList(sql, condition, entityClass);
     }
 
-    @Override
-    public <T> T selectForObject(SQL sql, Object args, Class<T> requiredType) {
-        return jdbcExecutor.selectForObject(sql, args, requiredType);
-    }
-
-    @Override
-    public <T> List<T> selectForList(SQL sql, Object args, Class<T> requiredType) {
-        return jdbcExecutor.selectForList(sql, args, requiredType);
-    }
-
-    @Override
-    public <T> Page<T> selectForPageList(SQL sql, Pageable args, Class<T> requiredType) {
-        return jdbcExecutor.selectForPageList(sql, args, requiredType);
+    protected SQL buildPageSQL(Pageable condition) {
+        return SQLUtils.selectSQL(entityClass, condition, condition.getSort(), SQL.Type.JDBC);
     }
 
     @Override
     public int countAll() {
-        return jdbcExecutor.count(entityClass);
+        return getJdbcExecutor().count(entityClass);
     }
 
     @Override
     public <R> int countByProperty(SerializedFunction<E, R> serializedFunction, Object value) {
-        return jdbcExecutor.countByProperty(serializedFunction, value);
+        return getJdbcExecutor().countByProperty(serializedFunction, value);
+    }
+
+    protected SQL baseSelectSQL() {
+        return SQL.baseSelect(entityClass);
+    }
+
+    protected  <C> E selectSingle(SQL sql, C condition) {
+        return getJdbcExecutor().selectForObject(sql, condition, entityClass);
+    }
+
+    protected <C> List<E> selectList(SQL sql, C condition) {
+        return getJdbcExecutor().selectForList(sql, condition, entityClass);
     }
 }
