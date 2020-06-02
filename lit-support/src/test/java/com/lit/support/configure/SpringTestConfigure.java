@@ -33,6 +33,7 @@ public class SpringTestConfigure {
                 .setPort(3306)
                 .addArg("--character-set-server=utf8mb4")
                 .addArg("--collation-server=utf8mb4_unicode_ci")
+                .addArg("--default-time_zone=+8:00")
                 .build();
         DB db = DB.newEmbeddedDB(configuration);
         db.start();

@@ -255,31 +255,20 @@ public abstract class AbstractSQL<T> {
     }
 
     public <A extends Appendable> A usingAppender(A a) {
-        if (sql().statementType == SQLStatement.StatementType.COUNT) {
-            sql().statementType = SQLStatement.StatementType.SELECT;
-        }
         sql().sql(a);
         return a;
     }
 
     @Override
     public String toString() {
-        if (sql().statementType == SQLStatement.StatementType.COUNT) {
-            sql().statementType = SQLStatement.StatementType.SELECT;
-        }
         StringBuilder sb = new StringBuilder();
         sql().sql(sb);
-
         return sb.toString();
     }
 
     public String countSql() {
-        if (sql().statementType == SQLStatement.StatementType.SELECT) {
-            sql().statementType = SQLStatement.StatementType.COUNT;
-        }
         StringBuilder sb = new StringBuilder();
-        sql().sql(sb);
-
+        sql().countSQL(new SafeAppendable(sb));
         return sb.toString();
     }
 
@@ -313,7 +302,7 @@ public abstract class AbstractSQL<T> {
     private static class SQLStatement {
 
         public enum StatementType {
-            DELETE, INSERT, SELECT, UPDATE, COUNT
+            DELETE, INSERT, SELECT, UPDATE
         }
 
         SQLStatement.StatementType statementType;
@@ -439,10 +428,6 @@ public abstract class AbstractSQL<T> {
 
                 case UPDATE:
                     answer = updateSQL(builder);
-                    break;
-
-                case COUNT:
-                    answer = countSQL(builder);
                     break;
 
                 default:
