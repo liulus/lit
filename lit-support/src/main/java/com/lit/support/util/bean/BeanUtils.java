@@ -1,6 +1,7 @@
 package com.lit.support.util.bean;
 
 import com.lit.support.util.ClassUtils;
+import org.springframework.util.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
@@ -16,23 +17,54 @@ import java.util.function.BiConsumer;
  */
 public abstract class BeanUtils {
 
-    private BeanUtils() {}
+    private BeanUtils() {
+    }
 
     /**
      * 判断classpath下是否存在spring-beans依赖
      */
     private static final boolean SPRING_PRESENT = ClassUtils.isPresent("org.springframework.beans.BeanUtils");
 
+
     public static <E> Map<String, Object> beanToMap(E bean) {
+        return beanToMap(bean, "");
+    }
+
+    public static <E> Map<String, Object> beanToMap(E bean, String... ignoreProperties) {
         Objects.requireNonNull(bean, "to map bean can not be null!");
         PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(bean.getClass());
 
         Map<String, Object> result = new LinkedHashMap<>(propertyDescriptors.length);
+        List<String> ignoreList = (ignoreProperties != null ? Arrays.asList(ignoreProperties) : null);
+        for (PropertyDescriptor pd : propertyDescriptors) {
+            String pdName = pd.getName();
+            if (Objects.equals(pdName, "class") || (ignoreList != null && ignoreList.contains(pdName))) {
+                continue;
+            }
+            if (pd.getReadMethod() != null) {
+                Object value = ClassUtils.invokeMethod(pd.getReadMethod(), bean);
+                if (!StringUtils.isEmpty(value)) {
+                    result.put(pdName, value);
+                }
+            }
+        }
+        return result;
+    }
 
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            if (propertyDescriptor.getReadMethod() != null) {
-                Object value = ClassUtils.invokeMethod(propertyDescriptor.getReadMethod(), bean);
-                result.put(propertyDescriptor.getName(), value);
+    public static <E> E mapToBean(Class<E> eClass, Map<String, Object> source, String... ignoreProperties) {
+        E result = ClassUtils.newInstance(eClass);
+        PropertyDescriptor[] descriptors = getPropertyDescriptors(eClass);
+        List<String> ignoreList = (ignoreProperties != null ? Arrays.asList(ignoreProperties) : null);
+        for (PropertyDescriptor pd : descriptors) {
+            String pdName = pd.getName();
+            if (Objects.equals(pdName, "class")
+                    || pd.getWriteMethod() == null
+                    || (ignoreList != null && ignoreList.contains(pdName))) {
+                continue;
+            }
+            Object value = source.get(pdName);
+            if (!StringUtils.isEmpty(value) && ClassUtils.isAssignable(pd.getPropertyType(), value.getClass())) {
+                ClassUtils.invokeMethod(pd.getWriteMethod(), result, value);
             }
         }
         return result;
@@ -47,6 +79,7 @@ public abstract class BeanUtils {
         T result = ClassUtils.newInstance(tClass);
         return convert(source, result, "");
     }
+
     /**
      * 参考spring属性拷贝, 拓展: 相同属性source的null值不会拷贝到target
      *

@@ -173,15 +173,16 @@ public abstract class SQLUtils {
             throw new UnsupportedOperationException("unsupported operation build page sql unknow database");
         }
         dbName = dbName.toUpperCase();
-        switch (dbName) {
-            case "DB2":
-                return String.format(DB2_PAGE_SQL, sql, pageSize * (pageNum - 1), pageSize * pageNum);
-            case "MYSQL":
-                return String.format(MYSQL_PAGE_SQL, sql, pageSize * (pageNum - 1), pageSize);
-            case "ORACLE":
-                return String.format(ORACLE_PAGE_SQL, sql, pageSize * pageNum, pageSize * (pageNum - 1));
-            default:
-                throw new UnsupportedOperationException("unsupported operation build page sql for database: " + dbName);
+        if (dbName.contains("DB2")) {
+            return String.format(DB2_PAGE_SQL, sql, pageSize * (pageNum - 1), pageSize * pageNum);
         }
+        if (dbName.contains("MYSQL")) {
+            return String.format(MYSQL_PAGE_SQL, sql, pageSize * (pageNum - 1), pageSize);
+        }
+        if (dbName.contains("ORACLE")) {
+            return String.format(ORACLE_PAGE_SQL, sql, pageSize * pageNum, pageSize * (pageNum - 1));
+        }
+
+        throw new UnsupportedOperationException("unsupported operation build page sql for database: " + dbName);
     }
 }
