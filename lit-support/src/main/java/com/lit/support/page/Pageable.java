@@ -1,4 +1,4 @@
-package com.lit.support.data.domain;
+package com.lit.support.page;
 
 /**
  * @author liulu

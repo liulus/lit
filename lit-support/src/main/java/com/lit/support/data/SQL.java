@@ -1,7 +1,5 @@
 package com.lit.support.data;
 
-import com.lit.support.data.domain.TableMetaDate;
-
 /**
  * @author mybaitis
  * @version v1.0

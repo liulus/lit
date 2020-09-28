@@ -1,7 +1,6 @@
 package com.lit.support.data;
 
-import com.lit.support.data.domain.Sort;
-import com.lit.support.data.domain.TableMetaDate;
+import com.lit.support.page.Sort;
 import com.lit.support.util.bean.BeanUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;

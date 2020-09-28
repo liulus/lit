@@ -2,7 +2,7 @@ package com.lit.support.model;
 
 import com.lit.support.data.Condition;
 import com.lit.support.data.Logic;
-import com.lit.support.data.domain.PageRequest;
+import com.lit.support.page.PageRequest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

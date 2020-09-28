@@ -3,7 +3,7 @@ package com.lit.support.data.mybatis;
 import com.lit.support.data.Logic;
 import com.lit.support.data.SQL;
 import com.lit.support.data.SQLUtils;
-import com.lit.support.data.domain.TableMetaDate;
+import com.lit.support.data.TableMetaDate;
 import com.lit.support.util.lamabda.SerializedFunction;
 import com.lit.support.util.lamabda.SerializedLambdaUtils;
 import lombok.extern.slf4j.Slf4j;

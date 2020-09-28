@@ -1,4 +1,4 @@
-package com.lit.support.data.domain;
+package com.lit.support.data;
 
 import com.lit.support.util.ClassUtils;
 import com.lit.support.util.NameUtils;

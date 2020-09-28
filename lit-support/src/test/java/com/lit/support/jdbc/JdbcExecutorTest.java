@@ -2,17 +2,17 @@ package com.lit.support.jdbc;
 
 import com.lit.support.configure.SpringTestConfigure;
 import com.lit.support.data.SQL;
-import com.lit.support.data.domain.Page;
-import com.lit.support.data.domain.PageInfo;
-import com.lit.support.data.domain.Sort;
-import com.lit.support.data.domain.TableMetaDate;
+import com.lit.support.page.Page;
+import com.lit.support.page.PageInfo;
+import com.lit.support.page.Sort;
+import com.lit.support.data.TableMetaDate;
 import com.lit.support.data.jdbc.JdbcExecutor;
 import com.lit.support.model.ProductCondition;
 import com.lit.support.model.SignProduct;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -64,7 +64,7 @@ public class JdbcExecutorTest {
         Assert.assertEquals(productList.size(), insert);
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test(expected = InvalidDataAccessApiUsageException.class)
     public void update() {
         String upCode = "new_code";
         String upName = "new_full_name";

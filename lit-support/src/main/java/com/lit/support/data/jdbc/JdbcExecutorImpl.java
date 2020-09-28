@@ -2,11 +2,11 @@ package com.lit.support.data.jdbc;
 
 import com.lit.support.data.SQL;
 import com.lit.support.data.SQLUtils;
-import com.lit.support.data.domain.Page;
-import com.lit.support.data.domain.PageInfo;
-import com.lit.support.data.domain.Pageable;
-import com.lit.support.data.domain.Sort;
-import com.lit.support.data.domain.TableMetaDate;
+import com.lit.support.page.Page;
+import com.lit.support.page.PageInfo;
+import com.lit.support.page.Pageable;
+import com.lit.support.page.Sort;
+import com.lit.support.data.TableMetaDate;
 import com.lit.support.util.ClassUtils;
 import com.lit.support.util.bean.BeanUtils;
 import com.lit.support.util.lamabda.SerializedFunction;

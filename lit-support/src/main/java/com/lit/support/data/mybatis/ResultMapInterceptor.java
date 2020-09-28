@@ -1,6 +1,6 @@
 package com.lit.support.data.mybatis;
 
-import com.lit.support.data.domain.TableMetaDate;
+import com.lit.support.data.TableMetaDate;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;

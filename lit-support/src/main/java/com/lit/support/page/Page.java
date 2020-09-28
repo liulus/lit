@@ -1,4 +1,4 @@
-package com.lit.support.data.domain;
+package com.lit.support.page;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
