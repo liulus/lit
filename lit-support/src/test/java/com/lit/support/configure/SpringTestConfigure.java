@@ -26,6 +26,12 @@ import javax.sql.DataSource;
 @Configuration
 public class SpringTestConfigure {
 
+    @JdbcRepositoryScan(value = "com.lit.support.mybatis", dataSourceRef = "dataSource")
+    @Configuration
+    public static class C {
+
+    }
+
 
 
     @Bean

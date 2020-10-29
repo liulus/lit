@@ -1,4 +1,4 @@
-package com.lit.support.data;
+package com.lit.support.data.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;

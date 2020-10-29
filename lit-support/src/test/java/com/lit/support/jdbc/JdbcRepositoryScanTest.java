@@ -2,7 +2,7 @@ package com.lit.support.jdbc;
 
 import com.lit.support.configure.SpringTestConfigure;
 import com.lit.support.jdbc.repository.ProductRepository;
-import com.lit.support.model.SignProduct;
+import com.lit.support.mybatis.GoodsRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,10 +23,13 @@ public class JdbcRepositoryScanTest {
     @Resource
     private ProductRepository productRepository;
 
+    @Resource
+    private GoodsRepository goodsRepository;
+
     @Test
     public void test() {
-        int update = productRepository.update(new SignProduct());
-        System.out.println(update);
+//        int update = productRepository.update(new SignProduct());
+//        System.out.println(update);
         System.out.println("-----------------");
     }
 }

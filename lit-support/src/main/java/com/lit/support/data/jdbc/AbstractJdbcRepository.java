@@ -1,6 +1,6 @@
 package com.lit.support.data.jdbc;
 
-import com.lit.support.data.LitRepository;
+import com.lit.support.data.annotation.LitRepository;
 import com.lit.support.data.SQL;
 import com.lit.support.data.SQLUtils;
 import com.lit.support.page.Page;

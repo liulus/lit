@@ -5,6 +5,7 @@ import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * @author liulu
@@ -14,6 +15,8 @@ import javax.sql.DataSource;
 public class JdbcRepositoryProxy implements MethodInterceptor {
     @Setter
     private DataSource dataSource;
+    @Setter
+    private Map<String, DataSource> dataMap;
     public Class<?> iClass;
 
     public JdbcRepositoryProxy(Class<?> iClass) {

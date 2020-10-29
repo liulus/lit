@@ -1,4 +1,6 @@
-package com.lit.support.data;
+package com.lit.support.data.annotation;
+
+import com.lit.support.data.Logic;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

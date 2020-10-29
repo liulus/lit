@@ -5,12 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.util.StringUtils;
@@ -28,7 +26,7 @@ import java.util.Set;
 @Setter
 public class ClasspathRepositoryScanner extends ClassPathBeanDefinitionScanner {
 
-    private ResourceLoader resourceLoader;
+//    private ResourceLoader resourceLoader;
     private String dataSourceBeanName;
     private Class<? extends Annotation> annotationClass;
 
@@ -85,13 +83,11 @@ public class ClasspathRepositoryScanner extends ClassPathBeanDefinitionScanner {
 
             // the mapper interface is the original class of the bean
             // but, the actual class of the bean is MapperFactoryBean
-            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName()); // issue #59
+            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
             definition.setBeanClass(JdbcRepositoryFactoryBean.class);
 
-
-//            definition.getPropertyValues().add("addToConfig", this.addToConfig);
             if(StringUtils.hasText(this.dataSourceBeanName)) {
-                definition.getPropertyValues().add("dataSource", new RuntimeBeanReference(this.dataSourceBeanName));
+                definition.getPropertyValues().add("dataSourceBeanName", this.dataSourceBeanName);
             }
 
             if (logger.isDebugEnabled()) {

@@ -59,15 +59,6 @@ public @interface JdbcRepositoryScan {
      */
     Class<? extends Annotation> annotationClass() default Annotation.class;
 
-    /**
-     * This property specifies the parent that the scanner will search for.
-     * <p>
-     * The scanner will register all interfaces in the base package that also have
-     * the specified interface class as a parent.
-     * <p>
-     * Note this can be combined with annotationClass.
-     */
-    Class<?> markerInterface() default Class.class;
 
     /**
      * Specifies which {@code SqlSessionTemplate} to use in the case that there is
@@ -75,13 +66,6 @@ public @interface JdbcRepositoryScan {
      * have more than one datasource.
      */
     String dataSourceRef() default "";
-
-    /**
-     * Specifies which {@code SqlSessionFactory} to use in the case that there is
-     * more than one in the spring context. Usually this is only needed when you
-     * have more than one datasource.
-     */
-    String sqlSessionFactoryRef() default "";
 
     /**
      * Specifies a custom MapperFactoryBean to return a mybatis proxy as spring bean.
